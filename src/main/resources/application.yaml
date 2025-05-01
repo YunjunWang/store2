@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: store
+  datasource:
+    url: jdbc:mysql://localhost:3306/store?createDatabaseIfNotExist=true
+    username: root
+    password: password
+host: https://user.com
+port: 8080
+payment-gateway: visa
+stripe:
+  apiUrl: https://api.stripe.com
+  enabled: true
+  timeout: 5000
+  supported-currencies: USD,EUR,GBP
+paypal:
+  apiUrl: https://api.paypal.com
+  enabled: true
+  timeout: 6000
+  supported-currencies: USD,EUR,GBP,RBM
+visa:
+  apiUrl: https://api.visa.com
+  enabled: true
+  timeout: 6000
+  supported-currencies: USD,EUR,GBP,RBM
+mastercard:
+  apiUrl: https://api.mastercard.com
+  enabled: true
+  timeout: 7000
+  supported-currencies: USD,EUR,GBP,RBM
