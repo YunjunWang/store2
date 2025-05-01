@@ -5,28 +5,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-@EntityScan
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name="users")
-public class User {
-
+@Table(name="tags")
+public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id;
 
-    @Column(nullable = false, name="name")
+    @Column(nullable = false, name = "name")
     private String name;
-
-    @Column(nullable = false, name="email")
-    private String email;
-
-    @Column(nullable = false, name="password")
-    private String password;
-
 }
