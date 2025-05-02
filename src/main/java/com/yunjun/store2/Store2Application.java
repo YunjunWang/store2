@@ -1,8 +1,6 @@
 package com.yunjun.store2;
 
-import entities.Address;
-import entities.Profile;
-import entities.User;
+import entities.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -31,6 +29,14 @@ public class Store2Application {
         user.addProfile(profile);
 
         System.out.println(user);
+
+        Category category1 = new Category("category1");
+        Product product1 = Product.builder()
+                            .name("product1")
+                            .price(100.00F)
+                            .category(category1)
+                            .build();
+        System.out.println(product1);
     }
 
 }
