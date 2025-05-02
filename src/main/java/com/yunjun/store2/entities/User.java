@@ -2,16 +2,14 @@ package com.yunjun.store2.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.hibernate.proxy.HibernateProxy;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString
@@ -34,7 +32,8 @@ public class User {
 
     // The users table being owned by addresses, therefore, User entity is owned by Address entity by Address's field user
     @OneToMany(mappedBy = "user")
-    @Builder.Default // to be able to use the Builder pattern when add/remove address
+    @Builder.Default
+    @ToString.Exclude // to be able to use the Builder pattern when add/remove address
     private List<Address> addresses = new ArrayList<>(); // builder pattern will ignore this line of not annotate with @Builder.default
 
     public void addAddress(Address address) {
@@ -56,6 +55,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name="tag_id")
     )
     @Builder.Default
+    @ToString.Exclude
     private Set<Tag> tags = new HashSet<>();
 
     public void addTag(String tagName) {
@@ -88,6 +88,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     @Builder.Default
+    @ToString.Exclude
     private Set<Product> wishlist = new HashSet<>();
 
     public void addWishlist(Product product) {
@@ -96,5 +97,21 @@ public class User {
 
     public void removeWishlist(Product product) {
         this.wishlist.remove(product);
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        User user = (User) o;
+        return getId() != null && Objects.equals(getId(), user.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }
