@@ -4,6 +4,8 @@ import entities.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.math.BigDecimal;
+
 @SpringBootApplication
 public class Store2Application {
 
@@ -33,7 +35,7 @@ public class Store2Application {
         Category category1 = new Category("category1");
         Product product1 = Product.builder()
                             .name("product1")
-                            .price(100.00F)
+                            .price(BigDecimal.valueOf(100.00))
                             .category(category1)
                             .build();
         System.out.println(product1);

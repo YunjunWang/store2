@@ -3,6 +3,8 @@ package entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,15 +15,15 @@ import lombok.*;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name="name")
     private String name;
 
     @Column(name="price")
-    private double price;
+    private BigDecimal price;
 
     @ManyToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name="category_id")
     private Category category;
 }
