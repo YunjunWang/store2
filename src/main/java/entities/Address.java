@@ -29,7 +29,8 @@ public class Address {
     private String zipcode;
 
     @ManyToOne
-    @JoinColumn(name="user_id") // addresses owns user_id
+    @JoinColumn(name="user_id") // addresses table owns the relationship by column user_id,
+                                // therefore Address entity owns the relationship
     @ToString.Exclude // avoid looping
     private User user;
 }

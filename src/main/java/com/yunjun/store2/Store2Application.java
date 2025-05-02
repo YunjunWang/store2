@@ -16,13 +16,16 @@ public class Store2Application {
                 .email("test@test.com")
                 .password("123456")
                 .build();
+/*      User entity can't add address and tags the same time, get StackOverflow, how to solve it?
         Address address = Address.builder()
                 .street("street")
                 .city("city")
                 .state("state")
                 .zipcode("zipcode")
                 .build();
-        user.addAddress(address);
+        user.addAddress(address);*/
+
+        user.addTag("tag1");
 
         System.out.println(user);
     }

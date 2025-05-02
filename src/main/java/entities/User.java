@@ -5,7 +5,9 @@ import lombok.*;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @EntityScan
 @Data
@@ -30,7 +32,8 @@ public class User {
     @Column(nullable = false, name="password")
     private String password;
 
-    @OneToMany(mappedBy = "user") // table address owns user by user_id
+    // Users table being owned by addresses, therefore User entity is owned by Address entity by Address's field user
+    @OneToMany(mappedBy = "user")
     @Builder.Default // to be able to use Builder pattern when add/remove address
     private List<Address> addresses = new ArrayList<>(); // builder pattern will ignore this line of not annotate with @Builder.default
 
@@ -42,5 +45,27 @@ public class User {
     public void removeAddress(Address address) {
         this.addresses.remove(address);
         address.setUser(null);
+    }
+
+    // We set the users table is the owner of the Many-To-Many relationship here by using @JoinTable,
+    // both User and Tag can own this Many-To-Many relationship, we have to choose one of them
+    @ManyToMany
+    @JoinTable(
+            name = "user_tags",
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="tag_id")
+    )
+    @Builder.Default
+    private Set<Tag> tags = new HashSet<>();
+
+    public void addTag(String tagName) {
+        Tag tag = Tag.builder().name(tagName).build();
+        this.tags.add(tag);
+        tag.getUsers().add(this);
+    }
+
+    public void removeTag(Tag tag) {
+        this.tags.remove(tag);
+        tag.getUsers().remove(this);
     }
 }
