@@ -1,10 +1,7 @@
 package entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -13,6 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 @Table(name="profiles")
 public class Profile {
     @Id
@@ -31,4 +29,10 @@ public class Profile {
 
     @Column(nullable = false, name = "loyaltyPoints")
     private Integer loyaltyPoints;
+
+    @OneToOne
+    @JoinColumn(name="id")
+    @MapsId
+    @ToString.Exclude
+    private User user;
 }

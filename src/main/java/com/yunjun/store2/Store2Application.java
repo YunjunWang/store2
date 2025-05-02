@@ -1,6 +1,7 @@
 package com.yunjun.store2;
 
 import entities.Address;
+import entities.Profile;
 import entities.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,6 +27,8 @@ public class Store2Application {
         user.addAddress(address);*/
 
         user.addTag("tag1");
+        Profile profile = Profile.builder().bio("bio").build();
+        user.addProfile(profile);
 
         System.out.println(user);
     }

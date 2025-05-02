@@ -59,7 +59,7 @@ public class User {
     private Set<Tag> tags = new HashSet<>();
 
     public void addTag(String tagName) {
-        Tag tag = Tag.builder().name(tagName).build();
+        Tag tag = new Tag(tagName);
         this.tags.add(tag);
         tag.getUsers().add(this);
     }
@@ -67,5 +67,18 @@ public class User {
     public void removeTag(Tag tag) {
         this.tags.remove(tag);
         tag.getUsers().remove(this);
+    }
+
+    @OneToOne(mappedBy = "user")
+    private Profile profile;
+
+    public void addProfile(Profile profile) {
+        this.profile = profile;
+        profile.setUser(this);
+    }
+
+    public void removeProfile(Profile profile) {
+        this.profile = null;
+        profile.setUser(null);
     }
 }

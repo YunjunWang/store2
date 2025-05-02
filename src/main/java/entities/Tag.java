@@ -9,8 +9,6 @@ import java.util.Set;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @ToString
 @Table(name="tags")
 public class Tag {
@@ -24,7 +22,10 @@ public class Tag {
 
     // owned by User entity by the field tags since User entity owns the relationship using @JoinTable
     @ManyToMany(mappedBy = "tags")
-    @Builder.Default
     @ToString.Exclude
     private Set<User> users = new HashSet<>();
+
+    public Tag(String name) {
+        this.name = name;
+    }
 }
