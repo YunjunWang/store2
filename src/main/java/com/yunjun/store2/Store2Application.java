@@ -37,6 +37,7 @@ public class Store2Application {
                             .name("product1")
                             .price(BigDecimal.valueOf(100.00))
                             .category(category1)
+                            .description("description1")
                             .build();
         System.out.println(product1);
     }
