@@ -1,4 +1,4 @@
-package entities;
+package com.yunjun.store2.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@EntityScan
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
