@@ -1,16 +1,14 @@
 package entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 @Table(name="addresses")
 public class Address {
     @Id
@@ -29,4 +27,9 @@ public class Address {
 
     @Column(nullable = false, name="zipcode")
     private String zipcode;
+
+    @ManyToOne
+    @JoinColumn(name="user_id") // addresses owns user_id
+    @ToString.Exclude // avoid looping
+    private User user;
 }

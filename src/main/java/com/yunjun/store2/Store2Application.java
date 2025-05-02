@@ -1,5 +1,6 @@
 package com.yunjun.store2;
 
+import entities.Address;
 import entities.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,6 +16,15 @@ public class Store2Application {
                 .email("test@test.com")
                 .password("123456")
                 .build();
+        Address address = Address.builder()
+                .street("street")
+                .city("city")
+                .state("state")
+                .zipcode("zipcode")
+                .build();
+        user.addAddress(address);
+
+        System.out.println(user);
     }
 
 }
