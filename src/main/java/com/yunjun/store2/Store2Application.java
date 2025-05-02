@@ -30,8 +30,6 @@ public class Store2Application {
         Profile profile = Profile.builder().bio("bio").build();
         user.addProfile(profile);
 
-        System.out.println(user);
-
         Category category1 = new Category("category1");
         Product product1 = Product.builder()
                             .name("product1")
@@ -39,6 +37,8 @@ public class Store2Application {
                             .category(category1)
                             .description("description1")
                             .build();
+        user.addWishlist(product1);
+        System.out.println(user);
         System.out.println(product1);
     }
 

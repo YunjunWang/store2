@@ -32,9 +32,9 @@ public class User {
     @Column(nullable = false, name="password")
     private String password;
 
-    // Users table being owned by addresses, therefore User entity is owned by Address entity by Address's field user
+    // The users table being owned by addresses, therefore, User entity is owned by Address entity by Address's field user
     @OneToMany(mappedBy = "user")
-    @Builder.Default // to be able to use Builder pattern when add/remove address
+    @Builder.Default // to be able to use the Builder pattern when add/remove address
     private List<Address> addresses = new ArrayList<>(); // builder pattern will ignore this line of not annotate with @Builder.default
 
     public void addAddress(Address address) {
@@ -80,5 +80,21 @@ public class User {
     public void removeProfile(Profile profile) {
         this.profile = null;
         profile.setUser(null);
+    }
+
+    @ManyToMany
+    @JoinTable(
+            name = "wishlist",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
+    @Builder.Default
+    private Set<Product> wishlist = new HashSet<>();
+
+    public void addWishlist(Product product) {
+        this.wishlist.add(product);
+    }
+
+    public void removeWishlist(Product product) {
+        this.wishlist.remove(product);
     }
 }
