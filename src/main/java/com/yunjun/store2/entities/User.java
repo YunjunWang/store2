@@ -69,7 +69,16 @@ public class User {
         tag.getUsers().remove(this);
     }
 
-    @OneToOne(mappedBy = "user")
+    /*
+      can't apply Lazy loading fetching strategy on the non-owner entity
+      of the relationship
+
+      Since User is only for user accounts,
+      there's no need to load the profile information in the user account,
+      the best here is to remove the code, only have one-directional relationship
+      in the owner entity.
+     */
+    @OneToOne(mappedBy = "user"/*, fetch = FetchType.LAZY*/)
     private Profile profile;
 
     public void addProfile(Profile profile) {

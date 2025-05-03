@@ -33,7 +33,25 @@ public class Profile {
     @Column(nullable = false, name = "loyalty_points")
     private Integer loyaltyPoints;
 
-    @OneToOne
+    /**
+     * Fetching Strategies
+     * Eager loading default for:
+     * @OneToOne
+     * @ManyToOne
+     *
+     * Lazy loading default for:
+     * @OneToMany
+     * @ManyToMany
+     *
+     * Lazy loading only applicable to
+     * the owner of the relationship
+     * if you need to apply beyond the default
+     *
+     * Use Lazy loading only when it is:
+     * 1. optional
+     * 2. Rarely accessed
+     */
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="id")
     @MapsId
     @ToString.Exclude
