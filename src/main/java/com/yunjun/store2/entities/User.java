@@ -31,7 +31,8 @@ public class User {
     private String password;
 
     // The users table being owned by addresses, therefore, User entity is owned by Address entity by Address's field user
-    @OneToMany(mappedBy = "user")
+    // Use CascadeType.PERSIST to make sure the address is persisted when the user is persisted in the database
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     @Builder.Default
     @ToString.Exclude // to be able to use the Builder pattern when add/remove address
     private List<Address> addresses = new ArrayList<>(); // builder pattern will ignore this line of not annotate with @Builder.default

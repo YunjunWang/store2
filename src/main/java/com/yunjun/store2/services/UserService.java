@@ -1,5 +1,6 @@
 package com.yunjun.store2.services;
 
+import com.yunjun.store2.entities.Address;
 import com.yunjun.store2.entities.User;
 import com.yunjun.store2.repositories.AddressRepository;
 import com.yunjun.store2.repositories.ProfileRepository;
@@ -65,5 +66,21 @@ public class UserService {
 
         var address1 = addressRepository.findById(1L).orElseThrow();
         System.out.println(address1.getCity());
+    }
+
+    public void showPersistentState() {
+        User user = User.builder()
+                .name("persist")
+                .email("persist@example.com")
+                .password("persist")
+                .build();
+        Address address = Address.builder()
+                .street("123 Main St")
+                .city("San Francisco")
+                .state("California")
+                .zipcode("94107")
+                .build();
+        user.addAddress(address);
+        userRepository.save(user);
     }
 }
