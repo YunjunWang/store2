@@ -1,6 +1,7 @@
 package com.yunjun.store2.services;
 
 import com.yunjun.store2.entities.User;
+import com.yunjun.store2.repositories.AddressRepository;
 import com.yunjun.store2.repositories.ProfileRepository;
 import com.yunjun.store2.repositories.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -14,6 +15,7 @@ public class UserService {
     private UserRepository userRepository;
     private EntityManager entityManager;
     private ProfileRepository profileRepository;
+    private AddressRepository addressRepository;
 
     /**
      * User @Transactional to make the transaction scope longer
@@ -60,5 +62,8 @@ public class UserService {
         var profile = profileRepository.findById(1L).orElseThrow();
         System.out.println(profile.getBio());
         System.out.println(profile.getUser().getEmail());
+
+        var address1 = addressRepository.findById(1L).orElseThrow();
+        System.out.println(address1.getCity());
     }
 }

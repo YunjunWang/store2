@@ -32,9 +32,10 @@ public class Address {
     @Column(nullable = false, name="zipcode")
     private String zipcode;
 
-    @ManyToOne
-    @JoinColumn(name="user_id") // addresses table owns the relationship by column user_id,
-                                // therefore Address entity owns the relationship
+    // addresses table owns the relationship by column user_id, therefore, Address entity owns the relationship
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id")
+
     @ToString.Exclude // avoid looping
     private User user;
 
