@@ -13,7 +13,9 @@ public class Store2Application {
         var userService = context.getBean(UserService.class);
 //        userService.showTransactionalScope();
 //        userService.showRelatedEntities();
-        userService.showPersistentState();
+//        userService.showPersistentState();
+        userService.showDeleteState();
+        userService.showDeleteChildEntityState();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.yunjun.store2.services;
 
 import com.yunjun.store2.entities.Address;
+import com.yunjun.store2.entities.Profile;
 import com.yunjun.store2.entities.User;
 import com.yunjun.store2.repositories.AddressRepository;
 import com.yunjun.store2.repositories.ProfileRepository;
@@ -68,6 +69,7 @@ public class UserService {
         System.out.println(address1.getCity());
     }
 
+    @Transactional
     public void showPersistentState() {
         User user = User.builder()
                 .name("persist")
@@ -80,7 +82,29 @@ public class UserService {
                 .state("California")
                 .zipcode("94107")
                 .build();
+        Profile profile = Profile.builder()
+                .bio("I am a developer")
+                .phoneNumber("123-456-7890")
+                .user(user)
+                .dateOfBirth(java.time.LocalDate.of(1990, 1, 1))
+                .loyaltyPoints(1000)
+                .build();
         user.addAddress(address);
+
+        userRepository.save(user);
+        profileRepository.save(profile);
+    }
+
+    public void showDeleteState() {
+        User user = userRepository.findById(22L).orElseThrow();
+        userRepository.delete(user);
+    }
+
+    @Transactional
+    public void showDeleteChildEntityState() {
+        User user = userRepository.findById(21L).orElseThrow();
+        Address address = user.getAddresses().getFirst();
+        user.removeAddress(address);
         userRepository.save(user);
     }
 }

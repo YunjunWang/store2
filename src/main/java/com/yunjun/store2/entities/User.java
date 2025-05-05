@@ -29,13 +29,18 @@ public class User {
 
     @Column(nullable = false, name="password")
     private String password;
-
     // The users table being owned by addresses, therefore, User entity is owned by Address entity by Address's field user
     // Use CascadeType.PERSIST to make sure the address is persisted when the user is persisted in the database
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    // Use CascadeType.REMOVE to make sure the address is removed when the user is removed from the database
+    // Use orphanRemoval to make sure the address is removed when the user is removed from the database
+    // If we don't use @Builder.Default, the addresses field will be null when we use the Builder pattern to create a new User object
+    // and the addresses field will be empty when we use the constructor to create a new User object
+    // because the addresses field is not annotated with @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Builder.Default
     @ToString.Exclude // to be able to use the Builder pattern when add/remove address
     private List<Address> addresses = new ArrayList<>(); // builder pattern will ignore this line of not annotate with @Builder.default
+
 
     public void addAddress(Address address) {
         this.addresses.add(address);
@@ -75,11 +80,11 @@ public class User {
       of the relationship
 
       Since User is only for user accounts,
-      there's no need to load the profile information in the user account,
-      the best here is to remove the code, only have one-directional relationship
+      there's no need to load the profile information in the user account;
+      the best here is to remove the code, only have a one-directional relationship
       in the owner entity.
      */
-    @OneToOne(mappedBy = "user"/*, fetch = FetchType.LAZY*/)
+    @OneToOne(mappedBy = "user"/*, fetch = FetchType.LAZY*/, cascade = {CascadeType.REMOVE})
     private Profile profile;
 
     public void addProfile(Profile profile) {
