@@ -12,7 +12,8 @@ public class Store2Application {
         var context = SpringApplication.run(Store2Application.class, args);
         var userService = context.getBean(UserService.class);
 //        userService.showTransactionalScope();
-        userService.showRelatedEntities();
+//        userService.showRelatedEntities();
+        userService.showPersistentState();
     }
 
 }
