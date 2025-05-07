@@ -63,4 +63,9 @@ public class ProductService {
         categoryRepository.save(category);
         categoryRepository.delete(category);
     }
-}
+
+    @Transactional
+    public void updateProductPrices() {
+        productRepository.updatePriceByCategory((byte) 1, BigDecimal.valueOf(1001L));
+    }
+ }

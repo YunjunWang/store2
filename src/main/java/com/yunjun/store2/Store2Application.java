@@ -19,8 +19,9 @@ public class Store2Application {
 
 
         var productService = context.getBean(ProductService.class);
-        productService.showRelatedChildEntities();
-        productService.showRelatedParentEntities();
+//        productService.showRelatedChildEntities();
+//        productService.showRelatedParentEntities();
+        productService.updateProductPrices();
     }
 
 }
