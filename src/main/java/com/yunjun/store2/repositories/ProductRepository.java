@@ -1,5 +1,8 @@
 package com.yunjun.store2.repositories;
 
+import com.yunjun.store2.dtos.ProductSummaryDto;
+import com.yunjun.store2.dtos.ProductSummaryProjection;
+import com.yunjun.store2.entities.Category;
 import com.yunjun.store2.entities.Product;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -64,4 +67,41 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
   @Modifying
   @Query("update Product p set p.price = :price where p.category.id = :categoryId")
   void updatePriceByCategory(Byte categoryId, BigDecimal price);
+
+  /**
+   * Default without using projections for partial data,
+   * it will search all columns of the Product entity and
+   * an eager loading of Category entity
+   *
+   * @param category
+   */
+  @Query("select p from Product p where p.category = :category")
+  List<Product> findProducts(@Param("category") Category category);
+
+  /**
+   * The package name "dtos" can be "projections" too.
+   *
+   * Fetch partial data with Projections
+   * using @Query annotation
+   * and return a list of ProductSummaryProjection objects
+   * ProductSummaryProjection is an Interface which is much more convenient than using a class
+   *
+   * @param category
+   * @return
+   */
+  @Query("select p.id, p.name from Product p where p.category = :category")
+  List<ProductSummaryProjection> findProductsP(@Param("category") Category category);
+
+  /**
+   * Fetch partial data with Projections
+   * using @Query annotation
+   * and return a list of ProductSummaryDto objects
+   * ProductSummaryDto is a DTO class which requires the full path of the class in the query
+   *
+   * Only use a DTO class when you need to have more logic for the data
+   * @param category
+   * @return
+   */
+  @Query("select new com.yunjun.store2.dtos.ProductSummaryDto(p.id, p.name) from Product p where p.category = :category")
+  List<ProductSummaryDto> findProductsD(@Param("category") Category category);
 }

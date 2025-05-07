@@ -68,4 +68,15 @@ public class ProductService {
     public void updateProductPrices() {
         productRepository.updatePriceByCategory((byte) 1, BigDecimal.valueOf(1001L));
     }
+
+    public void fetchProducts() {
+        var products = productRepository.findProducts(new Category((byte) 1));
+        products.forEach(System.out::println);
+
+        var products2 = productRepository.findProductsP(new Category((byte) 2));
+        products2.forEach(System.out::println);
+
+        var products3 = productRepository.findProductsD(new Category((byte) 3));
+        products3.forEach(System.out::println);
+    }
  }
