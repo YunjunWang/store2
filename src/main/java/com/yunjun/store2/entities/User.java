@@ -12,7 +12,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
+//@ToString
 @Table(name="users")
 public class User {
 
@@ -38,7 +38,6 @@ public class User {
     // because the addresses field is not annotated with @Builder.Default
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Builder.Default
-    @ToString.Exclude // to be able to use the Builder pattern when add/remove address
     private List<Address> addresses = new ArrayList<>(); // builder pattern will ignore this line of not annotate with @Builder.default
 
 
@@ -61,7 +60,6 @@ public class User {
             inverseJoinColumns = @JoinColumn(name="tag_id")
     )
     @Builder.Default
-    @ToString.Exclude
     private Set<Tag> tags = new HashSet<>();
 
     public void addTag(String tagName) {
@@ -103,7 +101,6 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     @Builder.Default
-    @ToString.Exclude
     private Set<Product> wishlist = new HashSet<>();
 
     public void addWishlist(Product product) {
@@ -128,5 +125,20 @@ public class User {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    /**
+     * avoid queries for lazy loading attributes
+     * which will cause lazy loading initialization exception
+     *
+     * @return
+     */
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + id + ", " +
+                "name = " + name + ", " +
+                "email = " + email + ", " +
+                "password = " + password + ")";
     }
 }

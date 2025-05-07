@@ -107,4 +107,14 @@ public class UserService {
         user.removeAddress(address);
         userRepository.save(user);
     }
+
+    /**
+     * needed @Transactional when we are using @ToString including the lazy loading attributes
+     *
+     */
+    public void fetchUsers() {
+        var user = userRepository.findByEmail("john1@example.com").orElseThrow();
+//        System.out.println(user.getEmail());
+        System.out.println(user);
+    }
 }
