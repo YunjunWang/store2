@@ -79,4 +79,14 @@ public class ProductService {
         var products3 = productRepository.findProductsD(new Category((byte) 3));
         products3.forEach(System.out::println);
     }
+
+    /**
+     * Need to use @Transactional for any method calling a query
+     * that uses a stored procedure
+     */
+    @Transactional
+    public void fetchProductsWithPrices() {
+        var products = productRepository.findProductsByPrices(BigDecimal.valueOf(1000L), BigDecimal.valueOf(1001L));
+        products.forEach(System.out::println);
+    }
  }

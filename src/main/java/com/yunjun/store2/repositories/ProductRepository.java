@@ -6,6 +6,7 @@ import com.yunjun.store2.entities.Category;
 import com.yunjun.store2.entities.Product;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
@@ -48,6 +49,16 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
   @Query("select p from Product p join p.category where p.price between :min and :max")
   List<Product> findByProducts(@Param("min") BigDecimal min, @Param("max") BigDecimal max);
 
+  /**
+   * Create a stored procedure in the database for complicated queries
+   * Then use @Procedure annotation to call the stored procedure
+   *
+   * @param min
+   * @param max
+   * @return
+   */
+  @Procedure("getProductsBetweenPrices")
+  List<Product> findProductsByPrices(BigDecimal min, BigDecimal max);
   /**
    * aggregate functions: count, max, min ...
    * @param min
