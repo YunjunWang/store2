@@ -82,18 +82,18 @@ public class User {
       the best here is to remove the code, only have a one-directional relationship
       in the owner entity.
      */
-    @OneToOne(mappedBy = "user"/*, fetch = FetchType.LAZY*/, cascade = {CascadeType.REMOVE})
-    private Profile profile;
+//    @OneToOne(mappedBy = "user"/*, fetch = FetchType.LAZY*/, cascade = {CascadeType.REMOVE})
+//    private Profile profile;
 
-    public void addProfile(Profile profile) {
-        this.profile = profile;
-        profile.setUser(this);
-    }
-
-    public void removeProfile(Profile profile) {
-        this.profile = null;
-        profile.setUser(null);
-    }
+//    public void addProfile(Profile profile) {
+//        this.profile = profile;
+//        profile.setUser(this);
+//    }
+//
+//    public void removeProfile(Profile profile) {
+//        this.profile = null;
+//        profile.setUser(null);
+//    }
 
     @ManyToMany
     @JoinTable(

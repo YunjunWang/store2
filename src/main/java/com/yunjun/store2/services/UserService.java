@@ -112,9 +112,18 @@ public class UserService {
      * needed @Transactional when we are using @ToString including the lazy loading attributes
      *
      */
-    public void fetchUsers() {
+    public void fetchUser() {
         var user = userRepository.findByEmail("john1@example.com").orElseThrow();
 //        System.out.println(user.getEmail());
         System.out.println(user);
+    }
+
+    @Transactional
+    public void fetchUsersWithAddresses() {
+        var users = userRepository.findAllWithAddresses();
+        users.forEach(u -> {
+            System.out.println(u);
+            u.getAddresses().forEach(System.out::println);
+        });
     }
 }

@@ -25,7 +25,8 @@ public class Store2Application {
 //        productService.updateProductPrices();
 //        productService.fetchProducts();
 
-        userService.fetchUsers();
+//        userService.fetchUser();
+        userService.fetchUsersWithAddresses();
     }
 
 }
