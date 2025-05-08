@@ -5,6 +5,8 @@ import com.yunjun.store2.services.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.math.BigDecimal;
+
 @SpringBootApplication
 public class Store2Application {
 
@@ -35,7 +37,9 @@ public class Store2Application {
 //
 //        userService.fetchUsersSummaryWithLoyaltyPointsGreaterThan();
 //        productService.fetchProductsWithPrices();
-        productService.fetchProductsByCriteria();
+//        productService.fetchProductsByCriteria();
+        productService.fetchProductsBySpecifications("iPhone", BigDecimal.valueOf(1000), null);
+
     }
 
 }

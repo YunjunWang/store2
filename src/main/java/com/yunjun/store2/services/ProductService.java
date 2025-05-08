@@ -5,13 +5,16 @@ import com.yunjun.store2.entities.Product;
 import com.yunjun.store2.repositories.CategoryRepository;
 import com.yunjun.store2.repositories.ProductRepository;
 import com.yunjun.store2.repositories.UserRepository;
+import com.yunjun.store2.repositories.spec.ProductSpec;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -115,5 +118,23 @@ public class ProductService {
     public void fetchProductsByCriteria() {
         var products = productRepository.fetchProductsWithCriteria("iPhone", BigDecimal.valueOf(1L), BigDecimal.valueOf(2000L));
         products.forEach(System.out::println);
+    }
+
+    public void fetchProductsBySpecifications(String name, BigDecimal minPrice, BigDecimal maxPrice) {
+        Specification<Product> spec = Specification.where(null);
+        if (name != null) {
+            spec = spec.and(ProductSpec.containsName(name));
+        }
+
+        if (minPrice != null) {
+            spec = spec.and(ProductSpec.greaterThanOrEqualTo(minPrice));
+        }
+
+        if (maxPrice != null) {
+            spec = spec.and(ProductSpec.lessThanOrEqualTo(maxPrice));
+        }
+
+        productRepository.findAll(spec).forEach(System.out::println);
+
     }
  }

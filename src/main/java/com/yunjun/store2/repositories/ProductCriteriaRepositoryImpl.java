@@ -25,6 +25,9 @@ public class ProductCriteriaRepositoryImpl implements ProductCriteriaRepository{
     /**
      * Using CriteriaQuery to create dynamic queries by Java code
      *
+     * Disadvantages:
+     * Code is verbose and not reusable.
+     *
      * @param name
      * @param minPrice
      * @param maxPrice
