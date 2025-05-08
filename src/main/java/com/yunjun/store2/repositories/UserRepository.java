@@ -1,8 +1,10 @@
 package com.yunjun.store2.repositories;
 
+import com.yunjun.store2.dtos.UserSummaryDto;
 import com.yunjun.store2.entities.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -34,4 +36,7 @@ public interface UserRepository extends CrudRepository<User, Long>{
     @EntityGraph(attributePaths = {"addresses"})
     @Query("select u from User u")
     List<User> findAllWithAddresses();
+
+    @Procedure("findUsersWithLoyaltyPointGreaterThan")
+    List<UserSummaryDto> findUsersSummaryWithLoyaltyPointsGreaterThan(Integer loyaltyPoint);
 }

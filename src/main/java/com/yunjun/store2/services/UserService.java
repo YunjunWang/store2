@@ -126,4 +126,10 @@ public class UserService {
             u.getAddresses().forEach(System.out::println);
         });
     }
+
+    @Transactional
+    public void fetchUsersSummaryWithLoyaltyPointsGreaterThan() {
+        var users = userRepository.findUsersSummaryWithLoyaltyPointsGreaterThan(2);
+        users.forEach(System.out::println);
+    }
 }
