@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +41,7 @@ public interface UserRepository extends CrudRepository<User, Long>{
     @Procedure("findUsersWithLoyaltyPointGreaterThan")
     List<UserSummaryDto> findUsersSummaryWithLoyaltyPointsGreaterThan(Integer loyaltyPoint);
 
-    @Query("select u.id as id, u.email as email from User u left join Profile p on p.id = u.id where p.loyaltyPoints > ?1 order by u.email")
+    @Query("select u.id as id, u.email as email from User u left join Profile p on p.id = u.id where p.loyaltyPoints > :loyaltyPoints order by u.email")
 //    @EntityGraph(attributePaths = {"profile"})
-    List<UserSummaryDto> findLoyalProfiles(int loyaltyPoints);
+    List<UserSummaryDto> findLoyalUsers(@Param("loyaltyPoints") int loyaltyPoints);
 }

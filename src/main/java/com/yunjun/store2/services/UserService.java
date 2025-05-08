@@ -131,7 +131,7 @@ public class UserService {
     public void fetchUsersSummaryWithLoyaltyPointsGreaterThan() {
 //        var users = userRepository.findUsersSummaryWithLoyaltyPointsGreaterThan(2);
 //        users.forEach(System.out::println);
-        var users = userRepository.findLoyalProfiles(2);
+        var users = userRepository.findLoyalUsers(2);
         users.forEach(u -> {
             System.out.println(u.getId() + ": " + u.getEmail());
         });

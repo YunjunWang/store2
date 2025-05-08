@@ -16,7 +16,7 @@ public class ProfileService {
 //        var profiles = profileRepository.findProfilesGreaterThan(2L);
 //        var profiles = profileRepository.findByLoyaltyPointsGreaterThanOrderByUserEmail(2);
 //        var profiles = profileRepository.findLoyalProfiles1(2);
-        var profiles = profileRepository.findLoyalProfiles2(2);
+        var profiles = profileRepository.findLoyalProfileSummaries(2);
         /*System.out.print(p.getId());
             System.out.print(p.getEmail());
             System.out.println(p.getLoyaltyPoints());*/
