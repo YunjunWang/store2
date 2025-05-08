@@ -30,10 +30,11 @@ public class Store2Application {
 
 //        productService.fetchProductsWithPrices();
 
-        var profileService = context.getBean(com.yunjun.store2.services.ProfileService.class);
-        profileService.showProfilesGreaterThan();
-
-        userService.fetchUsersSummaryWithLoyaltyPointsGreaterThan();
+//        var profileService = context.getBean(ProfileService.class);
+//        profileService.showProfilesGreaterThan();
+//
+//        userService.fetchUsersSummaryWithLoyaltyPointsGreaterThan();
+        productService.fetchProductsWithPrices();
     }
 
 }

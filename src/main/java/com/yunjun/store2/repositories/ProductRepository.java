@@ -4,6 +4,7 @@ import com.yunjun.store2.dtos.ProductSummaryDto;
 import com.yunjun.store2.dtos.ProductSummaryProjection;
 import com.yunjun.store2.entities.Category;
 import com.yunjun.store2.entities.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
@@ -13,7 +14,7 @@ import org.springframework.data.repository.query.Param;
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface ProductRepository extends CrudRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long> {
 
   /**
    * Find products whose prices are in a given range and sort by name

@@ -7,6 +7,8 @@ import com.yunjun.store2.repositories.ProductRepository;
 import com.yunjun.store2.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -87,6 +89,26 @@ public class ProductService {
     @Transactional
     public void fetchProductsWithPrices() {
         var products = productRepository.findProductsByPrices(BigDecimal.valueOf(1000L), BigDecimal.valueOf(1001L));
+        products.forEach(System.out::println);
+    }
+
+    /**
+     * Limitations of Dynamic Queries by Example:
+     * 1. No support for nested properties
+     * 2. No support for matching collections/maps
+     * 3. Database-specific support for matching strings
+     * 4. Exact matching is other types (e.g., numbers/dates)
+     */
+    public void fetchProductsWithDynamicQuery() {
+        Product product = new Product();
+        product.setName("iPhone");
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withIgnorePaths("id", "category")
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        Example<Product> example = Example.of(product, matcher);
+
+        var products = productRepository.findAll(example);
         products.forEach(System.out::println);
     }
  }
