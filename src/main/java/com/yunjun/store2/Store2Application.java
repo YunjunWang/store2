@@ -34,7 +34,8 @@ public class Store2Application {
 //        profileService.showProfilesGreaterThan();
 //
 //        userService.fetchUsersSummaryWithLoyaltyPointsGreaterThan();
-        productService.fetchProductsWithPrices();
+//        productService.fetchProductsWithPrices();
+        productService.fetchProductsByCriteria();
     }
 
 }

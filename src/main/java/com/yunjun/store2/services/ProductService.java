@@ -93,7 +93,7 @@ public class ProductService {
     }
 
     /**
-     * Limitations of Dynamic Queries by Example:
+     * Limitations of Dynamic Queries with Example by Java code:
      * 1. No support for nested properties
      * 2. No support for matching collections/maps
      * 3. Database-specific support for matching strings
@@ -109,6 +109,11 @@ public class ProductService {
         Example<Product> example = Example.of(product, matcher);
 
         var products = productRepository.findAll(example);
+        products.forEach(System.out::println);
+    }
+
+    public void fetchProductsByCriteria() {
+        var products = productRepository.fetchProductsWithCriteria("iPhone", BigDecimal.valueOf(1L), BigDecimal.valueOf(2000L));
         products.forEach(System.out::println);
     }
  }
