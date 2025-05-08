@@ -13,11 +13,18 @@ public class ProfileService {
 
     @Transactional
     public void showProfilesGreaterThan() {
-        var profiles = profileRepository.findProfilesGreaterThan(2L);
+//        var profiles = profileRepository.findProfilesGreaterThan(2L);
+//        var profiles = profileRepository.findByLoyaltyPointsGreaterThanOrderByUserEmail(2);
+//        var profiles = profileRepository.findLoyalProfiles1(2);
+        var profiles = profileRepository.findLoyalProfiles2(2);
         /*System.out.print(p.getId());
             System.out.print(p.getEmail());
             System.out.println(p.getLoyaltyPoints());*/
-        profiles.forEach(System.out::println);
+//        profiles.forEach(System.out::println);
+        profiles.forEach(p -> {
+            System.out.print(p.getId() + ": ");
+            System.out.println(p.getEmail());
+        });
 
     }
 }

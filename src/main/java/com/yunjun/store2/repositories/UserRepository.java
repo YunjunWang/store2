@@ -39,4 +39,8 @@ public interface UserRepository extends CrudRepository<User, Long>{
 
     @Procedure("findUsersWithLoyaltyPointGreaterThan")
     List<UserSummaryDto> findUsersSummaryWithLoyaltyPointsGreaterThan(Integer loyaltyPoint);
+
+    @Query("select u.id as id, u.email as email from User u left join Profile p on p.id = u.id where p.loyaltyPoints > ?1 order by u.email")
+//    @EntityGraph(attributePaths = {"profile"})
+    List<UserSummaryDto> findLoyalProfiles(int loyaltyPoints);
 }
