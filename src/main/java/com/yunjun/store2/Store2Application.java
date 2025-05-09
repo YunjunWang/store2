@@ -38,8 +38,10 @@ public class Store2Application {
 //        userService.fetchUsersSummaryWithLoyaltyPointsGreaterThan();
 //        productService.fetchProductsWithPrices();
 //        productService.fetchProductsByCriteria();
-        productService.fetchProductsBySpecifications("iPhone", BigDecimal.valueOf(1000), null);
+//        productService.fetchProductsBySpecifications("iPhone", BigDecimal.valueOf(1000), null);
+//        productService.fetchProductsWithSorting();
 
+        productService.fetchProductsWithSortingAndPageable();
     }
 
 }
