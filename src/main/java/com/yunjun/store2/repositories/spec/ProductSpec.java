@@ -20,4 +20,8 @@ public class ProductSpec {
     public static Specification<Product> lessThanOrEqualTo(BigDecimal maxPrice) {
         return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("price"), maxPrice);
     }
+
+    public static Specification<Product> belongsToCategory(Long categoryId) {
+        return (root, query, cb) -> cb.equal(root.get("category").get("id"), categoryId);
+    }
 }

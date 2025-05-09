@@ -1,5 +1,6 @@
 package com.yunjun.store2.repositories;
 
+import com.yunjun.store2.entities.Category;
 import com.yunjun.store2.entities.Product;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -59,5 +60,22 @@ public class ProductCriteriaRepositoryImpl implements ProductCriteriaRepository{
         cq.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
 
         return entityManager.createQuery(cq).getResultList();
+    }
+
+    /**
+     * @param category
+     * @return
+     */
+    @Override
+    public List<Product> fetchProductsWithCriteriaByCategory(Category category) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Product> cq = cb.createQuery(Product.class);
+        Root<Product> root = cq.from(Product.class);
+
+        if (category != null) {
+            cq.select(root).where(cb.equal(root.get("category"), category));
+            return entityManager.createQuery(cq).getResultList();
+        }
+        return List.of(); // what to do when category == null? throw exceptions?
     }
 }

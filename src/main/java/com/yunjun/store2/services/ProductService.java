@@ -160,4 +160,16 @@ public class ProductService {
         System.out.println(" total pages: " + page.getTotalPages());
         products.forEach(System.out::println);
     }
+
+    public void fetchProductsByCategoryUsingCriteria() {
+        Category category = new Category((byte) 1);
+        List<Product> products = productRepository.fetchProductsWithCriteriaByCategory(category);
+        products.forEach(System.out::println);
+    }
+
+    public void fetchProductsByCategoryUsingSpecifications() {
+        Specification<Product> spec = Specification.where(null);
+        spec = spec.and(ProductSpec.belongsToCategory(1L));
+        productRepository.findAll(spec).forEach(System.out::println);
+    }
  }

@@ -41,7 +41,9 @@ public class Store2Application {
 //        productService.fetchProductsBySpecifications("iPhone", BigDecimal.valueOf(1000), null);
 //        productService.fetchProductsWithSorting();
 
-        productService.fetchProductsWithSortingAndPageable();
+//        productService.fetchProductsWithSortingAndPageable();
+//        productService.fetchProductsByCategoryUsingCriteria();
+        productService.fetchProductsByCategoryUsingSpecifications();
     }
 
 }
