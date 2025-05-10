@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 public class Store2Application {
 
     public static void main(String[] args) {
+/*
 
         var context = SpringApplication.run(Store2Application.class, args);
         var userService = context.getBean(UserService.class);
@@ -44,6 +45,9 @@ public class Store2Application {
 //        productService.fetchProductsWithSortingAndPageable();
 //        productService.fetchProductsByCategoryUsingCriteria();
         productService.fetchProductsByCategoryUsingSpecifications();
+*/
+
+        SpringApplication.run(Store2Application.class, args);
     }
 
 }
