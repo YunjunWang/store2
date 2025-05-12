@@ -1,11 +1,7 @@
 package com.yunjun.store2;
 
-import com.yunjun.store2.services.ProductService;
-import com.yunjun.store2.services.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.math.BigDecimal;
 
 @SpringBootApplication
 public class Store2Application {

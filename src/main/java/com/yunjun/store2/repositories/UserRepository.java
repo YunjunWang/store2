@@ -3,6 +3,7 @@ package com.yunjun.store2.repositories;
 import com.yunjun.store2.dtos.UserSummaryDto;
 import com.yunjun.store2.entities.User;
 import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.CrudRepository;
@@ -11,7 +12,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends CrudRepository<User, Long>{
+/**
+ * Use JpaRepository instead of CrudRepository to be able to return a List of User objects
+ */
+public interface UserRepository extends JpaRepository<User, Long>{
 
     /**
      * @EntityGraph annotation can be used to fetch multiple entities at once

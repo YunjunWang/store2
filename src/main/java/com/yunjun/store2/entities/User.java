@@ -51,8 +51,9 @@ public class User {
         address.setUser(null);
     }
 
-    // We set the users table is the owner of the Many-To-Many relationship here by using @JoinTable,
-    // both User and Tag can own this Many-To-Many relationship, we have to choose one of them
+    // We set the "users" table is the owner of the Many-To-Many relationship here by using @JoinTable;
+    // Both of the User and Tag can own this Many-To-Many relationship, we have to choose one of them.
+    // Not used in the second part of the course.
     @ManyToMany
     @JoinTable(
             name = "user_tags",
@@ -74,7 +75,7 @@ public class User {
     }
 
     /*
-      can't apply Lazy loading fetching strategy on the non-owner entity
+      Can't apply Lazy loading fetching strategy on the non-owner entity
       of the relationship
 
       Since User is only for user accounts,
@@ -84,7 +85,7 @@ public class User {
      */
 //    @OneToOne(mappedBy = "user"/*, fetch = FetchType.LAZY*/, cascade = {CascadeType.REMOVE})
 //    private Profile profile;
-
+//
 //    public void addProfile(Profile profile) {
 //        this.profile = profile;
 //        profile.setUser(this);
