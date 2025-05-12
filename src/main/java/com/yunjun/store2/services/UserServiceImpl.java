@@ -12,6 +12,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -149,8 +150,9 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public List<UserDto> getAllUsers() {
-        return userRepository.findAll()
+    public List<UserDto> getAllUsers(String sortBy) {
+        return userRepository
+                .findAll(Sort.by(sortBy))
                 .stream()
                 .map(userMapper::toDto)
                 .toList();

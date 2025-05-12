@@ -6,7 +6,7 @@ import com.yunjun.store2.entities.User;
 import java.util.List;
 
 public interface UserService {
-    List<UserDto> getAllUsers();
+    List<UserDto> getAllUsers(String sortBy);
 
     UserDto getUserById(Long id);
 }
