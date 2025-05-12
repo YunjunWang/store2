@@ -16,8 +16,9 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductDto>> getAllProducts(
-            @RequestParam(name = "categoryId",
-                    required = false) Byte categoryId) {
+//            @RequestHeader(name = "x-auth-token", required = false) String token,
+            @RequestParam(name = "categoryId", required = false) Byte categoryId) {
+//        System.out.println(token);
         return ResponseEntity.ok(productService.getAllProducts(categoryId));
     }
 
