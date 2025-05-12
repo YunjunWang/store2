@@ -1,7 +1,6 @@
 package com.yunjun.store2.controllers;
 
 import com.yunjun.store2.dtos.UserDto;
-import com.yunjun.store2.entities.User;
 import com.yunjun.store2.services.UserService;
 
 import lombok.AllArgsConstructor;
@@ -32,10 +31,10 @@ public class UserController {
      * @return
      */
     @GetMapping
-    public List<UserDto> getUsers(@RequestParam(name="sort", required = false, defaultValue = "") String sortBy) {
+    public ResponseEntity<List<UserDto>> getUsers(@RequestParam(name="sort", required = false, defaultValue = "") String sortBy) {
         if (!Set.of("name", "email").contains(sortBy))
             sortBy = "name";
-        return userService.getAllUsers(sortBy);
+        return ResponseEntity.ok(userService.getAllUsers(sortBy));
     }
 
     /**
