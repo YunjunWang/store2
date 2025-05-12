@@ -1,5 +1,6 @@
 package com.yunjun.store2.mappers;
 
+import com.yunjun.store2.dtos.ChangePasswordRequest;
 import com.yunjun.store2.dtos.RegisterUserRequest;
 import com.yunjun.store2.dtos.UpdateUserRequest;
 import com.yunjun.store2.dtos.UserDto;

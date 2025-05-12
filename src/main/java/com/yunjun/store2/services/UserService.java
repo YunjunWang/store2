@@ -1,5 +1,6 @@
 package com.yunjun.store2.services;
 
+import com.yunjun.store2.dtos.ChangePasswordRequest;
 import com.yunjun.store2.dtos.RegisterUserRequest;
 import com.yunjun.store2.dtos.UpdateUserRequest;
 import com.yunjun.store2.dtos.UserDto;
@@ -16,4 +17,6 @@ public interface UserService {
     UserDto updateUser(Long id, UpdateUserRequest userDto);
 
     boolean deleteUser(Long id);
+
+    UserDto changePassword(ChangePasswordRequest request, Long id) throws IllegalAccessException, IllegalArgumentException;
 }

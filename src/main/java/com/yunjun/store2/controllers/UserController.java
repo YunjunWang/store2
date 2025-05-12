@@ -1,5 +1,6 @@
 package com.yunjun.store2.controllers;
 
+import com.yunjun.store2.dtos.ChangePasswordRequest;
 import com.yunjun.store2.dtos.RegisterUserRequest;
 import com.yunjun.store2.dtos.UpdateUserRequest;
 import com.yunjun.store2.dtos.UserDto;
@@ -7,6 +8,7 @@ import com.yunjun.store2.mappers.UserMapper;
 import com.yunjun.store2.services.UserService;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -97,5 +99,26 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.noContent().build() ;
+    }
+
+    /**
+     * use Put for updating the whole entity,
+     * use Patch for updating only some of the entity's properties.
+     * use Post for creating a new entity or any user actions e.g., change the password, submit an approval, etc.
+     * @param id
+     * @param request
+     * @return
+     */
+    @PostMapping("/{id}/change-password")
+    public ResponseEntity<Void> changePassword(@PathVariable("id") Long id, @RequestBody ChangePasswordRequest request) {
+        try {
+            var userDto = userService.changePassword(request, id);
+            if (userDto == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.noContent().build();
+        } catch (IllegalAccessException | IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 }

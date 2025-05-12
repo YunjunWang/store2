@@ -1,5 +1,6 @@
 package com.yunjun.store2.services;
 
+import com.yunjun.store2.dtos.ChangePasswordRequest;
 import com.yunjun.store2.dtos.RegisterUserRequest;
 import com.yunjun.store2.dtos.UpdateUserRequest;
 import com.yunjun.store2.dtos.UserDto;
@@ -215,5 +216,30 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.delete(user);
         return true;
+    }
+
+    /**
+     * @param oldPassword
+     * @param newPassword
+     * @param id
+     * @return
+     */
+    @Override
+    public UserDto changePassword(ChangePasswordRequest request, Long id) throws IllegalAccessException, IllegalArgumentException {
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return null;
+        }
+        if (!user.getPassword().equals(request.getOldPassword()) || !user.getEmail().equals(request.getEmail())) {
+            throw new IllegalAccessException("Invalid password or username not found");
+        }
+
+        if (!request.getNewPassword().equals(request.getConfirmedPassword())) {
+            throw new IllegalArgumentException("New password and old password must be the same");
+        }
+
+        user.setPassword(request.getNewPassword());
+        userRepository.save(user);
+        return userMapper.toDto(user);
     }
 }
