@@ -202,4 +202,18 @@ public class UserServiceImpl implements UserService {
        var saved = userRepository.save(userMapper.toEntity(user, request));
        return userMapper.toDto(saved);
     }
+
+    /**
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean deleteUser(Long id) {
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return false;
+        }
+        userRepository.delete(user);
+        return true;
+    }
 }

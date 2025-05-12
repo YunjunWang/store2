@@ -3,12 +3,14 @@ package com.yunjun.store2.dtos;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+
 @Getter
 @AllArgsConstructor
 public class ProductDto {
     private Long id;
     private String name;
     private String description;
-    private Double price;
+    private BigDecimal price;
     private Byte categoryId;
 }

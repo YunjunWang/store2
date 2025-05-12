@@ -21,6 +21,6 @@ public interface UserMapper {
     User toEntity(RegisterUserRequest request);
     User toEntity(@MappingTarget User user, UpdateUserRequest request);
 
-    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
+    // @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     UserDto toDto(User user);
 }

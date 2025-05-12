@@ -90,4 +90,12 @@ public class UserController {
         return ResponseEntity.ok(userDto);
 
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteUser(@PathVariable("id") Long id) {
+        if (!userService.deleteUser(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build() ;
+    }
 }

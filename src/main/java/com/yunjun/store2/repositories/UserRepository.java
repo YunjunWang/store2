@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -48,4 +47,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
     @Query("select u.id as id, u.email as email from User u left join Profile p on p.id = u.id where p.loyaltyPoints > :loyaltyPoints order by u.email")
 //    @EntityGraph(attributePaths = {"profile"})
     List<UserSummaryDto> findLoyalUsers(@Param("loyaltyPoints") int loyaltyPoints);
+
+    void deleteById(Long id);
 }

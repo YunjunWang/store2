@@ -19,17 +19,17 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class UserDto {
-    @JsonProperty("user_id")
+//    @JsonProperty("user_id")
     private Long id;
     private String name;
     private String email;
 
     /*@JsonIgnore
-    private String password;*/
+    private String password;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String phoneNumber;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt;*/
 }
