@@ -16,7 +16,7 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring"/*, unmappedTargetPolicy = ReportingPolicy.WARN*/)
 public interface UserMapper {
 
-    User toEntity(UserDto userDto);
+    User toEntity(RegisterUserRequest request);
 
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     UserDto toDto(User user);

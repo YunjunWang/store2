@@ -4,6 +4,7 @@ import com.yunjun.store2.dtos.UserDto;
 import com.yunjun.store2.entities.Address;
 import com.yunjun.store2.entities.Profile;
 import com.yunjun.store2.entities.User;
+import com.yunjun.store2.mappers.RegisterUserRequest;
 import com.yunjun.store2.mappers.UserMapper;
 import com.yunjun.store2.repositories.AddressRepository;
 import com.yunjun.store2.repositories.ProfileRepository;
@@ -166,5 +167,22 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserById(Long id) {
         var user = userRepository.findById(id).orElse(null);
         return userMapper.toDto(user);
+    }
+
+    /**
+     * @param request
+     * @return
+     */
+    @Override
+    public UserDto createUser(RegisterUserRequest request) {
+        User user = userMapper.toEntity(request);
+        try {
+            user = userRepository.save(user);
+            return userMapper.toDto(user);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
     }
 }

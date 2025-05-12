@@ -24,8 +24,8 @@ public class UserDto {
     private String name;
     private String email;
 
-    @JsonIgnore
-    private String password;
+    /*@JsonIgnore
+    private String password;*/
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String phoneNumber;

@@ -1,12 +1,16 @@
 package com.yunjun.store2.controllers;
 
 import com.yunjun.store2.dtos.UserDto;
+import com.yunjun.store2.mappers.RegisterUserRequest;
+import com.yunjun.store2.mappers.UserMapper;
 import com.yunjun.store2.services.UserService;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +25,7 @@ import java.util.Set;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    private final UserMapper userMapper;
 
     /**
      * Use @GetMapping to define the URL path for a GET request.
@@ -60,5 +65,19 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(user);
+    }
+
+    @PostMapping
+    public ResponseEntity<UserDto> createUser(
+            @RequestBody RegisterUserRequest request,
+            UriComponentsBuilder uriBuilder) {
+        var userDto = userService.createUser(request);
+        if (userDto == null) {
+            return ResponseEntity.unprocessableEntity().build();
+        }
+
+        var uri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
+        return ResponseEntity.created(uri).body(userDto);
+
     }
 }
