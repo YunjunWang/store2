@@ -3,6 +3,7 @@ package com.yunjun.store2.mappers;
 import com.yunjun.store2.dtos.UserDto;
 import com.yunjun.store2.entities.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 /**
@@ -12,9 +13,11 @@ import org.mapstruct.ReportingPolicy;
  * ModelMapper: uses Reflection, it's slower and harder to debug
  * MapStruct: generates mapping code at compile time, it's superfast and save, free of runtime overhead.
  */
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
+@Mapper(componentModel = "spring"/*, unmappedTargetPolicy = ReportingPolicy.WARN*/)
 public interface UserMapper {
 
     User toEntity(UserDto userDto);
+
+    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     UserDto toDto(User user);
 }
