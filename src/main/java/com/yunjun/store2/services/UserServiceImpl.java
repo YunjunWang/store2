@@ -194,8 +194,11 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public UserDto updateUser(Long id, UpdateUserRequest request) throws NoSuchElementException {
-       var user = userRepository.findById(id).orElseThrow();
+    public UserDto updateUser(Long id, UpdateUserRequest request) {
+       var user = userRepository.findById(id).orElse(null);
+       if (user == null) {
+           return null;
+       }
        var saved = userRepository.save(userMapper.toEntity(user, request));
        return userMapper.toDto(saved);
     }
