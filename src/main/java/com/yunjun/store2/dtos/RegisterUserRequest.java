@@ -1,4 +1,4 @@
-package com.yunjun.store2.mappers;
+package com.yunjun.store2.dtos;
 
 import lombok.Data;
 

@@ -1,10 +1,12 @@
 package com.yunjun.store2.mappers;
 
+import com.yunjun.store2.dtos.RegisterUserRequest;
+import com.yunjun.store2.dtos.UpdateUserRequest;
 import com.yunjun.store2.dtos.UserDto;
 import com.yunjun.store2.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.MappingTarget;
 
 /**
  * Manual Mapping code can be repetitive and error-prone.
@@ -17,6 +19,7 @@ import org.mapstruct.ReportingPolicy;
 public interface UserMapper {
 
     User toEntity(RegisterUserRequest request);
+    User toEntity(@MappingTarget User user, UpdateUserRequest request);
 
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     UserDto toDto(User user);

@@ -1,7 +1,8 @@
 package com.yunjun.store2.controllers;
 
+import com.yunjun.store2.dtos.RegisterUserRequest;
+import com.yunjun.store2.dtos.UpdateUserRequest;
 import com.yunjun.store2.dtos.UserDto;
-import com.yunjun.store2.mappers.RegisterUserRequest;
 import com.yunjun.store2.mappers.UserMapper;
 import com.yunjun.store2.services.UserService;
 
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
@@ -78,6 +78,16 @@ public class UserController {
 
         var uri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
         return ResponseEntity.created(uri).body(userDto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDto> updateUser(
+            @PathVariable("id") Long id,
+            @RequestBody UpdateUserRequest request) {
+        var userDto = userService.updateUser(id, request);
+        if (userDto == null)
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(userDto);
 
     }
 }
