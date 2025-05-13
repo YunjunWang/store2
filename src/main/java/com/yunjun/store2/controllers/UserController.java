@@ -71,14 +71,10 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(
+    public ResponseEntity<UserDto> registerUser(
             @Valid @RequestBody RegisterUserRequest request,
-            UriComponentsBuilder uriBuilder) {
-        var userDto = userService.createUser(request);
-        if (userDto == null) {
-            return ResponseEntity.unprocessableEntity().build();
-        }
-
+            UriComponentsBuilder uriBuilder) throws IllegalArgumentException{
+        var userDto = userService.registerUser(request);
         var uri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
         return ResponseEntity.created(uri).body(userDto);
     }

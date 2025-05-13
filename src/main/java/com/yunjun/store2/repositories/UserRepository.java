@@ -49,4 +49,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
     List<UserSummaryDto> findLoyalUsers(@Param("loyaltyPoints") int loyaltyPoints);
 
     void deleteById(Long id);
+
+    boolean existsUserByEmail(String email);
 }

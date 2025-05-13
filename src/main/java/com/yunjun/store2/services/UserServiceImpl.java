@@ -16,9 +16,12 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Service
@@ -177,16 +180,12 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public UserDto createUser(RegisterUserRequest request) {
-        User user = userMapper.toEntity(request);
-        try {
-            user = userRepository.save(user);
-            return userMapper.toDto(user);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
+    public UserDto registerUser(RegisterUserRequest request) throws IllegalArgumentException{
+        if (userRepository.existsUserByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
         }
-
+        User user = userRepository.save(userMapper.toEntity(request));
+        return userMapper.toDto(user);
     }
 
     /**
@@ -219,8 +218,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @param oldPassword
-     * @param newPassword
+     * @param request
      * @param id
      * @return
      */

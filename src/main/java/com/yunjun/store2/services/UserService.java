@@ -12,7 +12,7 @@ public interface UserService {
 
     UserDto getUserById(Long id);
 
-    UserDto createUser(RegisterUserRequest request);
+    UserDto registerUser(RegisterUserRequest request) throws IllegalArgumentException;
 
     UserDto updateUser(Long id, UpdateUserRequest userDto);
 
