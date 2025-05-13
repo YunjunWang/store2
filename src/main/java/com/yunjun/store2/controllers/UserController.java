@@ -7,6 +7,7 @@ import com.yunjun.store2.dtos.UserDto;
 import com.yunjun.store2.mappers.UserMapper;
 import com.yunjun.store2.services.UserService;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,7 +72,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDto> createUser(
-            @RequestBody RegisterUserRequest request,
+            @Valid @RequestBody RegisterUserRequest request,
             UriComponentsBuilder uriBuilder) {
         var userDto = userService.createUser(request);
         if (userDto == null) {
@@ -85,7 +86,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(
             @PathVariable("id") Long id,
-            @RequestBody UpdateUserRequest request) {
+            @Valid @RequestBody UpdateUserRequest request) {
         var userDto = userService.updateUser(id, request);
         if (userDto == null)
             return ResponseEntity.notFound().build();
@@ -110,7 +111,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/{id}/change-password")
-    public ResponseEntity<Void> changePassword(@PathVariable("id") Long id, @RequestBody ChangePasswordRequest request) {
+    public ResponseEntity<Void> changePassword(@PathVariable("id") Long id, @Valid @RequestBody ChangePasswordRequest request) {
         try {
             var userDto = userService.changePassword(request, id);
             if (userDto == null) {
