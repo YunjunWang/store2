@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
+import java.util.NoSuchElementException;
 
 @AllArgsConstructor
 @Service
@@ -53,7 +53,7 @@ public class ProductServiceImpl implements ProductService{
         productRepository.save(product);
 
         var user = userRepository.findById(6L).orElseThrow();
-        user.addWishlist(product);
+//        user.addWishlist(product);
         userRepository.save(user);
 
         productRepository.delete(productRepository.findAll().iterator().next());
@@ -202,5 +202,41 @@ public class ProductServiceImpl implements ProductService{
     public ProductDto getProductById(Long id) {
         var product = productRepository.findById(id).orElse(null);
         return productMapper.toDto(product);
+    }
+
+    /**
+     * @param request
+     * @return
+     */
+    @Override
+    public Product createProduct(ProductDto request) {
+        var product = productMapper.toEntity(request);
+        var category = categoryRepository.findById(request.getCategoryId()).orElseThrow(NoSuchElementException::new);
+        product.setCategory(category);
+        return productRepository.save(product);
+    }
+
+    /**
+     * @param id
+     * @param request
+     * @return
+     */
+    @Override
+    public void updateProduct(Long id, ProductDto request) throws NoSuchElementException, IllegalArgumentException{
+       var product = productRepository.findById(id).orElseThrow(NoSuchElementException::new);
+       var category = categoryRepository.findById(request.getCategoryId()).orElseThrow(NoSuchElementException::new);
+       productMapper.toEntity(request, product);
+       product.setCategory(category);
+       productRepository.save(product);
+    }
+
+    /**
+     * @param id
+     * @return
+     */
+    @Override
+    public void deleteProductById(Long id) {
+        var product = productRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        productRepository.delete(product);
     }
 }

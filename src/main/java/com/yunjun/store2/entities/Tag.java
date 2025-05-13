@@ -1,3 +1,4 @@
+/*
 package com.yunjun.store2.entities;
 
 import jakarta.persistence.*;
@@ -48,3 +49,4 @@ public class Tag {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }
+*/

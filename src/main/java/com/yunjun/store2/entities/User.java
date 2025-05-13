@@ -54,7 +54,7 @@ public class User {
     // We set the "users" table is the owner of the Many-To-Many relationship here by using @JoinTable;
     // Both of the User and Tag can own this Many-To-Many relationship, we have to choose one of them.
     // Not used in the second part of the course.
-    @ManyToMany
+    /*@ManyToMany
     @JoinTable(
             name = "user_tags",
             joinColumns = @JoinColumn(name="user_id"),
@@ -72,7 +72,7 @@ public class User {
     public void removeTag(Tag tag) {
         this.tags.remove(tag);
         tag.getUsers().remove(this);
-    }
+    }*/
 
     /*
       Can't apply Lazy loading fetching strategy on the non-owner entity
@@ -96,7 +96,7 @@ public class User {
 //        profile.setUser(null);
 //    }
 
-    @ManyToMany
+    /*@ManyToMany
     @JoinTable(
             name = "wishlist",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -110,7 +110,7 @@ public class User {
 
     public void removeWishlist(Product product) {
         this.wishlist.remove(product);
-    }
+    }*/
 
     @Override
     public final boolean equals(Object o) {
