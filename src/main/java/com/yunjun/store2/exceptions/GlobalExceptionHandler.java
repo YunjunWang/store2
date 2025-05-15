@@ -20,11 +20,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CartNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleCartNotFound(CartNotFoundException ex){
-        return ResponseEntity.badRequest().body(Map.of("Error", "Cart not found with id: " + ex.getCartId()));
+        return ResponseEntity.badRequest().body(Map.of("Error", "Cart not found!"));
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleCartNotFound(ProductNotFoundException ex){
-        return ResponseEntity.badRequest().body(Map.of("Error", "Product not found with id: " + ex.getProductId()));
+        return ResponseEntity.badRequest().body(Map.of("Error", "Product not found!"));
     }
 }
