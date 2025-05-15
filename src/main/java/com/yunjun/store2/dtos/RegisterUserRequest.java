@@ -3,7 +3,6 @@ package com.yunjun.store2.dtos;
 import com.yunjun.store2.validation.Lowercase;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 

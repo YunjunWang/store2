@@ -1,9 +1,13 @@
 package com.yunjun.store2.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.math.BigDecimal;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Getter
 @Setter
 @Entity
@@ -14,9 +18,13 @@ public class CartItem {
     @Column(name = "id")
     private Long id;
 
+    /*
+     * In the Flyway schema, the cart_id and product_id column is not nullable,
+     * and they combine a unique constraint, so there are no duplicated cart items.
+     */
     @ManyToOne
-    @JoinColumn(name = "card_id")
-    private Cart card;
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -25,4 +33,7 @@ public class CartItem {
     @Column(name = "quantity")
     private Integer quantity;
 
+    public BigDecimal getTotalPrice() {
+        return product.getPrice().multiply(new BigDecimal(quantity));
+    }
 }

@@ -1,4 +1,4 @@
-package com.yunjun.store2.services;
+package com.yunjun.store2.services.impls;
 
 import com.yunjun.store2.dtos.ProductDto;
 import com.yunjun.store2.entities.Category;
@@ -8,6 +8,7 @@ import com.yunjun.store2.repositories.CategoryRepository;
 import com.yunjun.store2.repositories.ProductRepository;
 import com.yunjun.store2.repositories.UserRepository;
 import com.yunjun.store2.repositories.spec.ProductSpec;
+import com.yunjun.store2.services.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Example;
@@ -23,7 +24,7 @@ import java.util.NoSuchElementException;
 
 @AllArgsConstructor
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;

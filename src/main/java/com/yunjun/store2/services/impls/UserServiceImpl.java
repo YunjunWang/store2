@@ -1,4 +1,4 @@
-package com.yunjun.store2.services;
+package com.yunjun.store2.services.impls;
 
 import com.yunjun.store2.dtos.ChangePasswordRequest;
 import com.yunjun.store2.dtos.RegisterUserRequest;
@@ -11,18 +11,15 @@ import com.yunjun.store2.mappers.UserMapper;
 import com.yunjun.store2.repositories.AddressRepository;
 import com.yunjun.store2.repositories.ProfileRepository;
 import com.yunjun.store2.repositories.UserRepository;
+import com.yunjun.store2.services.UserService;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
