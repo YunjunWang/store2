@@ -1,6 +1,5 @@
 package com.yunjun.store2.exceptions;
 
-import com.fasterxml.jackson.core.JsonParser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -8,7 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,13 +18,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex){
-        return ResponseEntity.badRequest().body(ex.getMessage());
+    @ExceptionHandler(CartNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCartNotFound(CartNotFoundException ex){
+        return ResponseEntity.badRequest().body(Map.of("Error", "Cart not found with id: " + ex.getCartId()));
     }
 
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> handleNotFound(NoSuchElementException ex){
-        return ResponseEntity.badRequest().body(ex.getMessage());
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCartNotFound(ProductNotFoundException ex){
+        return ResponseEntity.badRequest().body(Map.of("Error", "Product not found with id: " + ex.getProductId()));
     }
 }

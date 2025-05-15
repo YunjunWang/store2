@@ -1,10 +1,11 @@
 package com.yunjun.store2.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yunjun.store2.dtos.AddItemToCartRequest;
 import com.yunjun.store2.dtos.CartDto;
 import com.yunjun.store2.dtos.CartItemDto;
 import com.yunjun.store2.dtos.UpdateCartItemRequest;
+import com.yunjun.store2.exceptions.CartNotFoundException;
+import com.yunjun.store2.exceptions.ProductNotFoundException;
 import com.yunjun.store2.services.CartService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -29,56 +30,56 @@ public class CartController {
         return ResponseEntity.ok(cartService.getAllCarts());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{cartId}")
     public ResponseEntity<CartDto> getCart(
-            @NotNull @PathVariable UUID id) throws NoSuchElementException {
-        return ResponseEntity.ok(cartService.getCart(id));
+            @NotNull @PathVariable UUID cartId) throws NoSuchElementException {
+        return ResponseEntity.ok(cartService.getCart(cartId));
     }
 
     @PostMapping
     public ResponseEntity<CartDto> addCart(UriComponentsBuilder uriBuilder) {
         var cartDto = cartService.addCart(new CartDto());
-        var uri = uriBuilder.path("/carts/{id}").buildAndExpand(cartDto.getId()).toUri();
+        var uri = uriBuilder.path("/carts/{cartId}").buildAndExpand(cartDto.getId()).toUri();
         return ResponseEntity.created(uri).body(cartDto);
     }
 
-    @PostMapping("/{id}/items")
+    @PostMapping("/{cartId}/items")
     public ResponseEntity<CartItemDto> addCartItem(
             @Valid @RequestBody AddItemToCartRequest request,
-            @NotNull @PathVariable(name = "id") UUID id) {
-        var cartItemDto = cartService.addCartItem(request, id);
+            @NotNull @PathVariable(name = "cartId") UUID cartId) {
+        var cartItemDto = cartService.addCartItem(request.getProductId(), cartId);
         return new ResponseEntity<>(cartItemDto, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}/items/{productId}")
+    @PutMapping("/{cartId}/items/{productId}")
     public ResponseEntity<CartItemDto> updateCartItem(
-            @PathVariable(name = "id") UUID id,
+            @PathVariable(name = "cartId") UUID cartId,
             @PathVariable(name = "productId") Long productId,
             @Valid @RequestBody UpdateCartItemRequest request
-    ) throws JsonProcessingException {
-        var cartItemDto = cartService.updateCartItem(request, id, productId);
+    ) throws ProductNotFoundException, CartNotFoundException {
+        var cartItemDto = cartService.updateCartItem(request.getQuantity(), cartId, productId);
         return new ResponseEntity<>(cartItemDto, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}/items/{productId}")
+    @DeleteMapping("/{cartId}/items/{productId}")
     public ResponseEntity<Void> deleteCartItem(
-            @NotNull @PathVariable("id") UUID id,
-            @NotNull @PathVariable("productId") Long productId) throws NoSuchElementException {
-        cartService.removeCartItem(id, productId);
+            @NotNull @PathVariable("cartId") UUID cartId,
+            @NotNull @PathVariable("productId") Long productId) throws CartNotFoundException {
+        cartService.removeCartItem(cartId, productId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}/items")
+    @DeleteMapping("/{cartId}/items")
     public ResponseEntity<Void> clearCart(
-            @PathVariable("id") UUID id) throws NoSuchElementException {
-        cartService.clearCart(id);
+            @PathVariable("cartId") UUID cartId) throws CartNotFoundException {
+        cartService.clearCart(cartId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{cartId}")
     public ResponseEntity<Void> deleteCart(
-            @NotNull @PathVariable UUID id) throws NoSuchElementException {
-        cartService.deleteCart(id);
+            @NotNull @PathVariable UUID cartId) {
+        cartService.deleteCart(cartId);
         return ResponseEntity.noContent().build();
     }
 }

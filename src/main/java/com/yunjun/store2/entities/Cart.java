@@ -1,5 +1,6 @@
 package com.yunjun.store2.entities;
 
+import com.yunjun.store2.exceptions.ProductNotFoundException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +8,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,18 +43,24 @@ public class Cart {
     @Column(name = "date_created", insertable = false, updatable = false)
     private LocalDate dateCreated;
 
+    /*
+     * orphanRemoval = true means when the current entity's child item becomes an orphan,
+     * meaning the current entity is removed, it's children should be removed as well
+     *
+     * CascadeType.MERGE means to update the current data
+     * CascadeType.PERSIST means to create new data
+     */
     @OneToMany(mappedBy = "cart", orphanRemoval = true, cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Set<CartItem> items = new HashSet<>();
 
-    public CartItem getItem(Long productId) {
+    public Optional<CartItem> getItem(Long productId) {
         return items.stream()
                 .filter(i -> i.getProduct().getId().equals(productId))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     public CartItem addItem(Product product) {
-        var cartItem = getItem(product.getId());
+        var cartItem = getItem(product.getId()).orElse(null);
         if (cartItem == null) {
             cartItem = CartItem.builder()
                     .product(product)
@@ -66,19 +74,18 @@ public class Cart {
         return cartItem;
     }
 
-    public CartItem updateItem(Long productId, Integer quantity) {
-        var cartItem = getItem(productId);
-        if (cartItem != null) {
-            cartItem.setQuantity(quantity);
-        }
+    public CartItem updateItem(Long productId, Integer quantity) throws ProductNotFoundException {
+        var cartItem = getItem(productId).orElseThrow(() -> new ProductNotFoundException(productId));
+        cartItem.setQuantity(quantity);
         return cartItem;
     }
 
-    public CartItem removeItem(Long productId) {
-        var cartItem = getItem(productId);
-        if (cartItem != null)
+    public void removeItem(Long productId) {
+        var cartItem = getItem(productId).orElse(null);
+        if (cartItem != null) {
             items.remove(cartItem);
-        return cartItem;
+            cartItem.setCart(null); // need to set this association in the cartItem too!
+        }
     }
 
     public void clear() {

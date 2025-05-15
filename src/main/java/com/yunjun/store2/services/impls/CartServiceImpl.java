@@ -1,12 +1,10 @@
 package com.yunjun.store2.services.impls;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yunjun.store2.dtos.AddItemToCartRequest;
 import com.yunjun.store2.dtos.CartDto;
 import com.yunjun.store2.dtos.CartItemDto;
-import com.yunjun.store2.dtos.UpdateCartItemRequest;
 import com.yunjun.store2.entities.CartItem;
+import com.yunjun.store2.exceptions.CartNotFoundException;
+import com.yunjun.store2.exceptions.ProductNotFoundException;
 import com.yunjun.store2.mappers.CartItemMapper;
 import com.yunjun.store2.mappers.CartMapper;
 import com.yunjun.store2.repositories.CartRepository;
@@ -16,8 +14,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 /**
@@ -60,66 +56,50 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
-     * @param id
-     * @return
-     */
-    @Override
-    public CartDto getCart(UUID id) throws NoSuchElementException {
-        var cart = cartRepository
-                .findCartByIdWithCartItems(id)
-                .orElseThrow(() -> new NoSuchElementException("Cart not found with id: " + id));
-        return cartMapper.toDto(cart);
-    }
-
-    /**
-     * @param id
-     */
-    @Override
-    public void deleteCart(UUID id) throws NoSuchElementException {
-        if (!cartRepository.existsById(id)) {
-            var error = Map.of("Error", "Cart not found with id: " + id);
-            throw new NoSuchElementException(error.toString());
-        }
-
-        cartRepository.deleteById(id);
-    }
-
-    /**
-     * @param request
      * @param cartId
      * @return
      */
     @Override
-    public CartItemDto addCartItem(AddItemToCartRequest request, UUID cartId) {
-        var productId = request.getProductId();
+    public CartDto getCart(UUID cartId) throws CartNotFoundException {
+        var cart = cartRepository
+                .findCartByIdWithCartItems(cartId)
+                .orElseThrow(() -> new CartNotFoundException(cartId));
+        return cartMapper.toDto(cart);
+    }
+
+    /**
+     * @param productId
+     * @param cartId
+     * @return
+     */
+    @Override
+    public CartItemDto addCartItem(Long productId, UUID cartId) throws ProductNotFoundException, CartNotFoundException{
         // the two queries are combined into one db query with findCartByIdWithCartItems in the repository
-        var product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("Product is not in the cart!")); // should set it as bad_request, not the no such item exception here
-        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(() -> new IllegalArgumentException("Cart not found with id: " + cartId));
+        var product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId)); // should set it as bad_request, not the no such item exception here
+        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(() -> new CartNotFoundException(cartId));
         CartItem cartItem = cart.addItem(product);
         cartRepository.save(cart);
         return cartItemMapper.toDto(cartItem);
     }
 
     /**
-     * @param request
-     * @param id
+     * @param quantity
+     * @param cartId
+     * @param productId
      * @return
      */
     @Override
-    public CartItemDto updateCartItem(UpdateCartItemRequest request, UUID id, Long productId) {
-        var cart = cartRepository.findCartByIdWithCartItems(id).orElse(null);
-        if (cart == null) {
-            var error = Map.of("Error", "Cart not found with id: " + id);
-            throw new NoSuchElementException(error.toString());
-        }
-        var cartItem = cart.updateItem(productId, request.getQuantity());
-        if (cartItem == null) {
-            var error = Map.of("Error", "Product not found in the cart with cart id: " + id);
-            throw new NoSuchElementException(error.toString());
-        }
-        cartRepository.save(cart);
+    public CartItemDto updateCartItem(Integer quantity, UUID cartId, Long productId) throws CartNotFoundException, ProductNotFoundException{
+        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(() -> new CartNotFoundException(cartId));
 
-        return cartItemMapper.toDto(cartItem);
+        try {
+            var cartItem = cart.updateItem(productId, quantity);
+            cartRepository.save(cart);
+
+            return cartItemMapper.toDto(cartItem);
+        } catch (ProductNotFoundException e) {
+            throw e;
+        }
     }
 
     /**
@@ -128,30 +108,29 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public void removeCartItem(UUID cartId, Long productId) {
-        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElse(null);
-        if (cart == null) {
-            var error = Map.of("Error", "Cart not found with id: " + cartId);
-            throw new NoSuchElementException(error.toString());
-        }
-        var cartItem = cart.removeItem(productId);
-        if (cartItem == null) {
-            var error = Map.of("Error", "Product not found in the cart with cart id: " + cartId);
-            throw new NoSuchElementException(error.toString());
-        }
+        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(() -> new CartNotFoundException(cartId));
+        // when not find the item by productId, we don't care, let it complete silently
+        // to avoid too aggressive programming.
+        cart.removeItem(productId);
         cartRepository.save(cart);
     }
 
     /**
-     * @param id
+     * @param cartId
      */
     @Override
-    public void clearCart(UUID id) {
-        var cart = cartRepository.findCartByIdWithCartItems(id).orElse(null);
-        if (cart == null) {
-            var error = Map.of("Error", "Cart not found with id: " + id);
-            throw new NoSuchElementException(error.toString());
-        }
+    public void clearCart(UUID cartId) {
+        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(() -> new CartNotFoundException(cartId));
         cart.clear();
         cartRepository.save(cart);
+    }
+
+    /**
+     * @param cartId
+     */
+    @Override
+    public void deleteCart(UUID cartId) throws CartNotFoundException {
+        // silent deletion
+        cartRepository.deleteById(cartId);
     }
 }
