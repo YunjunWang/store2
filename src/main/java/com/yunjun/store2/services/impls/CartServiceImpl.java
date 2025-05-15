@@ -120,9 +120,7 @@ public class CartServiceImpl implements CartService {
         var cart = cartRepository.findCartByIdWithCartItems(id).orElse(null);
         if (cart == null) {
             var error = Map.of("Error", "Cart not found with id: " + id);
-            var objectMapper = new ObjectMapper().writerWithDefaultPrettyPrinter();
-            String json = objectMapper.writeValueAsString(error);
-            throw new NoSuchElementException(json);
+            throw new NoSuchElementException(error.toString());
         }
         var cartItem = cart
                 .getItems()
@@ -132,9 +130,7 @@ public class CartServiceImpl implements CartService {
                 .orElse(null);
         if (cartItem == null) {
             var error = Map.of("Error", "Product not found in the cart with cart id: " + id);
-            var objectMapper = new ObjectMapper().writerWithDefaultPrettyPrinter();
-            String json = objectMapper.writeValueAsString(error);
-            throw new NoSuchElementException(json);
+            throw new NoSuchElementException(error.toString());
         }
 
         cartItem.setQuantity(request.getQuantity());
@@ -144,11 +140,27 @@ public class CartServiceImpl implements CartService {
     }
 
     /**
-     * @param productId
      * @param cartId
+     * @param productId
      */
     @Override
-    public void removeCartItem(Long productId, Long cartId) {
-
+    public void removeCartItem(UUID cartId, Long productId) {
+        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElse(null);
+        if (cart == null) {
+            var error = Map.of("Error", "Cart not found with id: " + cartId);
+            throw new NoSuchElementException(error.toString());
+        }
+        var cartItem = cart
+                .getItems()
+                .stream()
+                .filter(i -> i.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElse(null);
+        if (cartItem == null) {
+            var error = Map.of("Error", "Product not found in the cart with cart id: " + cartId);
+            throw new NoSuchElementException(error.toString());
+        }
+        cart.removeItem(cartItem);
+        cartRepository.save(cart);
     }
 }

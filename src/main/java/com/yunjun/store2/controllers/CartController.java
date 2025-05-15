@@ -60,6 +60,14 @@ public class CartController {
         return new ResponseEntity<>(cartItemDto, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}/items/{productId}")
+    public ResponseEntity<Void> deleteCartItem(
+            @NotNull @PathVariable("id") UUID id,
+            @NotNull @PathVariable("productId") Long productId) {
+        cartService.removeCartItem(id, productId);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCart(
             @NotNull @PathVariable UUID id) throws NoSuchElementException {
