@@ -20,4 +20,5 @@ public interface CartService {
     CartItemDto updateCartItem(UpdateCartItemRequest request, UUID id, Long productId) throws JsonProcessingException;
     void removeCartItem(UUID productId, Long cartId);
 
+    void clearCart(UUID id);
 }

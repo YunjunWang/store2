@@ -77,7 +77,8 @@ public class CartServiceImpl implements CartService {
     @Override
     public void deleteCart(UUID id) throws NoSuchElementException {
         if (!cartRepository.existsById(id)) {
-            throw new NoSuchElementException("Cart not found");
+            var error = Map.of("Error", "Cart not found with id: " + id);
+            throw new NoSuchElementException(error.toString());
         }
 
         cartRepository.deleteById(id);
@@ -94,17 +95,7 @@ public class CartServiceImpl implements CartService {
         // the two queries are combined into one db query with findCartByIdWithCartItems in the repository
         var product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("Product is not in the cart!")); // should set it as bad_request, not the no such item exception here
         var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(() -> new IllegalArgumentException("Cart not found with id: " + cartId));
-        var cartItem = cart.getItems().stream().filter(i -> i.getProduct().getId().equals(productId)).findFirst().orElse(null);
-        if (cartItem == null) {
-            cartItem = CartItem.builder()
-                    .product(product)
-                    .cart(cart)
-                    .quantity(1)
-                    .build();
-        } else {
-            cartItem.setQuantity(cartItem.getQuantity() + 1);
-        }
-        cart.addItem(cartItem);
+        CartItem cartItem = cart.addItem(product);
         cartRepository.save(cart);
         return cartItemMapper.toDto(cartItem);
     }
@@ -115,25 +106,17 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    public CartItemDto updateCartItem(UpdateCartItemRequest request, UUID id, Long productId) throws JsonProcessingException {
-//        var productId = request.getProductId();
+    public CartItemDto updateCartItem(UpdateCartItemRequest request, UUID id, Long productId) {
         var cart = cartRepository.findCartByIdWithCartItems(id).orElse(null);
         if (cart == null) {
             var error = Map.of("Error", "Cart not found with id: " + id);
             throw new NoSuchElementException(error.toString());
         }
-        var cartItem = cart
-                .getItems()
-                .stream()
-                .filter(i -> i.getProduct().getId().equals(productId))
-                .findFirst()
-                .orElse(null);
+        var cartItem = cart.updateItem(productId, request.getQuantity());
         if (cartItem == null) {
             var error = Map.of("Error", "Product not found in the cart with cart id: " + id);
             throw new NoSuchElementException(error.toString());
         }
-
-        cartItem.setQuantity(request.getQuantity());
         cartRepository.save(cart);
 
         return cartItemMapper.toDto(cartItem);
@@ -150,17 +133,25 @@ public class CartServiceImpl implements CartService {
             var error = Map.of("Error", "Cart not found with id: " + cartId);
             throw new NoSuchElementException(error.toString());
         }
-        var cartItem = cart
-                .getItems()
-                .stream()
-                .filter(i -> i.getProduct().getId().equals(productId))
-                .findFirst()
-                .orElse(null);
+        var cartItem = cart.removeItem(productId);
         if (cartItem == null) {
             var error = Map.of("Error", "Product not found in the cart with cart id: " + cartId);
             throw new NoSuchElementException(error.toString());
         }
-        cart.removeItem(cartItem);
+        cartRepository.save(cart);
+    }
+
+    /**
+     * @param id
+     */
+    @Override
+    public void clearCart(UUID id) {
+        var cart = cartRepository.findCartByIdWithCartItems(id).orElse(null);
+        if (cart == null) {
+            var error = Map.of("Error", "Cart not found with id: " + id);
+            throw new NoSuchElementException(error.toString());
+        }
+        cart.clear();
         cartRepository.save(cart);
     }
 }

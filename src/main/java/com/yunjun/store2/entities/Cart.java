@@ -10,6 +10,15 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * OOP - Information Expert Principle
+ * Should assign the responsibility to the class has the necessary data to do the job.
+ *
+ * Domain Model
+ * Anemia Model: Classes that only contain data and getter / setters
+ * Rich Model: Classes that contain data and behaviors
+ * Should use Rich Model in our classes where it applies.
+ */
 @Getter
 @Setter
 @Entity
@@ -35,18 +44,50 @@ public class Cart {
     @OneToMany(mappedBy = "cart", orphanRemoval = true, cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Set<CartItem> items = new HashSet<>();
 
-
-    public void addItem(CartItem cartItem) {
-        items.add(cartItem);
+    public CartItem getItem(Long productId) {
+        return items.stream()
+                .filter(i -> i.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElse(null);
     }
 
-    public void removeItem(CartItem cartItem) {
-        items.remove(cartItem);
+    public CartItem addItem(Product product) {
+        var cartItem = getItem(product.getId());
+        if (cartItem == null) {
+            cartItem = CartItem.builder()
+                    .product(product)
+                    .cart(this)
+                    .quantity(1)
+                    .build();
+        } else {
+            cartItem.setQuantity(cartItem.getQuantity() + 1);
+        }
+        items.add(cartItem);
+        return cartItem;
+    }
+
+    public CartItem updateItem(Long productId, Integer quantity) {
+        var cartItem = getItem(productId);
+        if (cartItem != null) {
+            cartItem.setQuantity(quantity);
+        }
+        return cartItem;
+    }
+
+    public CartItem removeItem(Long productId) {
+        var cartItem = getItem(productId);
+        if (cartItem != null)
+            items.remove(cartItem);
+        return cartItem;
+    }
+
+    public void clear() {
+        items.clear();
     }
 
     public BigDecimal getTotalPrice() {
         return items.stream()
-                .map(CartItem::getTotalPrice)
+                .map(CartItem::getTotalPrice)// example of OOP Information Expert Principle
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

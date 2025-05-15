@@ -63,8 +63,15 @@ public class CartController {
     @DeleteMapping("/{id}/items/{productId}")
     public ResponseEntity<Void> deleteCartItem(
             @NotNull @PathVariable("id") UUID id,
-            @NotNull @PathVariable("productId") Long productId) {
+            @NotNull @PathVariable("productId") Long productId) throws NoSuchElementException {
         cartService.removeCartItem(id, productId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}/items")
+    public ResponseEntity<Void> clearCart(
+            @PathVariable("id") UUID id) throws NoSuchElementException {
+        cartService.clearCart(id);
         return ResponseEntity.noContent().build();
     }
 
