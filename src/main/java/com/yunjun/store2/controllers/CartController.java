@@ -7,6 +7,9 @@ import com.yunjun.store2.dtos.UpdateCartItemRequest;
 import com.yunjun.store2.exceptions.CartNotFoundException;
 import com.yunjun.store2.exceptions.ProductNotFoundException;
 import com.yunjun.store2.services.CartService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -21,22 +24,26 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/carts")
+@RequestMapping("api/carts")
+@Tag(name = "carts", description = "Operations about carts")
 public class CartController {
     private final CartService cartService;
 
     @GetMapping
+    @Operation(summary = "Get all carts")
     public ResponseEntity<List<CartDto>> getAllCarts() {
         return ResponseEntity.ok(cartService.getAllCarts());
     }
 
     @GetMapping("/{cartId}")
+    @Operation(summary = "Get a cart")
     public ResponseEntity<CartDto> getCart(
             @NotNull @PathVariable UUID cartId) throws NoSuchElementException {
         return ResponseEntity.ok(cartService.getCart(cartId));
     }
 
     @PostMapping
+    @Operation(summary = "Create a new cart")
     public ResponseEntity<CartDto> addCart(UriComponentsBuilder uriBuilder) {
         var cartDto = cartService.addCart(new CartDto());
         var uri = uriBuilder.path("/carts/{cartId}").buildAndExpand(cartDto.getId()).toUri();
@@ -44,14 +51,16 @@ public class CartController {
     }
 
     @PostMapping("/{cartId}/items")
+    @Operation(summary = "Add a product to the cart")
     public ResponseEntity<CartItemDto> addCartItem(
             @Valid @RequestBody AddItemToCartRequest request,
-            @NotNull @PathVariable(name = "cartId") UUID cartId) {
+            @NotNull @PathVariable(name = "cartId") @Parameter(description = "The ID of the cart.") UUID cartId) {
         var cartItemDto = cartService.addCartItem(request.getProductId(), cartId);
         return new ResponseEntity<>(cartItemDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/{cartId}/items/{productId}")
+    @Operation(summary = "Update the quantity of a product in the cart")
     public ResponseEntity<CartItemDto> updateCartItem(
             @PathVariable(name = "cartId") UUID cartId,
             @PathVariable(name = "productId") Long productId,
@@ -62,6 +71,7 @@ public class CartController {
     }
 
     @DeleteMapping("/{cartId}/items/{productId}")
+    @Operation(summary = "Remove a product from the cart")
     public ResponseEntity<Void> deleteCartItem(
             @NotNull @PathVariable("cartId") UUID cartId,
             @NotNull @PathVariable("productId") Long productId) throws CartNotFoundException {
@@ -70,6 +80,7 @@ public class CartController {
     }
 
     @DeleteMapping("/{cartId}/items")
+    @Operation(summary = "Remove all products from the cart")
     public ResponseEntity<Void> clearCart(
             @PathVariable("cartId") UUID cartId) throws CartNotFoundException {
         cartService.clearCart(cartId);
@@ -77,6 +88,7 @@ public class CartController {
     }
 
     @DeleteMapping("/{cartId}")
+    @Operation(summary = "Delete a cart")
     public ResponseEntity<Void> deleteCart(
             @NotNull @PathVariable UUID cartId) {
         cartService.deleteCart(cartId);

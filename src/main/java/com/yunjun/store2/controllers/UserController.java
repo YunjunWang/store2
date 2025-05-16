@@ -4,9 +4,10 @@ import com.yunjun.store2.dtos.ChangePasswordRequest;
 import com.yunjun.store2.dtos.RegisterUserRequest;
 import com.yunjun.store2.dtos.UpdateUserRequest;
 import com.yunjun.store2.dtos.UserDto;
-import com.yunjun.store2.mappers.UserMapper;
 import com.yunjun.store2.services.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,10 +26,10 @@ import java.util.Set;
  */
 @AllArgsConstructor
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
+@Tag(name = "users", description = "Operations about users")
 public class UserController {
     private final UserService userService;
-    private final UserMapper userMapper;
 
     /**
      * Use @GetMapping to define the URL path for a GET request.
@@ -39,6 +40,7 @@ public class UserController {
      * @return
      */
     @GetMapping
+    @Operation(summary = "Get all users")
     public ResponseEntity<List<UserDto>> getUsers(@RequestParam(name="sort", required = false, defaultValue = "") String sortBy) {
         if (!Set.of("name", "email").contains(sortBy))
             sortBy = "name";
@@ -62,7 +64,8 @@ public class UserController {
      * @return
      */
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long id) {
+    @Operation(summary = "Get a user")
+    public ResponseEntity<UserDto> getUser(@PathVariable("id") Long id) {
         var user = userService.getUserById(id);
         if (user == null) {
             return ResponseEntity.notFound().build();
@@ -71,6 +74,7 @@ public class UserController {
     }
 
     @PostMapping
+    @Operation(summary = "Register a new user")
     public ResponseEntity<UserDto> registerUser(
             @Valid @RequestBody RegisterUserRequest request,
             UriComponentsBuilder uriBuilder) throws IllegalArgumentException{
@@ -80,6 +84,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update a user")
     public ResponseEntity<UserDto> updateUser(
             @PathVariable("id") Long id,
             @Valid @RequestBody UpdateUserRequest request) {
@@ -91,7 +96,9 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteUser(@PathVariable("id") Long id) {
+    @Operation(summary = "Delete a user")
+    public ResponseEntity<Boolean> deleteUser(
+            @PathVariable("id") Long id) {
         if (!userService.deleteUser(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -107,7 +114,10 @@ public class UserController {
      * @return
      */
     @PostMapping("/{id}/change-password")
-    public ResponseEntity<Void> changePassword(@PathVariable("id") Long id, @Valid @RequestBody ChangePasswordRequest request) {
+    @Operation(summary = "Change the password of a user")
+    public ResponseEntity<Void> changePassword(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody ChangePasswordRequest request) {
         try {
             var userDto = userService.changePassword(request, id);
             if (userDto == null) {

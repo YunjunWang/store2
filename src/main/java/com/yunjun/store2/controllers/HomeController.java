@@ -1,7 +1,10 @@
 package com.yunjun.store2.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /** Dynamic View Templates
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Thymeleaf
  */
 @Controller
+@RequestMapping("api/")
+@Tag(name = "home", description = "Home page API")
 public class HomeController {
 
     /**
@@ -21,7 +26,8 @@ public class HomeController {
      * using "/"
      * @return
      */
-    @RequestMapping("/home")
+    @GetMapping("home")
+    @Operation(summary = "Get the home page")
     public String home(Model model) {
         model.addAttribute("name", "Yunjun");
         return "home";
@@ -31,7 +37,8 @@ public class HomeController {
      * Using a static view template example
      * @return
      */
-    @RequestMapping("/")
+    @GetMapping
+    @Operation(summary = "Get the index page")
     public String index() {
         return "index.html";
     }
