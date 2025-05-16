@@ -1,0 +1,88 @@
+package com.yunjun.store2.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+
+
+/**
+ * Authentication Methods
+ * Session-based:
+ * server needs to allocate large memory for all users' sessions
+ * as each user needs one sessionId saved
+ * on the server's memory;
+ *                            POST/login
+ *    Client --------------------------------------------> Server
+ *                                                         checks credential,
+ *                                                         creates and stores a session: SID34 = user1
+ *    Client <-------------------------------------------- Server
+ * stores(cookie: SID34)        SID34
+ *
+ *
+ *                             GET/order
+ *    Client --------------------------------------------> Server
+ *     SID34                 Cookie:{SID34}                getSessionId(Cookie:SID34), getsBySessionId(user1)
+ *                                                         ...
+ *
+ *
+ * Token-based:
+ * Servers no longer need to save the user's sessionId in their memory.
+ * Servers will issue a JWT token which is self-contained and saved on the client side.
+ * Token Structure:
+ *  - Header: Type, Algorithm, a seal to show the token hasn't been touched.
+ *  - Payload: sub - userId, iat - issued at
+ *  - Signature: secrete to decode the token,
+ *               generated with the algorithm based on the payload content
+ * It is:
+ * Stateless,
+ * Scalable,
+ * Works well with front-end apps
+ *
+ *
+ *                            POST/login
+ *    Client --------------------------------------------> Server
+ *                                                         checks credential,
+ *                                                         creates a token, stores the token secret
+ *    Client <-------------------------------------------- Server
+ * stores(token)                 token
+ *
+ *
+ *
+ *                            GET/order
+ *     Client -------------------------------------------> Server
+ * Memory(token)             Auth:{token}                  verifies(token),decode(secrete, token)
+ *                                                         extracts user
+ *                                                         checks credential
+ */
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    /**
+     * Step 1. Declare it is a stateless session
+     * Step 2. Disable csrf
+     * Step 3. Only allow access to the following paths: POST: /api/carts, POST: /api/users, /api/carts/{cartId}/**
+     *         so that the other paths are not accessible by anyone unless they are authenticated.
+     *         This means a user can create a cart, view/add/update/delete cart/cartItems or log in to the system without being authenticated.
+     * Step 4. Build the filter chain
+     * @param http
+     * @return
+     * @throws Exception
+     */
+    @Bean
+    public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
+        http.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(c -> c
+                        .requestMatchers(HttpMethod.POST, "/api/carts").permitAll()
+                        .requestMatchers( "/api/carts/{cartId}/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                        .anyRequest().authenticated());
+        return http.build();
+    }
+}
