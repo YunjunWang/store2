@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -20,6 +22,7 @@ public class AuthController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
@@ -37,8 +40,12 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "Login a user")
     @ResponseStatus(HttpStatus.OK)
-    public void loginUser(@Valid @RequestBody LoginUserRequest request) throws IllegalAccessException {
-        request.setPassword(passwordEncoder.encode(request.getPassword()));
-        userService.loginUser(request);
+    public void loginUser(@Valid @RequestBody LoginUserRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
     }
 }

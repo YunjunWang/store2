@@ -2,6 +2,7 @@ package com.yunjun.store2.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,5 +53,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CartNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleCartNotFound(){
         return ResponseEntity.badRequest().body(Map.of("Error", "Cart not found!"));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleBadCredentialsException(){
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 }
