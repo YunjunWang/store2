@@ -1,5 +1,6 @@
 package com.yunjun.store2.exceptions;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,7 +21,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalAccessException.class)
     public ResponseEntity<Map<String, String>> handleIllegalAccess(){
-        return ResponseEntity.badRequest().body(Map.of("Error", "Access denied!"));
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

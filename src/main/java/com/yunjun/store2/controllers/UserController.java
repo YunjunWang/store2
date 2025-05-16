@@ -1,9 +1,6 @@
 package com.yunjun.store2.controllers;
 
-import com.yunjun.store2.dtos.ChangePasswordRequest;
-import com.yunjun.store2.dtos.RegisterUserRequest;
-import com.yunjun.store2.dtos.UpdateUserRequest;
-import com.yunjun.store2.dtos.UserDto;
+import com.yunjun.store2.dtos.*;
 import com.yunjun.store2.services.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -73,7 +70,7 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @PostMapping
+    @PostMapping("/api/auth/register")
     @Operation(summary = "Register a new user")
     public ResponseEntity<UserDto> registerUser(
             @Valid @RequestBody RegisterUserRequest request,
@@ -84,6 +81,14 @@ public class UserController {
         var userDto = userService.registerUser(request);
         var uri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
         return ResponseEntity.created(uri).body(userDto);
+    }
+
+    @PostMapping("/api/auth/login")
+    @Operation(summary = "Login a user")
+    @ResponseStatus(HttpStatus.OK)
+    public void loginUser(@Valid @RequestBody LoginUserRequest request) throws IllegalAccessException {
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
+        userService.loginUser(request);
     }
 
     @PutMapping("/{id}")

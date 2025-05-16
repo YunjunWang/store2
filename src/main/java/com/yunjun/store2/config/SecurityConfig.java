@@ -81,7 +81,7 @@ public class SecurityConfig {
     /**
      * Step 1. Declare it is a stateless session
      * Step 2. Disable csrf
-     * Step 3. Only allow access to the following paths: POST: /api/carts, POST: /api/users, /api/carts/{cartId}/**
+     * Step 3. Only allow access to the following paths: POST: /api/carts, POST: /api/auth/register, POST: /api/auth/login, /api/carts/{cartId}/**
      *         so that the other paths are not accessible by anyone unless they are authenticated.
      *         This means a user can create a cart, view/add/update/delete cart/cartItems or log in to the system without being authenticated.
      * Step 4. Build the filter chain
@@ -96,7 +96,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(c -> c
                         .requestMatchers(HttpMethod.POST, "/api/carts").permitAll()
                         .requestMatchers( "/api/carts/{cartId}/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .anyRequest().authenticated());
         return http.build();
     }

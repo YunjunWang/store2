@@ -1,9 +1,6 @@
 package com.yunjun.store2.services.impls;
 
-import com.yunjun.store2.dtos.ChangePasswordRequest;
-import com.yunjun.store2.dtos.RegisterUserRequest;
-import com.yunjun.store2.dtos.UpdateUserRequest;
-import com.yunjun.store2.dtos.UserDto;
+import com.yunjun.store2.dtos.*;
 import com.yunjun.store2.entities.Address;
 import com.yunjun.store2.entities.Profile;
 import com.yunjun.store2.entities.User;
@@ -222,5 +219,17 @@ public class UserServiceImpl implements UserService {
         user.setPassword(request.getNewPassword());
         userRepository.save(user);
         return userMapper.toDto(user);
+    }
+
+    /**
+     * @param request
+     * @return
+     */
+    @Override
+    public void loginUser(LoginUserRequest request) throws IllegalAccessException {
+        var user = userRepository.findByEmail(request.getEmail()).orElseThrow(IllegalAccessException::new);
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new IllegalAccessException();
+        }
     }
 }
