@@ -63,7 +63,7 @@ public class CartServiceImpl implements CartService {
     public CartDto getCart(UUID cartId) throws CartNotFoundException {
         var cart = cartRepository
                 .findCartByIdWithCartItems(cartId)
-                .orElseThrow(() -> new CartNotFoundException(cartId));
+                .orElseThrow(() -> new CartNotFoundException());
         return cartMapper.toDto(cart);
     }
 
@@ -75,8 +75,8 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartItemDto addCartItem(Long productId, UUID cartId) throws ProductNotFoundException, CartNotFoundException{
         // the two queries are combined into one db query with findCartByIdWithCartItems in the repository
-        var product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId)); // should set it as bad_request, not the no such item exception here
-        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(() -> new CartNotFoundException(cartId));
+        var product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new); // should set it as bad_request, not the no such item exception here
+        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(CartNotFoundException::new);
         CartItem cartItem = cart.addItem(product);
         cartRepository.save(cart);
         return cartItemMapper.toDto(cartItem);
@@ -90,7 +90,7 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public CartItemDto updateCartItem(Integer quantity, UUID cartId, Long productId) throws CartNotFoundException, ProductNotFoundException{
-        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(() -> new CartNotFoundException(cartId));
+        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(CartNotFoundException::new);
 
         try {
             var cartItem = cart.updateItem(productId, quantity);
@@ -108,7 +108,7 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public void removeCartItem(UUID cartId, Long productId) {
-        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(() -> new CartNotFoundException(cartId));
+        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(CartNotFoundException::new);
         // when not find the item by productId, we don't care, let it complete silently
         // to avoid too aggressive programming.
         cart.removeItem(productId);
@@ -120,7 +120,7 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public void clearCart(UUID cartId) {
-        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(() -> new CartNotFoundException(cartId));
+        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(CartNotFoundException::new);
         cart.clear();
         cartRepository.save(cart);
     }

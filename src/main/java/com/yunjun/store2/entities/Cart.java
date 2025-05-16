@@ -75,7 +75,7 @@ public class Cart {
     }
 
     public CartItem updateItem(Long productId, Integer quantity) throws ProductNotFoundException {
-        var cartItem = getItem(productId).orElseThrow(() -> new ProductNotFoundException(productId));
+        var cartItem = getItem(productId).orElseThrow(ProductNotFoundException::new);
         cartItem.setQuantity(quantity);
         return cartItem;
     }
