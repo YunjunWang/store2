@@ -46,9 +46,9 @@ public class ProductController {
     @Operation(summary = "Create a new product")
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto request, UriComponentsBuilder uriBuilder) {
         try {
-            var product = productService.createProduct(request);
-            var uri = uriBuilder.path("/products/{id}").buildAndExpand(product.getId()).toUri();
-            return ResponseEntity.created(uri).body(request);
+            var productDto = productService.createProduct(request);
+            var uri = uriBuilder.path("/products/{id}").buildAndExpand(productDto.getId()).toUri();
+            return ResponseEntity.created(uri).body(productDto);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

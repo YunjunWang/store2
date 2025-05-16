@@ -210,11 +210,12 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
-    public Product createProduct(ProductDto request) {
+    public ProductDto createProduct(ProductDto request) {
         var product = productMapper.toEntity(request);
         var category = categoryRepository.findById(request.getCategoryId()).orElseThrow(NoSuchElementException::new);
         product.setCategory(category);
-        return productRepository.save(product);
+        productRepository.save(product);
+        return productMapper.toDto(product);
     }
 
     /**
