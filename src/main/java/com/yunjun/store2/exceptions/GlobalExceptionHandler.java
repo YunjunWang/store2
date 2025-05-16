@@ -18,6 +18,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
+    @ExceptionHandler(IllegalAccessException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalAccess(){
+        return ResponseEntity.badRequest().body(Map.of("Error", "Access denied!"));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex){
+        return ResponseEntity.badRequest().body(Map.of("Error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handleUserAlreadyExists(){
+        return ResponseEntity.badRequest().body(Map.of("Error", "User already exists!"));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleUserNotFound(){
+        return ResponseEntity.badRequest().body(Map.of("Error", "User not found!"));
+    }
+
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleCategoryNotFound(){
         return ResponseEntity.badRequest().body(Map.of("Error", "Category not found!"));

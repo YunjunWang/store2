@@ -7,6 +7,8 @@ import com.yunjun.store2.dtos.UserDto;
 import com.yunjun.store2.entities.Address;
 import com.yunjun.store2.entities.Profile;
 import com.yunjun.store2.entities.User;
+import com.yunjun.store2.exceptions.UserAlreadyExistsException;
+import com.yunjun.store2.exceptions.UserNotFoundException;
 import com.yunjun.store2.mappers.UserMapper;
 import com.yunjun.store2.repositories.AddressRepository;
 import com.yunjun.store2.repositories.ProfileRepository;
@@ -15,7 +17,6 @@ import com.yunjun.store2.services.UserService;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +29,6 @@ public class UserServiceImpl implements UserService {
     private final EntityManager entityManager;
     private final ProfileRepository profileRepository;
     private final AddressRepository addressRepository;
-
-    @Autowired
     private final UserMapper userMapper;
 
     /**
@@ -168,7 +167,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto getUserById(Long id) {
-        var user = userRepository.findById(id).orElse(null);
+        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         return userMapper.toDto(user);
     }
 
@@ -177,9 +176,9 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public UserDto registerUser(RegisterUserRequest request) throws IllegalArgumentException{
+    public UserDto registerUser(RegisterUserRequest request) throws UserAlreadyExistsException{
         if (userRepository.existsUserByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new UserAlreadyExistsException("Email already exists");
         }
         User user = userRepository.save(userMapper.toEntity(request));
         return userMapper.toDto(user);
@@ -192,26 +191,17 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto updateUser(Long id, UpdateUserRequest request) {
-       var user = userRepository.findById(id).orElse(null);
-       if (user == null) {
-           return null;
-       }
-       var saved = userRepository.save(userMapper.toEntity(user, request));
-       return userMapper.toDto(saved);
+       var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+       user = userRepository.save(userMapper.toEntity(user, request));
+       return userMapper.toDto(user);
     }
 
     /**
      * @param id
-     * @return
      */
     @Override
-    public boolean deleteUser(Long id) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            return false;
-        }
-        userRepository.delete(user);
-        return true;
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 
     /**
@@ -221,14 +211,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto changePassword(ChangePasswordRequest request, Long id) throws IllegalAccessException, IllegalArgumentException {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            return null;
-        }
+        var user = userRepository.findById(id).orElseThrow(() -> new IllegalAccessException("User not found"));
         if (!user.getPassword().equals(request.getOldPassword()) || !user.getEmail().equals(request.getEmail())) {
             throw new IllegalAccessException("Invalid password or username not found");
         }
-
         if (!request.getNewPassword().equals(request.getConfirmedPassword())) {
             throw new IllegalArgumentException("New password and old password must be the same");
         }

@@ -40,11 +40,12 @@ public class UserController {
      * @return
      */
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all users")
-    public ResponseEntity<List<UserDto>> getUsers(@RequestParam(name="sort", required = false, defaultValue = "") String sortBy) {
+    public List<UserDto> getUsers(@RequestParam(name="sort", required = false, defaultValue = "") String sortBy) {
         if (!Set.of("name", "email").contains(sortBy))
             sortBy = "name";
-        return ResponseEntity.ok(userService.getAllUsers(sortBy));
+        return userService.getAllUsers(sortBy);
     }
 
     /**
@@ -64,13 +65,10 @@ public class UserController {
      * @return
      */
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get a user")
-    public ResponseEntity<UserDto> getUser(@PathVariable("id") Long id) {
-        var user = userService.getUserById(id);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(user);
+    public UserDto getUser(@PathVariable("id") Long id) {
+        return userService.getUserById(id);
     }
 
     @PostMapping
@@ -84,25 +82,20 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update a user")
-    public ResponseEntity<UserDto> updateUser(
+    public UserDto updateUser(
             @PathVariable("id") Long id,
             @Valid @RequestBody UpdateUserRequest request) {
-        var userDto = userService.updateUser(id, request);
-        if (userDto == null)
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(userDto);
+        return userService.updateUser(id, request);
 
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a user")
-    public ResponseEntity<Boolean> deleteUser(
-            @PathVariable("id") Long id) {
-        if (!userService.deleteUser(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.noContent().build() ;
+    public void deleteUser(@PathVariable("id") Long id) {
+        userService.deleteUser(id);
     }
 
     /**
@@ -114,18 +107,11 @@ public class UserController {
      * @return
      */
     @PostMapping("/{id}/change-password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Change the password of a user")
-    public ResponseEntity<Void> changePassword(
+    public void changePassword(
             @PathVariable("id") Long id,
-            @Valid @RequestBody ChangePasswordRequest request) {
-        try {
-            var userDto = userService.changePassword(request, id);
-            if (userDto == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.noContent().build();
-        } catch (IllegalAccessException | IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+            @Valid @RequestBody ChangePasswordRequest request) throws IllegalAccessException {
+            userService.changePassword(request, id);
     }
 }

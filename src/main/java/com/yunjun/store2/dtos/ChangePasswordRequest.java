@@ -1,6 +1,5 @@
 package com.yunjun.store2.dtos;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -22,5 +21,7 @@ public class ChangePasswordRequest {
     @Email(message = "Email must be valid")
     private String email;
 
+    @NotBlank(message = "Name is required")
+    @Size(max = 255, message = "Name must be less than 255 characters")
     private String name;
 }

@@ -16,7 +16,7 @@ public interface UserService {
 
     UserDto updateUser(Long id, UpdateUserRequest userDto);
 
-    boolean deleteUser(Long id);
+    void deleteUser(Long id);
 
     UserDto changePassword(ChangePasswordRequest request, Long id) throws IllegalAccessException, IllegalArgumentException;
 }

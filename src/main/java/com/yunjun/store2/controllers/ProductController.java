@@ -5,6 +5,9 @@ import com.yunjun.store2.mappers.ProductMapper;
 import com.yunjun.store2.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +22,6 @@ import java.util.List;
 @Tag(name = "products", description = "Operations about products")
 public class ProductController {
     private final ProductService productService;
-    private final ProductMapper productMapper;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -34,14 +36,14 @@ public class ProductController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get a product")
-    public ProductDto getProduct(@PathVariable("id") Long id) {
+    public ProductDto getProduct(@NotNull @Min(value = 0) @PathVariable("id") Long id) {
         return productService.getProductById(id);
     }
 
     @PostMapping
     @Operation(summary = "Create a new product")
     public ResponseEntity<ProductDto> createProduct(
-            @RequestBody ProductDto request,
+            @Valid @RequestBody ProductDto request,
             UriComponentsBuilder uriBuilder) {
         var productDto = productService.createProduct(request);
         var uri = uriBuilder.path("/products/{id}").buildAndExpand(productDto.getId()).toUri();
@@ -52,15 +54,15 @@ public class ProductController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Update a product")
     public ProductDto updateProduct(
-            @PathVariable("id") Long id,
-            @RequestBody ProductDto request) {
+            @NotNull @Min(value = 0) @PathVariable("id") Long id,
+            @Valid @RequestBody ProductDto request) {
         return productService.updateProduct(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a product")
-    public void deleteProduct(@PathVariable("id") Long id) {
+    public void deleteProduct(@NotNull @Min(value = 0) @PathVariable("id") Long id) {
         productService.deleteProductById(id);
     }
 }
