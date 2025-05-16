@@ -3,6 +3,8 @@ package com.yunjun.store2.services.impls;
 import com.yunjun.store2.dtos.ProductDto;
 import com.yunjun.store2.entities.Category;
 import com.yunjun.store2.entities.Product;
+import com.yunjun.store2.exceptions.CategoryNotFoundException;
+import com.yunjun.store2.exceptions.ProductNotFoundException;
 import com.yunjun.store2.mappers.ProductMapper;
 import com.yunjun.store2.repositories.CategoryRepository;
 import com.yunjun.store2.repositories.ProductRepository;
@@ -201,7 +203,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public ProductDto getProductById(Long id) {
-        var product = productRepository.findById(id).orElse(null);
+        var product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
         return productMapper.toDto(product);
     }
 
@@ -212,7 +214,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto createProduct(ProductDto request) {
         var product = productMapper.toEntity(request);
-        var category = categoryRepository.findById(request.getCategoryId()).orElseThrow(NoSuchElementException::new);
+        var category = categoryRepository.findById(request.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
         product.setCategory(category);
         productRepository.save(product);
         return productMapper.toDto(product);
@@ -224,12 +226,13 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
-    public void updateProduct(Long id, ProductDto request) throws NoSuchElementException, IllegalArgumentException{
-       var product = productRepository.findById(id).orElseThrow(NoSuchElementException::new);
-       var category = categoryRepository.findById(request.getCategoryId()).orElseThrow(NoSuchElementException::new);
+    public ProductDto updateProduct(Long id, ProductDto request) throws NoSuchElementException, IllegalArgumentException{
+       var product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+       var category = categoryRepository.findById(request.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
        productMapper.toEntity(request, product);
        product.setCategory(category);
        productRepository.save(product);
+       return productMapper.toDto(product);
     }
 
     /**
@@ -238,7 +241,6 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public void deleteProductById(Long id) {
-        var product = productRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        productRepository.delete(product);
+        productRepository.deleteById(id);
     }
 }

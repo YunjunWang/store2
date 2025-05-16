@@ -18,13 +18,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
-    @ExceptionHandler(CartNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleCartNotFound(CartNotFoundException ex){
-        return ResponseEntity.badRequest().body(Map.of("Error", "Cart not found!"));
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCategoryNotFound(){
+        return ResponseEntity.badRequest().body(Map.of("Error", "Category not found!"));
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleCartNotFound(ProductNotFoundException ex){
+    public ResponseEntity<Map<String, String>> handleProductNotFound(){
         return ResponseEntity.badRequest().body(Map.of("Error", "Product not found!"));
+    }
+
+    @ExceptionHandler(CartNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCartNotFound(){
+        return ResponseEntity.badRequest().body(Map.of("Error", "Cart not found!"));
     }
 }
