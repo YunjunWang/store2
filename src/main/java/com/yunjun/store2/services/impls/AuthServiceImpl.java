@@ -26,10 +26,7 @@ public class AuthServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws BadCredentialsException {
         var user = userRepository
                 .findByEmail(username)
-                .orElseThrow(() -> {
-                    System.out.println("User not found");
-                    throw new BadCredentialsException("User not found");
-                }); // give BadCredentialsException rather than UserNotFoundException to prevent information leakage.
+                .orElseThrow(() -> new BadCredentialsException("User not found")); // give BadCredentialsException rather than UserNotFoundException to prevent information leakage.
         return new User(
                 user.getEmail(),
                 user.getPassword(),

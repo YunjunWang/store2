@@ -73,6 +73,17 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
 
+    /**
+     * Configure Spring Security to use the AuthenticationProvider -> AuthenticationManager
+     * for login operations.
+     *
+     * DaoAuthenticationProvider is a default implementation of AuthenticationProvider.
+     * There are authentications using LDAP, oAuth, Active Directory, etc.
+     *
+     * @param configuration
+     * @return
+     * @throws Exception
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
