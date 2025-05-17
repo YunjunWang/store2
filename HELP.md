@@ -126,8 +126,9 @@ Spring Boot provides multiple ways to run an application:
 * CMD + SHIFT + o: search a file
 
 ### Linux Command
-* lsof -i :<port_number>
-* kill -9 <process_id>
+* To list all the active processes: ```lsof -i :<port_number>```
+* To kill a process: ```kill -9 <process_id>```
+* To generate 64 bytes(characters) secret: ```openssl rand -base64 64```
 
 ### Reference Documentation
 For further reference, please consider the following sections:
