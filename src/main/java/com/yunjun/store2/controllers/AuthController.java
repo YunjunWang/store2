@@ -1,9 +1,12 @@
 package com.yunjun.store2.controllers;
 
+import com.yunjun.store2.dtos.JwtResponse;
 import com.yunjun.store2.dtos.LoginUserRequest;
 import com.yunjun.store2.dtos.RegisterUserRequest;
 import com.yunjun.store2.dtos.UserDto;
+import com.yunjun.store2.services.JwtTokenService;
 import com.yunjun.store2.services.UserService;
+import com.yunjun.store2.services.impls.JwtTokenServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -23,6 +26,7 @@ public class AuthController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtTokenService jwtTokenService;
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
@@ -40,12 +44,14 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "Login a user")
     @ResponseStatus(HttpStatus.OK)
-    public void loginUser(@Valid @RequestBody LoginUserRequest request) {
+    public JwtResponse loginUser(@Valid @RequestBody LoginUserRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
+
+        return jwtTokenService.generateToken(request.getEmail());
     }
 }
