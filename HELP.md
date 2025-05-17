@@ -91,8 +91,80 @@ By using the Bean selection annotations helps Spring IoC to decide which one to 
 * @PreDestroy
 
 ### Spring Web
+#### Controller
+#### RestController
+##### Validation
+* Add dependencies
+  ```org.springframework.boot: spring-boot-starter-validation```
 
+#### Service
+#### ServiceImpl
+#### DTO <-> Entity
+#### Auto Mapping for DTO <-> Entity
+* Add dependencies:
+```
+        <dependency>
+            <artifactId>mapstruct</artifactId>
+            <groupId>org.mapstruct</groupId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+            <version>3.3.4</version>
+        </dependency>
+
+       ...
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        ...
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>1.6.3</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+```
+* create mappers under mapper directory 
+```
+@Mapper(componentModel = "spring")
+public interface CartItemMapper {
+    @Mapping(target = "totalPrice", expression = "java(cartItem.getTotalPrice())")
+    CartItemDto toDto(CartItem cartItem);
+    CartItem toEntity(CartItemDto cartItemDto);
+}
+```
 ### Spring Security
+#### Add dependencies for Spring Security
+* go to pom.xml
+* Cmd + N
+* Starter
+* org.springframework.boot: spring-boot-starter-security
+#### Add dependencies for JWT in pom.xml
+* io.jsonwebtoken as groupId
+* jjwt-impl
+* jjwt-jackson
+* jjwt-api
+#### Generate JWT token
+* Create a JWT token service
+* Use Jwts builder to build the token with email, iat, expiration and secret
+* Return this token as a customized JwtResponse to the client
+#### Managing secret
+* add dependency: spring.dotenv from https://github.com/paulschwarz/spring-dotenv
+* .env for actual secret but never commit into repo
+* .env.example to share how to set up secret, stays in the repo
+* use openssl to generate 64 bytes secret and save it in the .env file
+```openssl rand -base64 64```
+* use application.yml to get the secret from .env
+* use @Value(${app_config_name}) to get the value inside auth service
+* check token generated on jwt.io
+#### Validate JWT Token
+
 
 ### Spring AOP
 
@@ -126,9 +198,12 @@ Spring Boot provides multiple ways to run an application:
 * CMD + SHIFT + o: search a file
 
 ### Linux Command
-* To list all the active processes: ```lsof -i :<port_number>```
-* To kill a process: ```kill -9 <process_id>```
-* To generate 64 bytes(characters) secret: ```openssl rand -base64 64```
+* To list all the active processes 
+```lsof -i :<port_number>```
+* To kill a process 
+```kill -9 <process_id>```
+* To generate 64 bytes(characters) secret
+```openssl rand -base64 64```
 
 ### Reference Documentation
 For further reference, please consider the following sections:

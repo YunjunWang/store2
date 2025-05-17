@@ -2,7 +2,7 @@ package com.yunjun.store2.services.impls;
 
 import com.yunjun.store2.dtos.JwtResponse;
 import com.yunjun.store2.services.JwtTokenService;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,5 +25,23 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
                 .compact();
         return new JwtResponse(token);
+    }
+
+    /**
+     * @param token
+     * @return
+     */
+    @Override
+    public boolean validate(String token) {
+        try {
+            var claim = Jwts.parser()
+                    .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getPayload();
+            return (claim.getExpiration().after(new Date()));
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SecurityException | IllegalArgumentException e) {
+            return false;
+        }
     }
 }

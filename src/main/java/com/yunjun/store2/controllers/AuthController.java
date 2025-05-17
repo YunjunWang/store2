@@ -8,6 +8,7 @@ import com.yunjun.store2.services.JwtTokenService;
 import com.yunjun.store2.services.UserService;
 import com.yunjun.store2.services.impls.JwtTokenServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -53,5 +54,13 @@ public class AuthController {
         );
 
         return jwtTokenService.generateToken(request.getEmail());
+    }
+
+    @PostMapping("/validate")
+    @Operation(summary = "Validate a token")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean validateToken(@RequestHeader("Authorization") String authHeader) {
+//        var token = authHeader.replace("Bearer ", "");
+        return jwtTokenService.validate(authHeader);
     }
 }

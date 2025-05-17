@@ -4,4 +4,6 @@ import com.yunjun.store2.dtos.JwtResponse;
 
 public interface JwtTokenService {
     JwtResponse generateToken(String email);
+
+    boolean validate(String token);
 }
