@@ -1,5 +1,6 @@
 package com.yunjun.store2.config;
 
+import com.yunjun.store2.filters.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 /**
@@ -72,6 +74,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @AllArgsConstructor
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     /**
      * Configure Spring Security to use the AuthenticationProvider -> AuthenticationManager
@@ -130,8 +133,10 @@ public class SecurityConfig {
                         .requestMatchers( "/api/carts/{cartId}/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/validate").permitAll()
-                        .anyRequest().authenticated());
+//                        .requestMatchers(HttpMethod.POST, "/api/auth/validate").permitAll()
+                        .anyRequest().authenticated())
+                // make sure this is the first filter once gets a request
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

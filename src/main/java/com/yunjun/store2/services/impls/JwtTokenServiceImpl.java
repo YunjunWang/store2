@@ -34,14 +34,26 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     @Override
     public boolean validate(String token) {
         try {
-            var claim = Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
-                    .build()
-                    .parseClaimsJws(token)
-                    .getPayload();
+            var claim = getClaims(token);
             return (claim.getExpiration().after(new Date()));
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SecurityException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getPayload();
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public String getEmailFromToken(String token) {
+        return getClaims(token).getSubject();
     }
 }
