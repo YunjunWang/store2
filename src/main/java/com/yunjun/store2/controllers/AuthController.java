@@ -60,7 +60,7 @@ public class AuthController {
     @Operation(summary = "Validate a token")
     @ResponseStatus(HttpStatus.OK)
     public boolean validateToken(@RequestHeader("Authorization") String authHeader) {
-//        var token = authHeader.replace("Bearer ", "");
-        return jwtTokenService.validate(authHeader);
+        var token = authHeader.replace("Bearer ", "");
+        return jwtTokenService.validate(token);
     }
 }
