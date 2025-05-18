@@ -33,7 +33,6 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenService jwtTokenService;
-    private final UserMapper userMapper;
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
@@ -52,14 +51,15 @@ public class AuthController {
     @Operation(summary = "Login a user")
     @ResponseStatus(HttpStatus.OK)
     public JwtResponse loginUser(@Valid @RequestBody LoginUserRequest request) {
+        var user = userService.getUserByEmail(request.getEmail());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        request.getEmail() ,
                         request.getPassword()
                 )
         );
 
-        return jwtTokenService.generateToken(request.getEmail());
+        return jwtTokenService.generateToken(user.getId());
     }
 
     @GetMapping("/me")
@@ -67,7 +67,9 @@ public class AuthController {
     @Operation(summary = "Get the current user")
     public UserDto me() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var email = (String) authentication.getPrincipal();
-        return userService.getUserByEmail(email);
+        /*var email = (String) authentication.getPrincipal();
+        return userService.getUserByEmail(email);*/
+        var userId = (Long) authentication.getPrincipal();
+        return userService.getUserById(userId);
     }
 }
