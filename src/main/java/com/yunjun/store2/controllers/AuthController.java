@@ -49,14 +49,14 @@ public class AuthController {
     @Operation(summary = "Login a user")
     @ResponseStatus(HttpStatus.OK)
     public JwtResponse loginUser(@Valid @RequestBody LoginUserRequest request) {
-        var userDto = userService.getUserByEmail(request.getEmail()); // how to remove this line and get the userDto from the authenticated result?
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail() ,
                         request.getPassword()
                 )
         );
-
+        // after authenticated, we get the user from the db
+        var userDto = userService.getUserByEmail(request.getEmail());
         return jwtTokenService.generateToken(userDto);
     }
 

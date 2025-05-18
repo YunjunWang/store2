@@ -47,6 +47,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                .setExpiration(new Date((new Date()).getTime() + 1000 * tokenExpiration))
                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
                .claim("name", userDto.getName())
+               .claim("email", userDto.getEmail())
                .compact();
        return new JwtResponse(token);
     }
@@ -100,6 +101,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         var claims = getClaims(token);
         var userId = claims.getSubject();
         var userName = claims.get("name", String.class);
-        return new LoginResponse(Long.parseLong(userId),userName);
+        var email = claims.get("email", String.class);
+        return new LoginResponse(Long.parseLong(userId),userName, email);
     }
 }
