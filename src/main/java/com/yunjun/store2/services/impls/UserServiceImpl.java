@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -231,5 +232,15 @@ public class UserServiceImpl implements UserService {
         if (!user.getPassword().equals(request.getPassword())) {
             throw new IllegalAccessException();
         }
+    }
+
+    /**
+     * @param email
+     * @return
+     */
+    @Override
+    public UserDto getUserByEmail(String email) {
+        var user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+        return userMapper.toDto(user);
     }
 }

@@ -30,6 +30,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // validate token
         var authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         var token = authHeader.replace("Bearer ", "");
         if (!jwtTokenService.validate(token)) {
             filterChain.doFilter(request, response);

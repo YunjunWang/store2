@@ -4,17 +4,22 @@ import com.yunjun.store2.dtos.JwtResponse;
 import com.yunjun.store2.dtos.LoginUserRequest;
 import com.yunjun.store2.dtos.RegisterUserRequest;
 import com.yunjun.store2.dtos.UserDto;
+import com.yunjun.store2.entities.User;
+import com.yunjun.store2.exceptions.UserNotFoundException;
+import com.yunjun.store2.mappers.UserMapper;
 import com.yunjun.store2.services.JwtTokenService;
 import com.yunjun.store2.services.UserService;
 import com.yunjun.store2.services.impls.JwtTokenServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import jakarta.validation.Valid;
+import jakarta.websocket.OnError;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -28,6 +33,7 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenService jwtTokenService;
+    private final UserMapper userMapper;
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
@@ -56,11 +62,12 @@ public class AuthController {
         return jwtTokenService.generateToken(request.getEmail());
     }
 
-    @PostMapping("/validate")
-    @Operation(summary = "Validate a token")
+    @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    public boolean validateToken(@RequestHeader("Authorization") String authHeader) {
-        var token = authHeader.replace("Bearer ", "");
-        return jwtTokenService.validate(token);
+    @Operation(summary = "Get the current user")
+    public UserDto me() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var email = (String) authentication.getPrincipal();
+        return userService.getUserByEmail(email);
     }
 }
