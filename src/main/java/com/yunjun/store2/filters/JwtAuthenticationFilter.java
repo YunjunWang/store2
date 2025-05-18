@@ -27,12 +27,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // validate token
+        // return to login
         var authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
+        // validate token
         var token = authHeader.replace("Bearer ", "");
         if (!jwtTokenService.validate(token)) {
             filterChain.doFilter(request, response);
@@ -46,7 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
          * we don't get the user email from the db here to avoid performance issue as it'll be a db query / request
          */
         var authentication = new UsernamePasswordAuthenticationToken(
-                jwtTokenService.getUserIdFromToken(token),
+                jwtTokenService.getUserFromToken(token),
                 //jwtTokenService.getEmailFromToken(token), // user object, either user, username, email etc.
                 null, // password, here we don't need
                 null // roles and permissions, for authenticated users, no need here

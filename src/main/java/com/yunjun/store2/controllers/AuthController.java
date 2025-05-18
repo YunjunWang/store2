@@ -1,9 +1,6 @@
 package com.yunjun.store2.controllers;
 
-import com.yunjun.store2.dtos.JwtResponse;
-import com.yunjun.store2.dtos.LoginUserRequest;
-import com.yunjun.store2.dtos.RegisterUserRequest;
-import com.yunjun.store2.dtos.UserDto;
+import com.yunjun.store2.dtos.*;
 import com.yunjun.store2.entities.User;
 import com.yunjun.store2.exceptions.UserNotFoundException;
 import com.yunjun.store2.mappers.UserMapper;
@@ -33,6 +30,7 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenService jwtTokenService;
+    private final UserMapper userMapper;
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
@@ -51,7 +49,7 @@ public class AuthController {
     @Operation(summary = "Login a user")
     @ResponseStatus(HttpStatus.OK)
     public JwtResponse loginUser(@Valid @RequestBody LoginUserRequest request) {
-        var user = userService.getUserByEmail(request.getEmail());
+        var userDto = userService.getUserByEmail(request.getEmail()); // how to remove this line and get the userDto from the authenticated result?
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail() ,
@@ -59,17 +57,15 @@ public class AuthController {
                 )
         );
 
-        return jwtTokenService.generateToken(user.getId());
+        return jwtTokenService.generateToken(userDto);
     }
 
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get the current user")
-    public UserDto me() {
+    public LoginResponse me() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        /*var email = (String) authentication.getPrincipal();
-        return userService.getUserByEmail(email);*/
-        var userId = (Long) authentication.getPrincipal();
-        return userService.getUserById(userId);
+        var principle = authentication.getPrincipal();
+        return (LoginResponse) principle;
     }
 }
