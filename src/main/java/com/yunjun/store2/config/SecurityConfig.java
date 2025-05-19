@@ -143,10 +143,10 @@ public class SecurityConfig {
                 // make sure this is the first filter once gets a request
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(c -> {
-                    // make sure all auth entry points get 401 - unauthorized instead of 403 - forbidden response
+                    // make sure all auth entry points get 401 - unauthorized, which means the user is not authenticated or credentials are invalid.
                     c.authenticationEntryPoint(
                             new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-                    // when it is for role-based authenticated but not allowed for the user's role entry points
+                    // when it is for role-based authenticated, but the user has no permission to access the resource.
                     c.accessDeniedHandler(((request, response, accessDeniedException) ->
                             response.setStatus(HttpStatus.FORBIDDEN.value())));
                 });

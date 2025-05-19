@@ -1,0 +1,44 @@
+package com.yunjun.store2.services;
+
+import com.yunjun.store2.dtos.UserDto;
+import com.yunjun.store2.entities.Role;
+import io.jsonwebtoken.*;
+import lombok.AllArgsConstructor;
+
+import javax.crypto.SecretKey;
+import java.util.Date;
+
+
+@AllArgsConstructor
+public class Jwt {
+    private final Claims claims;
+    private final SecretKey key;
+
+    public boolean isExpired() {
+        return (claims.getExpiration().before(new Date()));
+    }
+
+    public UserDto getUser() {
+        return new UserDto(
+                Long.parseLong(claims.getSubject()),
+                claims.get("name").toString(),
+                claims.get("email").toString(),
+                getRole()
+        );
+    }
+
+    public Long getUserId() {
+        return Long.parseLong(claims.getSubject());
+    }
+
+    public Role getRole() {
+        return Role.valueOf(claims.get("role").toString());
+    }
+
+    public String toString() {
+        return Jwts.builder()
+                .claims(claims)
+                .signWith(key)
+                .compact();
+    }
+}
