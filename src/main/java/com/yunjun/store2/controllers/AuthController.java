@@ -45,9 +45,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Login a user")
-//    @ResponseStatus(HttpStatus.OK)
-    public JwtResponse loginUser(
+    @Operation(summary = "Login a user with credentials")
+    @ResponseStatus(HttpStatus.OK)
+    public LoginResponse loginUser(
             @Valid @RequestBody LoginUserRequest request,
             HttpServletResponse response) {
         authenticationManager.authenticate(
@@ -73,9 +73,21 @@ public class AuthController {
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get the current user")
-    public LoginResponse me() {
+    public CurrentUserResponse me() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var principle = authentication.getPrincipal();
-        return (LoginResponse) principle;
+        return (CurrentUserResponse) principle;
+    }
+
+    @PostMapping("/refresh")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Refresh the access token with refresh token")
+    public LoginResponse refreshToken(@CookieValue(value = "refreshToken") String refreshToken) throws IllegalAccessException {
+        if (!jwtTokenService.validate(refreshToken)) {
+            throw new IllegalAccessException("Invalid refresh token! Please login again to get a new refresh token.");
+        }
+        var userId = jwtTokenService.getUserIdFromToken(refreshToken);
+        var userDto = userService.getUserById(userId);
+        return jwtTokenService.generateAccessToken(userDto);
     }
 }

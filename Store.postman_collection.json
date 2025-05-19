@@ -154,13 +154,15 @@
 									"pm.test(\"Successful POST request\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 									"    var responseData = pm.response.json();",
-									"    // console.log(responseData);",
+									"    pm.environment.set(\"access_token\", responseData.accessToken);",
+									"",
+									"",
 									"    var headers = pm.response.headers.all();",
-									"    var refreshCookie = headers[0].value;",
-									"    var refresh_token = refreshCookie.replace(\"refreshCookie=\", \"\");",
-									"    // console.log(headers[0].value);",
-									"    // console.log(\"refresh_token: \" + refresh_token);",
-									"    pm.environment.set(\"jwt_token\", responseData.jwtToken);",
+									"    var firstHeaderItem = headers[0].value;",
+									"    var cookieItems = firstHeaderItem.split(';');",
+									"    var firstItem = cookieItems[0];",
+									"    var refresh_token = firstItem.replace(\"refreshToken=\", \"\").replace(\";\", \"\");",
+									"    // var refresh_token = JSON.parse(refreshTokenStr);",
 									"    pm.environment.set(\"refresh_token\", refresh_token);",
 									"});",
 									"",
@@ -175,8 +177,8 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"console.log(\"user_email: \" + pm.environment.get(\"user_email\"));",
-									"console.log(\"user_password: \" + pm.environment.get(\"user_password\"));"
+									"// console.log(\"user_email: \" + pm.environment.get(\"user_email\"));",
+									"// console.log(\"user_password: \" + pm.environment.get(\"user_password\"));"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -273,6 +275,56 @@
 					"response": []
 				},
 				{
+					"name": "Refresh Access Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST refresh access token request\", function () {",
+									"pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"    var responseData = pm.response.json();",
+									"    pm.environment.set(\"access_token\", responseData.accessToken);",
+									"",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"    pm.cookies[0].value = pm.environment.get(\"refresh_token\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/refresh",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
 					"name": "access current user",
 					"event": [
 						{
@@ -293,8 +345,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"console.log(\"user_email: \" + pm.environment.get(\"user_email\"));",
-									"console.log(\"user_password: \" + pm.environment.get(\"user_password\"));"
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -307,7 +358,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{jwt_token}}",
+									"value": "{{access_token}}",
 									"type": "string"
 								}
 							]

@@ -1,8 +1,8 @@
 package com.yunjun.store2.services.impls;
 
 import com.yunjun.store2.config.JwtConfig;
-import com.yunjun.store2.dtos.JwtResponse;
 import com.yunjun.store2.dtos.LoginResponse;
+import com.yunjun.store2.dtos.CurrentUserResponse;
 import com.yunjun.store2.dtos.UserDto;
 import com.yunjun.store2.services.JwtTokenService;
 import io.jsonwebtoken.*;
@@ -28,15 +28,14 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     private final JwtConfig jwtConfig;
 
-    public JwtResponse generateAccessToken(String email) {
-        final long tokenExpiration = 84600;
+    public LoginResponse generateAccessToken(String email) {
         var token = Jwts.builder()
                 .setSubject(email)
                 .issuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + 1000 * tokenExpiration))
+                .setExpiration(new Date((new Date()).getTime() + 1000 * jwtConfig.getAccessTokenExpiration()))
                 .signWith(getSecretKey())
                 .compact();
-        return new JwtResponse(token);
+        return new LoginResponse(token);
     }
 
     private SecretKey getSecretKey() {
@@ -48,10 +47,9 @@ public class JwtTokenServiceImpl implements JwtTokenService {
      * @return
      */
     @Override
-    public JwtResponse generateAccessToken(UserDto userDto) {
-        final long tokenExpiration = 84600;
-        var token = generateToken(userDto, tokenExpiration);
-        return new JwtResponse(token);
+    public LoginResponse generateAccessToken(UserDto userDto) {
+        var token = generateToken(userDto, jwtConfig.getAccessTokenExpiration());
+        return new LoginResponse(token);
     }
 
     /**
@@ -120,11 +118,11 @@ public class JwtTokenServiceImpl implements JwtTokenService {
      * @return
      */
     @Override
-    public LoginResponse getUserFromToken(String token) {
+    public CurrentUserResponse getUserFromToken(String token) {
         var claims = getClaims(token);
         var userId = claims.getSubject();
         var userName = claims.get("name", String.class);
         var email = claims.get("email", String.class);
-        return new LoginResponse(Long.parseLong(userId),userName, email);
+        return new CurrentUserResponse(Long.parseLong(userId),userName, email);
     }
 }

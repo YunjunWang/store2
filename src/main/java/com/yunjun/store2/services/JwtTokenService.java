@@ -1,12 +1,12 @@
 package com.yunjun.store2.services;
 
-import com.yunjun.store2.dtos.JwtResponse;
 import com.yunjun.store2.dtos.LoginResponse;
+import com.yunjun.store2.dtos.CurrentUserResponse;
 import com.yunjun.store2.dtos.UserDto;
 
 public interface JwtTokenService {
-    JwtResponse generateAccessToken(String email);
-    JwtResponse generateAccessToken(UserDto userDto);
+    LoginResponse generateAccessToken(String email);
+    LoginResponse generateAccessToken(UserDto userDto);
 
     String generateRefreshToken(UserDto userDto);
 
@@ -16,5 +16,5 @@ public interface JwtTokenService {
 
     Long getUserIdFromToken(String token);
 
-    LoginResponse getUserFromToken(String token);
+    CurrentUserResponse getUserFromToken(String token);
 }
