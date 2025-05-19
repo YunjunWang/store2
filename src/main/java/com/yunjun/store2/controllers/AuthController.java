@@ -1,16 +1,13 @@
 package com.yunjun.store2.controllers;
 
 import com.yunjun.store2.dtos.*;
-import com.yunjun.store2.entities.User;
-import com.yunjun.store2.exceptions.UserNotFoundException;
 import com.yunjun.store2.mappers.UserMapper;
 import com.yunjun.store2.services.JwtTokenService;
 import com.yunjun.store2.services.UserService;
-import com.yunjun.store2.services.impls.JwtTokenServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.headers.Header;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.websocket.OnError;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +45,9 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "Login a user")
     @ResponseStatus(HttpStatus.OK)
-    public JwtResponse loginUser(@Valid @RequestBody LoginUserRequest request) {
+    public JwtResponse loginUser(
+            @Valid @RequestBody LoginUserRequest request,
+            HttpServletResponse response) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail() ,
@@ -57,7 +56,15 @@ public class AuthController {
         );
         // after authenticated, we get the user from the db
         var userDto = userService.getUserByEmail(request.getEmail());
-        return jwtTokenService.generateToken(userDto);
+
+        var refreshToken = jwtTokenService.generateRefreshToken(userDto);
+        var cookie = new Cookie("refreshCookie", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/refresh-token");
+        cookie.setMaxAge(604800);
+        cookie.setSecure(true);
+        response.addCookie(cookie);
+        return jwtTokenService.generateAccessToken(userDto);
     }
 
     @GetMapping("/me")

@@ -12,6 +12,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
+
+/**
+ *  Access Token                                            Refresh Token
+ *  - To get access to protected endpoints                  - To get a new access token
+ *  - Short lived, <= 15 mins                               - Long lived, >= 7 days
+ *  - Returned in the response body                         - Returned as an HttpOnly Cookie
+ *  - Saved in the memory / localStorage                    - No access via JavaScript
+ *  - Web browser localStorage is less safe                 - Much harder to steal
+ */
 @Service
 public class JwtTokenServiceImpl implements JwtTokenService {
 
@@ -19,13 +28,12 @@ public class JwtTokenServiceImpl implements JwtTokenService {
     @Value("${spring.jwt.secret}")
     private String secret;
 
-    private static final long tokenExpiration = 84600;
-
     public JwtTokenServiceImpl(UserService userService) {
         this.userService = userService;
     }
 
-    public JwtResponse generateToken(String email) {
+    public JwtResponse generateAccessToken(String email) {
+        final long tokenExpiration = 84600;
         var token = Jwts.builder()
                 .setSubject(email)
                 .issuedAt(new Date())
@@ -40,16 +48,32 @@ public class JwtTokenServiceImpl implements JwtTokenService {
      * @return
      */
     @Override
-    public JwtResponse generateToken(UserDto userDto) {
-       var token = Jwts.builder()
-               .setSubject(userDto.getId().toString())
-               .issuedAt(new Date())
-               .setExpiration(new Date((new Date()).getTime() + 1000 * tokenExpiration))
-               .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
-               .claim("name", userDto.getName())
-               .claim("email", userDto.getEmail())
-               .compact();
-       return new JwtResponse(token);
+    public JwtResponse generateAccessToken(UserDto userDto) {
+        final long tokenExpiration = 84600;
+        var token = generateToken(userDto, tokenExpiration);
+        return new JwtResponse(token);
+    }
+
+    /**
+     * @param userDto
+     * @return
+     */
+    @Override
+    public String generateRefreshToken(UserDto userDto) {
+        final long tokenExpiration = 604800;
+        return generateToken(userDto, tokenExpiration);
+    }
+
+    private String generateToken(UserDto userDto, long tokenExpiration) {
+        var token = Jwts.builder()
+                .setSubject(userDto.getId().toString())
+                .issuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + 1000 * tokenExpiration))
+                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .claim("name", userDto.getName())
+                .claim("email", userDto.getEmail())
+                .compact();
+        return token;
     }
 
     /**
