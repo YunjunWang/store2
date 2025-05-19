@@ -1,15 +1,16 @@
 package com.yunjun.store2.services.impls;
 
+import com.yunjun.store2.config.JwtConfig;
 import com.yunjun.store2.dtos.JwtResponse;
 import com.yunjun.store2.dtos.LoginResponse;
 import com.yunjun.store2.dtos.UserDto;
 import com.yunjun.store2.services.JwtTokenService;
-import com.yunjun.store2.services.UserService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 
@@ -21,16 +22,11 @@ import java.util.Date;
  *  - Saved in the memory / localStorage                    - No access via JavaScript
  *  - Web browser localStorage is less safe                 - Much harder to steal
  */
+@AllArgsConstructor
 @Service
 public class JwtTokenServiceImpl implements JwtTokenService {
 
-    private final UserService userService;
-    @Value("${spring.jwt.secret}")
-    private String secret;
-
-    public JwtTokenServiceImpl(UserService userService) {
-        this.userService = userService;
-    }
+    private final JwtConfig jwtConfig;
 
     public JwtResponse generateAccessToken(String email) {
         final long tokenExpiration = 84600;
@@ -38,9 +34,13 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .setSubject(email)
                 .issuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + 1000 * tokenExpiration))
-                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .signWith(getSecretKey())
                 .compact();
         return new JwtResponse(token);
+    }
+
+    private SecretKey getSecretKey() {
+        return Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes());
     }
 
     /**
@@ -60,8 +60,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
      */
     @Override
     public String generateRefreshToken(UserDto userDto) {
-        final long tokenExpiration = 604800;
-        return generateToken(userDto, tokenExpiration);
+        return generateToken(userDto, jwtConfig.getRefreshTokenExpiration());
     }
 
     private String generateToken(UserDto userDto, long tokenExpiration) {
@@ -69,7 +68,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .setSubject(userDto.getId().toString())
                 .issuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + 1000 * tokenExpiration))
-                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .signWith(getSecretKey())
                 .claim("name", userDto.getName())
                 .claim("email", userDto.getEmail())
                 .compact();
@@ -92,7 +91,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
 
     private Claims getClaims(String token) {
         return Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .verifyWith(getSecretKey())
                 .build()
                 .parseClaimsJws(token)
                 .getPayload();

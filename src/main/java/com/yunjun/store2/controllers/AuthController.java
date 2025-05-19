@@ -1,5 +1,6 @@
 package com.yunjun.store2.controllers;
 
+import com.yunjun.store2.config.JwtConfig;
 import com.yunjun.store2.dtos.*;
 import com.yunjun.store2.mappers.UserMapper;
 import com.yunjun.store2.services.JwtTokenService;
@@ -26,6 +27,7 @@ public class AuthController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtConfig jwtConfig;
     private final JwtTokenService jwtTokenService;
     private final UserMapper userMapper;
 
@@ -44,7 +46,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Login a user")
-    @ResponseStatus(HttpStatus.OK)
+//    @ResponseStatus(HttpStatus.OK)
     public JwtResponse loginUser(
             @Valid @RequestBody LoginUserRequest request,
             HttpServletResponse response) {
@@ -58,12 +60,13 @@ public class AuthController {
         var userDto = userService.getUserByEmail(request.getEmail());
 
         var refreshToken = jwtTokenService.generateRefreshToken(userDto);
-        var cookie = new Cookie("refreshCookie", refreshToken);
+        var cookie = new Cookie("refreshToken", refreshToken);
         cookie.setHttpOnly(true);
-        cookie.setPath("/refresh-token");
-        cookie.setMaxAge(604800);
+        cookie.setPath("/auth/refresh");
+        cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration());
         cookie.setSecure(true);
         response.addCookie(cookie);
+
         return jwtTokenService.generateAccessToken(userDto);
     }
 
