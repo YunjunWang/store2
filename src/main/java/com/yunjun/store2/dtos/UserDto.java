@@ -17,7 +17,7 @@ public class UserDto {
     private Long id;
     private String name;
     private String email;
-    private String role;
+    private Role role;
 
     /*@JsonIgnore
     private String password;

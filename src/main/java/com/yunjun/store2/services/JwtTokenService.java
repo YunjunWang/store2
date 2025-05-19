@@ -2,6 +2,7 @@ package com.yunjun.store2.services;
 
 import com.yunjun.store2.dtos.LoginResponse;
 import com.yunjun.store2.dtos.UserDto;
+import com.yunjun.store2.entities.Role;
 
 public interface JwtTokenService {
     LoginResponse generateAccessToken(String email);
@@ -16,4 +17,6 @@ public interface JwtTokenService {
     Long getUserIdFromToken(String token);
 
     UserDto getUserFromToken(String token);
+
+    Role getRoleFromToken(String token);
 }

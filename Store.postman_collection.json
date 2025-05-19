@@ -123,7 +123,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Yunjun18\",\n    \"email\": \"yunjun18@example.com\",\n    \"password\": {{user_password}}\n}",
+							"raw": "{\n\t\"name\": \"Yunjun23\",\n    \"email\": \"yunjun23@example.com\",\n    \"password\": {{user_password}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -145,7 +145,7 @@
 					"response": []
 				},
 				{
-					"name": "Login User",
+					"name": "Login User ADMIN role",
 					"event": [
 						{
 							"listen": "test",
@@ -179,6 +179,7 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Check user_email and user_password pre POST Login\", function () {",
+									"    pm.environment.set(\"user_email\", pm.environment.get(\"user_email\").replace(\"21\", \"20\"));",
 									"    console.log(\"user_email: \" + pm.environment.get(\"user_email\"));",
 									"    console.log(\"user_password: \" + pm.environment.get(\"user_password\"));",
 									"});"
@@ -208,6 +209,184 @@
 							"path": [
 								"auth",
 								"login"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "access all users by admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET all users request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET all users request\", function () {",
+									"    console.log(\"access_token: \" + pm.environment.get(\"access_token\"));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Login User USER role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST Login request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"    var responseData = pm.response.json();",
+									"    pm.environment.set(\"access_token\", responseData.accessToken);",
+									"    console.log(\"access_token: \" + pm.environment.get(\"access_token\"));",
+									"    ",
+									"    var headers = pm.response.headers.all();",
+									"\tvar firstHeaderItem = headers[0].value;",
+									"\tvar cookieItems = firstHeaderItem.split(';');",
+									"\tvar firstItem = cookieItems[0];",
+									"\tvar refresh_token = firstItem.replace(\"refreshToken=\", \"\").replace(\";\", \"\");",
+									"\t// var refresh_token = JSON.parse(refreshTokenStr);",
+									"\tpm.environment.set(\"refresh_token\", refresh_token);",
+									"    console.log(\"refresh_token: \" + pm.environment.get(\"refresh_token\"));",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test(\"Check user_email and user_password pre POST Login\", function () {",
+									"    pm.environment.set(\"user_email\", pm.environment.get(\"user_email\").replace(\"21\", \"20\"));",
+									"    console.log(\"user_email: \" + pm.environment.get(\"user_email\"));",
+									"    console.log(\"user_password: \" + pm.environment.get(\"user_password\"));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": {{user_email}},\n    \"password\": {{user_password}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "access all users by admin - 401 unauthorized",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET all users request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET all users request\", function () {",
+									"    console.log(\"access_token: \" + pm.environment.get(\"access_token\"));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
 							]
 						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."

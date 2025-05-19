@@ -3,6 +3,7 @@ package com.yunjun.store2.services.impls;
 import com.yunjun.store2.config.JwtConfig;
 import com.yunjun.store2.dtos.LoginResponse;
 import com.yunjun.store2.dtos.UserDto;
+import com.yunjun.store2.entities.Role;
 import com.yunjun.store2.services.JwtTokenService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -123,7 +124,17 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         var userId = claims.getSubject();
         var userName = claims.get("name", String.class);
         var email = claims.get("email", String.class);
-        var role = claims.get("role", String.class);
+        var role = Role.valueOf(claims.get("role", String.class));
         return new UserDto(Long.parseLong(userId),userName, email, role);
+    }
+
+    /**
+     * @param token
+     * @return
+     */
+    @Override
+    public Role getRoleFromToken(String token) {
+        var claims = getClaims(token);
+        return Role.valueOf(claims.get("role", String.class));
     }
 }

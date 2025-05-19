@@ -1,5 +1,6 @@
 package com.yunjun.store2.filters;
 
+import com.yunjun.store2.dtos.UserDto;
 import com.yunjun.store2.services.JwtTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,12 +8,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @AllArgsConstructor
 @Component
@@ -46,11 +49,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
          * set authentication with user email from a token
          * we don't get the user email from the db here to avoid performance issue as it'll be a db query / request
          */
+        UserDto userDto = jwtTokenService.getUserFromToken(token);
         var authentication = new UsernamePasswordAuthenticationToken(
-                jwtTokenService.getUserFromToken(token),
+                userDto,
                 //jwtTokenService.getEmailFromToken(token), // user object, either user, username, email etc.
                 null, // password, here we don't need
-                null // roles and permissions, for authenticated users, no need here
+                // null // roles and permissions, for authenticated users. No need here before we're implementing the role-based access
+                /*
+                 * authorities:
+                 * 1. Roles (ADMIN, USER, etc.)
+                 * 2. Permissions(e.g. ISSUE_REFUND)
+                 */
+                List.of(new SimpleGrantedAuthority("ROLE_" + userDto.getRole().name()))
         );
         // add request metadata into the authentication details
         authentication.setDetails(

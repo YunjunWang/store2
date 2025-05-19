@@ -1,5 +1,6 @@
 package com.yunjun.store2.config;
 
+import com.yunjun.store2.entities.Role;
 import com.yunjun.store2.filters.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -130,20 +131,25 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
         http.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
-//                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(c -> c
                         .requestMatchers(HttpMethod.POST, "/api/carts").permitAll()
                         .requestMatchers( "/api/carts/{cartId}/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/api/auth/validate").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
+                        // .requestMatchers(HttpMethod.POST, "/api/auth/validate").permitAll()
                         .anyRequest().authenticated())
                 // make sure this is the first filter once gets a request
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(c -> // make sure all auth entry points get 401 - unauthorized instead of 403 - forbidden response
-                        c.authenticationEntryPoint(
-                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+                .exceptionHandling(c -> {
+                    // make sure all auth entry points get 401 - unauthorized instead of 403 - forbidden response
+                    c.authenticationEntryPoint(
+                            new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+                    // when it is for role-based authenticated but not allowed for the user's role entry points
+                    c.accessDeniedHandler(((request, response, accessDeniedException) ->
+                            response.setStatus(HttpStatus.FORBIDDEN.value())));
+                });
         return http.build();
     }
 }
