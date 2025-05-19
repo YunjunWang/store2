@@ -151,19 +151,20 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Successful POST request\", function () {",
+									"pm.test(\"Successful POST Login request\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 									"    var responseData = pm.response.json();",
 									"    pm.environment.set(\"access_token\", responseData.accessToken);",
-									"",
-									"",
+									"    console.log(\"access_token: \" + pm.environment.get(\"access_token\"));",
+									"    ",
 									"    var headers = pm.response.headers.all();",
-									"    var firstHeaderItem = headers[0].value;",
-									"    var cookieItems = firstHeaderItem.split(';');",
-									"    var firstItem = cookieItems[0];",
-									"    var refresh_token = firstItem.replace(\"refreshToken=\", \"\").replace(\";\", \"\");",
-									"    // var refresh_token = JSON.parse(refreshTokenStr);",
-									"    pm.environment.set(\"refresh_token\", refresh_token);",
+									"\tvar firstHeaderItem = headers[0].value;",
+									"\tvar cookieItems = firstHeaderItem.split(';');",
+									"\tvar firstItem = cookieItems[0];",
+									"\tvar refresh_token = firstItem.replace(\"refreshToken=\", \"\").replace(\";\", \"\");",
+									"\t// var refresh_token = JSON.parse(refreshTokenStr);",
+									"\tpm.environment.set(\"refresh_token\", refresh_token);",
+									"    console.log(\"refresh_token: \" + pm.environment.get(\"refresh_token\"));",
 									"});",
 									"",
 									"",
@@ -177,8 +178,10 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"// console.log(\"user_email: \" + pm.environment.get(\"user_email\"));",
-									"// console.log(\"user_password: \" + pm.environment.get(\"user_password\"));"
+									"pm.test(\"Check user_email and user_password pre POST Login\", function () {",
+									"    console.log(\"user_email: \" + pm.environment.get(\"user_email\"));",
+									"    console.log(\"user_password: \" + pm.environment.get(\"user_password\"));",
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -285,7 +288,7 @@
 									"pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 									"    var responseData = pm.response.json();",
 									"    pm.environment.set(\"access_token\", responseData.accessToken);",
-									"",
+									"    console.log(\"refreshed access_token: \" + pm.environment.get(\"access_token\"));",
 									"});",
 									""
 								],
@@ -297,9 +300,24 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.test(\"Successful POST request\", function () {",
-									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-									"    pm.cookies[0].value = pm.environment.get(\"refresh_token\");",
+									"pm.test(\"Refresh access_token POST request\", function () {",
+									"    // console.log(\"current refresh_token: \" + pm.environment.get(\"refresh_token\"));",
+									"    const jar = pm.cookies.jar();",
+									"    jar.set(\"localhost\", \"refreshToken\", pm.environment.get(\"refresh_token\"), (error, cookie) => {",
+									"        // if (error) {",
+									"        //     console.error(`An error occurred: ${error}`);",
+									"        // } else {",
+									"        //     console.log(`refreshToken saved: ${cookie}`);",
+									"        // }",
+									"    });",
+									"",
+									"    jar.get(\"localhost\", \"refreshToken\", (error, cookie) => {",
+									"        if (error) {",
+									"            console.error(`An error occurred: ${error}`);",
+									"        } else {",
+									"            console.log(`refreshToken saved: ${cookie}`);",
+									"        }",
+									"    });",
 									"});"
 								],
 								"type": "text/javascript",
@@ -331,7 +349,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Successful POST request\", function () {",
+									"pm.test(\"Successful GET current user request\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 									"});",
 									"",
