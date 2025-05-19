@@ -51,10 +51,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
          * we don't get the user email from the db here to avoid performance issue as it'll be a db query / request
          */
         var authentication = new UsernamePasswordAuthenticationToken(
-                jwt.getUser(),
+                jwt.getUserId(),
                 //jwtTokenService.getEmailFromToken(token), // user object, either user, username, email etc.
                 null, // password, here we don't need
-                // null // roles and permissions, for authenticated users. No need here before we're implementing the role-based access
+                // null // roles and permissions, for authenticated users. No need here before implementing the role-based access
                 /*
                  * authorities:
                  * 1. Roles (ADMIN, USER, etc.), roles have to start with "ROLE_" + role_name as the example below, which permission no need

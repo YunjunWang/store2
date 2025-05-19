@@ -18,15 +18,6 @@ public class Jwt {
         return (claims.getExpiration().before(new Date()));
     }
 
-    public UserDto getUser() {
-        return new UserDto(
-                Long.parseLong(claims.getSubject()),
-                claims.get("name").toString(),
-                claims.get("email").toString(),
-                getRole()
-        );
-    }
-
     public Long getUserId() {
         return Long.parseLong(claims.getSubject());
     }

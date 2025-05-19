@@ -73,7 +73,7 @@ public class AuthController {
     public UserDto me() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var principle = authentication.getPrincipal();
-        return (UserDto) principle;
+        return userService.getUserById((Long) principle);
     }
 
     @PostMapping("/refresh")
