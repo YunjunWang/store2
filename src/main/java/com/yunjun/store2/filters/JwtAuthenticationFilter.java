@@ -57,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // null // roles and permissions, for authenticated users. No need here before we're implementing the role-based access
                 /*
                  * authorities:
-                 * 1. Roles (ADMIN, USER, etc.)
+                 * 1. Roles (ADMIN, USER, etc.), roles has to start with "ROLE_" + role_name as the example below, which permission no need
                  * 2. Permissions(e.g. ISSUE_REFUND)
                  */
                 List.of(new SimpleGrantedAuthority("ROLE_" + userDto.getRole().name()))
