@@ -1,5 +1,6 @@
 package com.yunjun.store2.dtos;
 
+import com.yunjun.store2.entities.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,6 +17,7 @@ public class UserDto {
     private Long id;
     private String name;
     private String email;
+    private String role;
 
     /*@JsonIgnore
     private String password;

@@ -29,6 +29,11 @@ public class User {
 
     @Column(nullable = false, name="password")
     private String password;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     // The users table being owned by addresses, therefore, User entity is owned by Address entity by Address's field user
     // Use CascadeType.PERSIST to make sure the address is persisted when the user is persisted in the database
     // Use CascadeType.REMOVE to make sure the address is removed when the user is removed from the database

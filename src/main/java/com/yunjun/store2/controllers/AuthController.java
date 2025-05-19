@@ -2,6 +2,7 @@ package com.yunjun.store2.controllers;
 
 import com.yunjun.store2.config.JwtConfig;
 import com.yunjun.store2.dtos.*;
+import com.yunjun.store2.entities.Role;
 import com.yunjun.store2.mappers.UserMapper;
 import com.yunjun.store2.services.JwtTokenService;
 import com.yunjun.store2.services.UserService;
@@ -73,10 +74,10 @@ public class AuthController {
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get the current user")
-    public CurrentUserResponse me() {
+    public UserDto me() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var principle = authentication.getPrincipal();
-        return (CurrentUserResponse) principle;
+        return (UserDto) principle;
     }
 
     @PostMapping("/refresh")

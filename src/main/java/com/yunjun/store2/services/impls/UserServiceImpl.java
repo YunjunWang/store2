@@ -3,6 +3,7 @@ package com.yunjun.store2.services.impls;
 import com.yunjun.store2.dtos.*;
 import com.yunjun.store2.entities.Address;
 import com.yunjun.store2.entities.Profile;
+import com.yunjun.store2.entities.Role;
 import com.yunjun.store2.entities.User;
 import com.yunjun.store2.exceptions.UserAlreadyExistsException;
 import com.yunjun.store2.exceptions.UserNotFoundException;
@@ -178,7 +179,9 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsUserByEmail(request.getEmail())) {
             throw new UserAlreadyExistsException("Email already exists");
         }
-        User user = userRepository.save(userMapper.toEntity(request));
+        var user = userMapper.toEntity(request);
+        user.setRole(Role.USER);
+        user = userRepository.save(user);
         return userMapper.toDto(user);
     }
 

@@ -2,7 +2,6 @@ package com.yunjun.store2.services.impls;
 
 import com.yunjun.store2.config.JwtConfig;
 import com.yunjun.store2.dtos.LoginResponse;
-import com.yunjun.store2.dtos.CurrentUserResponse;
 import com.yunjun.store2.dtos.UserDto;
 import com.yunjun.store2.services.JwtTokenService;
 import io.jsonwebtoken.*;
@@ -69,6 +68,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .signWith(getSecretKey())
                 .claim("name", userDto.getName())
                 .claim("email", userDto.getEmail())
+                .claim("role", userDto.getRole())
                 .compact();
         return token;
     }
@@ -118,11 +118,12 @@ public class JwtTokenServiceImpl implements JwtTokenService {
      * @return
      */
     @Override
-    public CurrentUserResponse getUserFromToken(String token) {
+    public UserDto getUserFromToken(String token) {
         var claims = getClaims(token);
         var userId = claims.getSubject();
         var userName = claims.get("name", String.class);
         var email = claims.get("email", String.class);
-        return new CurrentUserResponse(Long.parseLong(userId),userName, email);
+        var role = claims.get("role", String.class);
+        return new UserDto(Long.parseLong(userId),userName, email, role);
     }
 }
