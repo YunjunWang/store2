@@ -24,14 +24,18 @@ public class Order {
     private User customer;
 
     /*
+     * Use enum OrderStatus here instead of String.
      * Tell Spring to save it as string / varchar in the db
      * Avoid using ORDINAL as the order of the enum items could change,
-     * and the number saved in the db loses it's meaning
+     * and the number saved in the db loses its meaning.
      */
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    /**
+     * Better use LocalDateTime than the Instant as suggested
+     */
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
