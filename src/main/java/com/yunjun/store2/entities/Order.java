@@ -63,4 +63,8 @@ public class Order {
         order.setItems(orderItems);
         return order;
     }
+
+    public boolean isPlacedBy(User customer) {
+        return this.customer.equals(customer);
+    }
 }

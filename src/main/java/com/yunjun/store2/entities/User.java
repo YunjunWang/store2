@@ -6,19 +6,21 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.util.*;
 
-@Entity
 @Getter
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
 //@ToString
+@Entity
 @Table(name="users")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(nullable = false, name="name")
@@ -117,7 +119,7 @@ public class User {
         this.wishlist.remove(product);
     }*/
 
-    @Override
+/*    @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null) return false;
@@ -126,12 +128,12 @@ public class User {
         if (thisEffectiveClass != oEffectiveClass) return false;
         User user = (User) o;
         return getId() != null && Objects.equals(getId(), user.getId());
-    }
-
+    }*/
+/*
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
-    }
+    }*/
 
     /**
      * avoid queries for lazy loading attributes
@@ -144,7 +146,6 @@ public class User {
         return getClass().getSimpleName() + "(" +
                 "id = " + id + ", " +
                 "name = " + name + ", " +
-                "email = " + email + ", " +
-                "password = " + password + ")";
+                "email = " + email + ")";
     }
 }

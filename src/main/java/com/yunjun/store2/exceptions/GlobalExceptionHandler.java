@@ -45,4 +45,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDto> handleExceptions(Exception e) {
         return ResponseEntity.badRequest().body(new ErrorDto(e.getMessage()));
     }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ErrorDto> handleException() {
+        return ResponseEntity.notFound().build();
+    }
 }

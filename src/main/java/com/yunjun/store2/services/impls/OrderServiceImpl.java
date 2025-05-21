@@ -2,10 +2,15 @@ package com.yunjun.store2.services.impls;
 
 import com.yunjun.store2.dtos.OrderDto;
 import com.yunjun.store2.entities.OrderStatus;
+import com.yunjun.store2.exceptions.OrderNotFoundException;
+import com.yunjun.store2.exceptions.UserNotFoundException;
 import com.yunjun.store2.mappers.OrderMapper;
 import com.yunjun.store2.repositories.OrderRepository;
+import com.yunjun.store2.repositories.UserRepository;
+import com.yunjun.store2.services.AuthService;
 import com.yunjun.store2.services.OrderService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +20,8 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
+    private final AuthService authService;
+    private final UserRepository userRepository;
 
     /**
      * @param orderId
@@ -42,13 +49,44 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * @return
+     */
+    @Override
+    public List<OrderDto> getAllOrders() {
+        var orders =  orderRepository.getAllOrdersWithItems();
+        return orders.stream()
+                .map(orderMapper::toDto)
+                .toList();
+    }
+
+    /**
      * @param orderId
      * @param customerId
      * @return
      */
     @Override
     public OrderDto getOrder(Long orderId, Long customerId) {
-        var order = orderRepository.findOrderWithItemsByCustomerId(orderId, customerId).orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        var order = orderRepository
+                .findOrderWithItemsByCustomerId(orderId, customerId)
+                .orElseThrow(OrderNotFoundException::new);
+        return orderMapper.toDto(order);
+    }
+
+    /**
+     * @param orderId
+     * @return
+     */
+    @Override
+    public OrderDto getOrder(Long orderId) {
+        var order = orderRepository
+                .findOrderWithItemsById(orderId)
+                .orElseThrow(OrderNotFoundException::new);
+
+        var userId = authService.getUserId();
+        var user = userRepository.findUserById(userId).orElseThrow(UserNotFoundException::new);
+        if (!order.isPlacedBy(user)) {
+            throw new AccessDeniedException("You don't have the access to this order.");
+        }
         return orderMapper.toDto(order);
     }
 }

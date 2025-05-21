@@ -4,6 +4,7 @@ import com.yunjun.store2.dtos.OrderDto;
 import com.yunjun.store2.entities.Order;
 import com.yunjun.store2.exceptions.CartIsEmptyException;
 import com.yunjun.store2.exceptions.CartNotFoundException;
+import com.yunjun.store2.exceptions.UserNotFoundException;
 import com.yunjun.store2.mappers.OrderMapper;
 import com.yunjun.store2.repositories.CartRepository;
 import com.yunjun.store2.repositories.OrderRepository;
@@ -39,7 +40,11 @@ public class CheckoutServiceImpl implements CheckoutService {
         if (cart.isEmpty()) {
             throw new CartIsEmptyException();
         }
-        var order = Order.fromCart(cart, userRepository.findUserById(userId));
+        var order = Order.fromCart(
+                cart,
+                userRepository
+                        .findUserById(userId)
+                        .orElseThrow(UserNotFoundException::new));
         orderRepository.save(order);
         cartService.clearCart(cartId);
 
