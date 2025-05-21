@@ -63,7 +63,7 @@ public class CartServiceImpl implements CartService {
     public CartDto getCart(UUID cartId) throws CartNotFoundException {
         var cart = cartRepository
                 .findCartByIdWithCartItems(cartId)
-                .orElseThrow(() -> new CartNotFoundException());
+                .orElseThrow(CartNotFoundException::new);
         return cartMapper.toDto(cart);
     }
 

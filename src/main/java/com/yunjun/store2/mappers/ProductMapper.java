@@ -1,7 +1,9 @@
 package com.yunjun.store2.mappers;
 
+import com.yunjun.store2.dtos.CartProductDto;
 import com.yunjun.store2.dtos.ProductDto;
 import com.yunjun.store2.entities.Product;
+import jakarta.validation.constraints.NotNull;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -14,4 +16,6 @@ public interface ProductMapper {
     Product toEntity(ProductDto productDto);
 
     void toEntity(ProductDto productDto, @MappingTarget Product product);
+
+    Product toEntity(@NotNull CartProductDto product);
 }
