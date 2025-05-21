@@ -1,7 +1,9 @@
 package com.yunjun.store2.exceptions;
 
+import com.yunjun.store2.dtos.ErrorDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,6 +15,11 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorDto> handleHttpMessageNotReadableException(){
+        return ResponseEntity.badRequest().body(new ErrorDto("Invalid request body!"));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex){
         Map<String, String> errors = new HashMap<>();
@@ -21,42 +28,42 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalAccessException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalAccess(){
+    public ResponseEntity<ErrorDto> handleIllegalAccess(){
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex){
-        return ResponseEntity.badRequest().body(Map.of("Error", ex.getMessage()));
+    public ResponseEntity<ErrorDto> handleIllegalArgument(IllegalArgumentException ex){
+        return ResponseEntity.badRequest().body(new ErrorDto(ex.getMessage()));
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<Map<String, String>> handleUserAlreadyExists(){
-        return ResponseEntity.badRequest().body(Map.of("Error", "User already exists!"));
+    public ResponseEntity<ErrorDto> handleUserAlreadyExists(){
+        return ResponseEntity.badRequest().body(new ErrorDto("User already exists!"));
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleUserNotFound(){
-        return ResponseEntity.badRequest().body(Map.of("Error", "User not found!"));
+    public ResponseEntity<ErrorDto> handleUserNotFound(){
+        return ResponseEntity.badRequest().body(new ErrorDto("User not found!"));
     }
 
     @ExceptionHandler(CategoryNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleCategoryNotFound(){
-        return ResponseEntity.badRequest().body(Map.of("Error", "Category not found!"));
+    public ResponseEntity<ErrorDto> handleCategoryNotFound(){
+        return ResponseEntity.badRequest().body(new ErrorDto("Category not found!"));
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleProductNotFound(){
-        return ResponseEntity.badRequest().body(Map.of("Error", "Product not found!"));
+    public ResponseEntity<ErrorDto> handleProductNotFound(){
+        return ResponseEntity.badRequest().body(new ErrorDto("Product not found!"));
     }
 
     @ExceptionHandler(CartNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleCartNotFound(){
-        return ResponseEntity.badRequest().body(Map.of("Error", "Cart not found!"));
+    public ResponseEntity<ErrorDto> handleCartNotFound(){
+        return ResponseEntity.badRequest().body(new ErrorDto("Cart not found!"));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Map<String, String>> handleBadCredentialsException(BadCredentialsException ex){
+    public ResponseEntity<ErrorDto> handleBadCredentialsException(){
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 }
