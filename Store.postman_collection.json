@@ -227,7 +227,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Yunjun23\",\n    \"email\": \"yunjun23@example.com\",\n    \"password\": {{user_password}}\n}",
+							"raw": "{\n\t\"name\": \"Yunjun24\",\n    \"email\": \"yunjun24@example.com\",\n    \"password\": {{user_password}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -420,9 +420,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.test(\"Successful GET all users request\", function () {",
-									"    console.log(\"access_token: \" + pm.environment.get(\"access_token\"));",
-									"});"
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -467,7 +465,7 @@
 									"pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 									"    var responseData = pm.response.json();",
 									"    pm.environment.set(\"access_token\", responseData.accessToken);",
-									"    console.log(\"refreshed access_token: \" + pm.environment.get(\"access_token\"));",
+									"    // console.log(\"refreshed access_token: \" + pm.environment.get(\"access_token\"));",
 									"});",
 									""
 								],
@@ -491,11 +489,11 @@
 									"    });",
 									"",
 									"    jar.get(\"localhost\", \"refreshToken\", (error, cookie) => {",
-									"        if (error) {",
-									"            console.error(`An error occurred: ${error}`);",
-									"        } else {",
-									"            console.log(`refreshToken saved: ${cookie}`);",
-									"        }",
+									"        // if (error) {",
+									"        //     console.error(`An error occurred: ${error}`);",
+									"        // } else {",
+									"        //     console.log(`refreshToken saved: ${cookie}`);",
+									"        // }",
 									"    });",
 									"});"
 								],
@@ -1855,6 +1853,16 @@
 								"type": "text/javascript",
 								"packages": {}
 							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"order_id\", pm.response.json().orderId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
 					],
 					"request": {
@@ -2190,6 +2198,18 @@
 								"type": "text/javascript",
 								"packages": {}
 							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
 					],
 					"protocolProfileBehavior": {
@@ -2241,6 +2261,18 @@
 								"type": "text/javascript",
 								"packages": {}
 							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
 					],
 					"protocolProfileBehavior": {
@@ -2269,13 +2301,141 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/orders/8",
+							"raw": "{{base_url}}/orders/{{order_id}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"orders",
-								"8"
+								"{{order_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get order customer_id not the same as authenticated",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cartId\": {{cart_id}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/{{order_id_not_same_customer_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"{{order_id_not_same_customer_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get order not found",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cartId\": {{cart_id}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/{{order_id_not_exist}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"{{order_id_not_exist}}"
 							]
 						}
 					},
