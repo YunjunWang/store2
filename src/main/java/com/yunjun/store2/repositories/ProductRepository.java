@@ -4,10 +4,8 @@ import com.yunjun.store2.dtos.ProductSummaryDto;
 import com.yunjun.store2.dtos.ProductSummaryProjection;
 import com.yunjun.store2.entities.Category;
 import com.yunjun.store2.entities.Product;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.jpa.repository.query.Procedure;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
@@ -23,7 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
    * @param max
    * @return
    */
-  List<Product> findByPriceBetweenOrderByNameAsc(BigDecimal min, BigDecimal max);
+  List<Product> getByPriceBetweenOrderByNameAsc(BigDecimal min, BigDecimal max);
 
   /**
    * By SQL: dependent on a specific database engine,
@@ -35,7 +33,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
    * @return
    */
   @Query(value = "select * from products p where p.price between :min and :max order by p.name", nativeQuery = true)
-  List<Product> findProductsBySql(@Param("min") BigDecimal min, @Param("max") BigDecimal max);
+  List<Product> getProductsBySql(@Param("min") BigDecimal min, @Param("max") BigDecimal max);
 
   /**
    * By JPQL: database-agnostic,
@@ -47,7 +45,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
    * @return
    */
   @Query("select p from Product p join p.category where p.price between :min and :max")
-  List<Product> findByProducts(@Param("min") BigDecimal min, @Param("max") BigDecimal max);
+  List<Product> getProductsBetweenPrices(@Param("min") BigDecimal min, @Param("max") BigDecimal max);
 
   /**
    * Create a stored procedure in the database for complicated queries
@@ -58,7 +56,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
    * @return
    */
   @Procedure("getProductsBetweenPrices")
-  List<Product> findProductsByPrices(BigDecimal min, BigDecimal max);
+  List<Product> getProductsByPrices(BigDecimal min, BigDecimal max);
   /**
    * aggregate functions: count, max, min ...
    * @param min
@@ -87,7 +85,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
    * @param category
    */
   @Query("select p from Product p where p.category = :category")
-  List<Product> findProducts(@Param("category") Category category);
+  List<Product> getProductsByCategory(@Param("category") Category category);
 
   /**
    * The package name "dtos" can be "projections" too.
@@ -101,7 +99,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
    * @return
    */
   @Query("select p.id, p.name from Product p where p.category = :category")
-  List<ProductSummaryProjection> findProductsP(@Param("category") Category category);
+  List<ProductSummaryProjection> getProductsP(@Param("category") Category category);
 
   /**
    * Fetch partial data with Projections
@@ -114,12 +112,12 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
    * @return
    */
   @Query("select new com.yunjun.store2.dtos.ProductSummaryDto(p.id, p.name) from Product p where p.category = :category")
-  List<ProductSummaryDto> findProductsD(@Param("category") Category category);
+  List<ProductSummaryDto> getProductsD(@Param("category") Category category);
 
   @EntityGraph(attributePaths = {"category"}) // equivalent as "join fetch p.category", make multi sql queries to be single
   @Query("select p from Product p")
-  List<Product> findAllProductsWithCategory();
+  List<Product> getAllProductsWithCategory();
 
   @EntityGraph(attributePaths = {"category"}) // make multi sql queries to be single
-  List<Product> findProductsByCategoryId(Byte categoryId);
+  List<Product> getProductsByCategoryId(Byte categoryId);
 }

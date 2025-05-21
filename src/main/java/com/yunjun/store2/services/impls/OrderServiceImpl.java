@@ -35,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public List<OrderDto> getAllOrders(Long customerId) {
-        var orders =  orderRepository.getCustomerOrders(customerId);
+        var orders =  orderRepository.getOrdersByCustomerId(customerId);
         return orders.stream()
                 .map(orderMapper::toDto)
                 .toList();
@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public OrderDto getOrder(Long orderId, Long customerId) {
-        var order = orderRepository.getCustomerOrder(orderId, customerId).orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        var order = orderRepository.findOrderWithItemsByCustomerId(orderId, customerId).orElseThrow(() -> new IllegalArgumentException("Order not found"));
         return orderMapper.toDto(order);
     }
 }

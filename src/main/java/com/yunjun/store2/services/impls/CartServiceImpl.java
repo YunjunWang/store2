@@ -48,7 +48,7 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public List<CartDto> getAllCarts() {
-        var carts = cartRepository.findAllCartsWithCartItems();
+        var carts = cartRepository.getAllCartsWithCartItems();
         return carts.stream()
                 .map(cartMapper::toDto)
                 .toList();

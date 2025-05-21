@@ -39,14 +39,14 @@ public interface UserRepository extends JpaRepository<User, Long>{
      */
     @EntityGraph(attributePaths = {"addresses"})
     @Query("select u from User u")
-    List<User> findAllWithAddresses();
+    List<User> getAllWithAddresses();
 
     @Procedure("findUsersWithLoyaltyPointGreaterThan")
-    List<UserSummaryDto> findUsersSummaryWithLoyaltyPointsGreaterThan(Integer loyaltyPoint);
+    List<UserSummaryDto> getUsersSummaryWithLoyaltyPointsGreaterThan(Integer loyaltyPoint);
 
     @Query("select u.id as id, u.email as email from User u left join Profile p on p.id = u.id where p.loyaltyPoints > :loyaltyPoints order by u.email")
 //    @EntityGraph(attributePaths = {"profile"})
-    List<UserSummaryDto> findLoyalUsers(@Param("loyaltyPoints") int loyaltyPoints);
+    List<UserSummaryDto> getLoyalUsers(@Param("loyaltyPoints") int loyaltyPoints);
 
     void deleteById(Long id);
 

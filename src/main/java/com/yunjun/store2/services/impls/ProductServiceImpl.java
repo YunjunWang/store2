@@ -84,13 +84,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public void fetchProducts() {
-        var products = productRepository.findProducts(new Category((byte) 1));
+        var products = productRepository.getProductsByCategory(new Category((byte) 1));
         products.forEach(System.out::println);
 
-        var products2 = productRepository.findProductsP(new Category((byte) 2));
+        var products2 = productRepository.getProductsP(new Category((byte) 2));
         products2.forEach(System.out::println);
 
-        var products3 = productRepository.findProductsD(new Category((byte) 3));
+        var products3 = productRepository.getProductsD(new Category((byte) 3));
         products3.forEach(System.out::println);
     }
 
@@ -100,7 +100,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Transactional
     public void fetchProductsWithPrices() {
-        var products = productRepository.findProductsByPrices(BigDecimal.valueOf(1000L), BigDecimal.valueOf(1001L));
+        var products = productRepository.getProductsByPrices(BigDecimal.valueOf(1000L), BigDecimal.valueOf(1001L));
         products.forEach(System.out::println);
     }
 
@@ -125,7 +125,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public void fetchProductsByCriteria() {
-        var products = productRepository.fetchProductsWithCriteria("iPhone", BigDecimal.valueOf(1L), BigDecimal.valueOf(2000L));
+        var products = productRepository.getProductsWithCriteria("iPhone", BigDecimal.valueOf(1L), BigDecimal.valueOf(2000L));
         products.forEach(System.out::println);
     }
 
@@ -170,7 +170,7 @@ public class ProductServiceImpl implements ProductService {
 
     public void fetchProductsByCategoryUsingCriteria() {
         Category category = new Category((byte) 1);
-        List<Product> products = productRepository.fetchProductsWithCriteriaByCategory(category);
+        List<Product> products = productRepository.getProductsWithCriteriaByCategory(category);
         products.forEach(System.out::println);
     }
 
@@ -188,9 +188,9 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDto> getAllProducts(Byte categoryId) {
         List<Product> products;
         if (categoryId == null) {
-            products = productRepository.findAllProductsWithCategory();
+            products = productRepository.getAllProductsWithCategory();
         } else
-            products = productRepository.findProductsByCategoryId(categoryId);
+            products = productRepository.getProductsByCategoryId(categoryId);
 
         return products.stream()
                 .map(productMapper::toDto)

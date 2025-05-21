@@ -36,7 +36,7 @@ public class ProductCriteriaRepositoryImpl implements ProductCriteriaRepository{
      */
 //    @EntityGraph(attributePaths = {"category"})
     @Override
-    public List<Product> fetchProductsWithCriteria(String name, BigDecimal minPrice, BigDecimal maxPrice) {
+    public List<Product> getProductsWithCriteria(String name, BigDecimal minPrice, BigDecimal maxPrice) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> cq = cb.createQuery(Product.class);
         Root<Product> root = cq.from(Product.class);
@@ -67,7 +67,7 @@ public class ProductCriteriaRepositoryImpl implements ProductCriteriaRepository{
      * @return
      */
     @Override
-    public List<Product> fetchProductsWithCriteriaByCategory(Category category) {
+    public List<Product> getProductsWithCriteriaByCategory(Category category) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> cq = cb.createQuery(Product.class);
         Root<Product> root = cq.from(Product.class);

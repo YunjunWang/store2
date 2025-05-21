@@ -19,7 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -131,7 +130,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public void fetchUsersWithAddresses() {
-        var users = userRepository.findAllWithAddresses();
+        var users = userRepository.getAllWithAddresses();
         users.forEach(u -> {
             System.out.println(u);
             u.getAddresses().forEach(System.out::println);
@@ -142,7 +141,7 @@ public class UserServiceImpl implements UserService {
     public void fetchUsersSummaryWithLoyaltyPointsGreaterThan() {
 //        var users = userRepository.findUsersSummaryWithLoyaltyPointsGreaterThan(2);
 //        users.forEach(System.out::println);
-        var users = userRepository.findLoyalUsers(2);
+        var users = userRepository.getLoyalUsers(2);
         users.forEach(u -> {
             System.out.println(u.getId() + ": " + u.getEmail());
         });

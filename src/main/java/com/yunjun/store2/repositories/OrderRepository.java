@@ -12,9 +12,9 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @EntityGraph(attributePaths = {"items.product"})
     @Query("select o from Order o where o.customer.id = :customerId")
-    List<Order> getCustomerOrders(@Param("customerId") Long customerId);
+    List<Order> getOrdersByCustomerId(@Param("customerId") Long customerId);
 
     @EntityGraph(attributePaths = {"items.product"})
     @Query("select o from Order o where o.id = :orderId and o.customer.id = :customerId")
-    Optional<Order> getCustomerOrder(@Param("orderId") Long orderId, @Param("customerId") Long customerId);
+    Optional<Order> findOrderWithItemsByCustomerId(@Param("orderId") Long orderId, @Param("customerId") Long customerId);
 }
