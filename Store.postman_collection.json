@@ -11,14 +11,39 @@
 			"name": "admin",
 			"item": [
 				{
-					"name": "Get users",
+					"name": "Login User ADMIN role",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
+									"pm.test(\"Successful POST Login request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"    var responseData = pm.response.json();",
+									"    pm.environment.set(\"access_token\", responseData.accessToken);",
+									"    ",
+									"    var headers = pm.response.headers.all();",
+									"\tvar firstHeaderItem = headers[0].value;",
+									"\tvar cookieItems = firstHeaderItem.split(';');",
+									"\tvar firstItem = cookieItems[0];",
+									"\tvar refresh_token = firstItem.replace(\"refreshToken=\", \"\").replace(\";\", \"\");",
+									"\t// var refresh_token = JSON.parse(refreshTokenStr);",
+									"\tpm.environment.set(\"refresh_token\", refresh_token);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test(\"Check user_email and user_password pre POST Login\", function () {",
+									"    pm.environment.set(\"user_email\", pm.environment.get(\"user_email\").replace(\"20\", \"21\"));",
 									"});"
 								],
 								"type": "text/javascript",
@@ -27,24 +52,131 @@
 						}
 					],
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": {{user_email}},\n    \"password\": {{user_password}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{base_url}}/users?sort=user_id",
+							"raw": "{{base_url}}/auth/login",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"users"
-							],
-							"query": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Get all users by admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET all users request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "sort",
-									"value": "user_id"
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
 								}
 							]
 						},
-						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Get users  - 401 unauthenticated",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET all users request\", function () {",
+									"    pm.expect(pm.response.code).to.be(401);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
 				}
@@ -193,184 +325,6 @@
 								"{{base_url}}"
 							],
 							"path": [
-								"users"
-							]
-						},
-						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-					},
-					"response": []
-				},
-				{
-					"name": "Login User ADMIN role",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful POST Login request\", function () {",
-									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-									"    var responseData = pm.response.json();",
-									"    pm.environment.set(\"access_token\", responseData.accessToken);",
-									"    console.log(\"access_token: \" + pm.environment.get(\"access_token\"));",
-									"    ",
-									"    var headers = pm.response.headers.all();",
-									"\tvar firstHeaderItem = headers[0].value;",
-									"\tvar cookieItems = firstHeaderItem.split(';');",
-									"\tvar firstItem = cookieItems[0];",
-									"\tvar refresh_token = firstItem.replace(\"refreshToken=\", \"\").replace(\";\", \"\");",
-									"\t// var refresh_token = JSON.parse(refreshTokenStr);",
-									"\tpm.environment.set(\"refresh_token\", refresh_token);",
-									"    console.log(\"refresh_token: \" + pm.environment.get(\"refresh_token\"));",
-									"});",
-									"",
-									"",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.test(\"Check user_email and user_password pre POST Login\", function () {",
-									"    pm.environment.set(\"user_email\", pm.environment.get(\"user_email\").replace(\"20\", \"21\"));",
-									"    console.log(\"user_email: \" + pm.environment.get(\"user_email\"));",
-									"    console.log(\"user_password: \" + pm.environment.get(\"user_password\"));",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\": {{user_email}},\n    \"password\": {{user_password}}\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/auth/login",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"auth",
-								"login"
-							]
-						},
-						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-					},
-					"response": []
-				},
-				{
-					"name": "access all users by admin",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful GET all users request\", function () {",
-									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-									"});",
-									"",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful GET all users request\", function () {",
-									"    console.log(\"access_token: \" + pm.environment.get(\"access_token\"));",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{access_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/admin/users",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"admin",
-								"users"
-							]
-						},
-						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-					},
-					"response": []
-				},
-				{
-					"name": "access all users by admin - 401 unauthenticated",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful GET all users request\", function () {",
-									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-									"});",
-									"",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful GET all users request\", function () {",
-									"    console.log(\"access_token: \" + pm.environment.get(\"access_token\"));",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/admin/users",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"admin",
 								"users"
 							]
 						},
@@ -691,6 +645,44 @@
 			"name": "user",
 			"item": [
 				{
+					"name": "Get users - deprecated",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users?sort=user_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "user_id"
+								}
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
 					"name": "Get user by id",
 					"event": [
 						{
@@ -707,6 +699,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -751,6 +753,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1442,7 +1454,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"productId\": 6\n}",
+							"raw": "{\n    \"productId\": {{product_id}}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1825,61 +1837,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "checkout request body null",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{access_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzMCIsIm5hbWUiOiJZdW5qdW4yMCIsImVtYWlsIjoieXVuanVuMjBAZXhhbXBsZS5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc0NzgxNjY1MCwiZXhwIjoxNzQ3ODIzODUwfQ.BkwlxtiO8Lj70sElInwtXgsnMdjlKT8ZSQQ3Yu8r_xbqXx3vm1pVZxEIMkGGGTDsLt27gvRr-jWCoJfOY0Jevw",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/checkout",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"checkout"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -2160,6 +2117,61 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "checkout request body null",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzMCIsIm5hbWUiOiJZdW5qdW4yMCIsImVtYWlsIjoieXVuanVuMjBAZXhhbXBsZS5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc0NzgxNjY1MCwiZXhwIjoxNzQ3ODIzODUwfQ.BkwlxtiO8Lj70sElInwtXgsnMdjlKT8ZSQQ3Yu8r_xbqXx3vm1pVZxEIMkGGGTDsLt27gvRr-jWCoJfOY0Jevw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/checkout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"checkout"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -2272,6 +2284,16 @@
 			]
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
