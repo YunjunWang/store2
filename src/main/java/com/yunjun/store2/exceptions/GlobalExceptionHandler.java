@@ -15,11 +15,6 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorDto> handleHttpMessageNotReadableException(){
-        return ResponseEntity.badRequest().body(new ErrorDto("Invalid request body!"));
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex){
         Map<String, String> errors = new HashMap<>();
@@ -27,43 +22,27 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
-    @ExceptionHandler(IllegalAccessException.class)
-    public ResponseEntity<ErrorDto> handleIllegalAccess(){
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorDto> handleHttpMessageNotReadableException(){
+        return ResponseEntity.badRequest().body(new ErrorDto("Invalid request body!"));
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorDto> handleIllegalArgument(IllegalArgumentException ex){
-        return ResponseEntity.badRequest().body(new ErrorDto(ex.getMessage()));
-    }
-
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ErrorDto> handleUserAlreadyExists(){
-        return ResponseEntity.badRequest().body(new ErrorDto("User already exists!"));
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorDto> handleUserNotFound(){
-        return ResponseEntity.badRequest().body(new ErrorDto("User not found!"));
-    }
-
-    @ExceptionHandler(CategoryNotFoundException.class)
-    public ResponseEntity<ErrorDto> handleCategoryNotFound(){
-        return ResponseEntity.badRequest().body(new ErrorDto("Category not found!"));
-    }
-
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ErrorDto> handleProductNotFound(){
-        return ResponseEntity.badRequest().body(new ErrorDto("Product not found!"));
-    }
-
-    @ExceptionHandler(CartNotFoundException.class)
-    public ResponseEntity<ErrorDto> handleCartNotFound(){
-        return ResponseEntity.badRequest().body(new ErrorDto("Cart not found!"));
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
+    @ExceptionHandler({
+            BadCredentialsException.class,
+            IllegalAccessException.class})
     public ResponseEntity<ErrorDto> handleBadCredentialsException(){
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({
+            CategoryNotFoundException.class,
+            CartNotFoundException.class,
+            CartIsEmptyException.class,
+            ProductNotFoundException.class,
+            UserNotFoundException.class,
+            UserAlreadyExistsException.class,
+            IllegalArgumentException.class})
+    public ResponseEntity<ErrorDto> handleExceptions(Exception e) {
+        return ResponseEntity.badRequest().body(new ErrorDto(e.getMessage()));
     }
 }

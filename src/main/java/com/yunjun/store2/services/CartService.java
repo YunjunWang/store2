@@ -20,5 +20,4 @@ public interface CartService {
     void removeCartItem(UUID productId, Long cartId);
     void clearCart(UUID cartId);
     void deleteCart(UUID cartId);
-    OrderDto checkout(UUID cartId, Long principle);
 }

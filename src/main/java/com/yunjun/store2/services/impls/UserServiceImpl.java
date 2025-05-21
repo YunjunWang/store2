@@ -177,7 +177,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto registerUser(RegisterUserRequest request) throws UserAlreadyExistsException{
         if (userRepository.existsUserByEmail(request.getEmail())) {
-            throw new UserAlreadyExistsException("Email already exists");
+            throw new UserAlreadyExistsException();
         }
         var user = userMapper.toEntity(request);
         user.setRole(Role.USER);

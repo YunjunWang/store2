@@ -2,15 +2,12 @@ package com.yunjun.store2.services.impls;
 
 import com.yunjun.store2.dtos.CartDto;
 import com.yunjun.store2.dtos.CartItemDto;
-import com.yunjun.store2.dtos.OrderDto;
 import com.yunjun.store2.entities.*;
 import com.yunjun.store2.exceptions.CartNotFoundException;
 import com.yunjun.store2.exceptions.ProductNotFoundException;
 import com.yunjun.store2.mappers.*;
 import com.yunjun.store2.repositories.CartRepository;
-import com.yunjun.store2.repositories.OrderRepository;
 import com.yunjun.store2.repositories.ProductRepository;
-import com.yunjun.store2.repositories.UserRepository;
 import com.yunjun.store2.services.CartService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,9 +32,6 @@ public class CartServiceImpl implements CartService {
     private final CartMapper cartMapper;
     private final ProductRepository productRepository;
     private final CartItemMapper cartItemMapper;
-    private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
-    private final OrderMapper orderMapper;
 
     /**
      * @param cartDto
@@ -80,8 +74,10 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartItemDto addCartItem(Long productId, UUID cartId) throws ProductNotFoundException, CartNotFoundException{
         // the two queries are combined into one db query with findCartByIdWithCartItems in the repository
-        var product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new); // should set it as bad_request, not the no such item exception here
-        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(CartNotFoundException::new);
+        var product = productRepository.findById(productId)
+                .orElseThrow(ProductNotFoundException::new); // should set it as bad_request, not the no such item exception here
+        var cart = cartRepository.findCartByIdWithCartItems(cartId)
+                .orElseThrow(CartNotFoundException::new);
         CartItem cartItem = cart.addItem(product);
         cartRepository.save(cart);
         return cartItemMapper.toDto(cartItem);
@@ -94,17 +90,13 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    public CartItemDto updateCartItem(Integer quantity, UUID cartId, Long productId) throws CartNotFoundException, ProductNotFoundException{
-        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(CartNotFoundException::new);
+    public CartItemDto updateCartItem(Integer quantity, UUID cartId, Long productId){
+        var cart = cartRepository.findCartByIdWithCartItems(cartId)
+                .orElseThrow(CartNotFoundException::new);
+        var cartItem = cart.updateItem(productId, quantity);
+        cartRepository.save(cart);
 
-        try {
-            var cartItem = cart.updateItem(productId, quantity);
-            cartRepository.save(cart);
-
-            return cartItemMapper.toDto(cartItem);
-        } catch (ProductNotFoundException e) {
-            throw e;
-        }
+        return cartItemMapper.toDto(cartItem);
     }
 
     /**
@@ -113,7 +105,8 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public void removeCartItem(UUID cartId, Long productId) {
-        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(CartNotFoundException::new);
+        var cart = cartRepository.findCartByIdWithCartItems(cartId)
+                .orElseThrow(CartNotFoundException::new);
         // when not find the item by productId, we don't care, let it complete silently
         // to avoid too aggressive programming.
         cart.removeItem(productId);
@@ -125,7 +118,8 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public void clearCart(UUID cartId) {
-        var cart = cartRepository.findCartByIdWithCartItems(cartId).orElseThrow(CartNotFoundException::new);
+        var cart = cartRepository.findCartByIdWithCartItems(cartId)
+                .orElseThrow(CartNotFoundException::new);
         cart.clear();
         cartRepository.save(cart);
     }
@@ -137,28 +131,5 @@ public class CartServiceImpl implements CartService {
     public void deleteCart(UUID cartId) throws CartNotFoundException {
         // silent deletion
         cartRepository.deleteById(cartId);
-    }
-
-
-    /**
-     * @param cartId
-     * @param userId
-     * @return
-     */
-    @Override
-    public OrderDto checkout(UUID cartId, Long userId) {
-        if (cartId == null) {
-            throw new IllegalArgumentException("Invalid card ID");
-        }
-        var cart = cartRepository.findCartByIdWithCartItems(cartId)
-                .orElseThrow(() -> new IllegalArgumentException("Cart not found"));
-        if (cart.isEmpty()) {
-            throw new IllegalArgumentException("Cart is empty");
-        }
-        var order = Order.fromCart(cart, userRepository.findUserById(userId));
-        orderRepository.save(order);
-        clearCart(cartId);
-
-        return orderMapper.toDto(order);
     }
 }
