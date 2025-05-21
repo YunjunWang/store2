@@ -8,6 +8,49 @@
 	},
 	"item": [
 		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "Get users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users?sort=user_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "user_id"
+								}
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "auth",
 			"item": [
 				{
@@ -1784,6 +1827,66 @@
 					"response": []
 				},
 				{
+					"name": "checkout request body null",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzMCIsIm5hbWUiOiJZdW5qdW4yMCIsImVtYWlsIjoieXVuanVuMjBAZXhhbXBsZS5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc0NzgxNjY1MCwiZXhwIjoxNzQ3ODIzODUwfQ.BkwlxtiO8Lj70sElInwtXgsnMdjlKT8ZSQQ3Yu8r_xbqXx3vm1pVZxEIMkGGGTDsLt27gvRr-jWCoJfOY0Jevw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/checkout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "checkout",
+			"item": [
+				{
 					"name": "checkout",
 					"event": [
 						{
@@ -2002,22 +2105,15 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "admin",
-			"item": [
+				},
 				{
-					"name": "Get users",
+					"name": "checkout cart_id null",
 					"event": [
 						{
-							"listen": "test",
+							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});"
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2025,24 +2121,43 @@
 						}
 					],
 					"request": {
-						"method": "GET",
-						"header": [],
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzMCIsIm5hbWUiOiJZdW5qdW4yMCIsImVtYWlsIjoieXVuanVuMjBAZXhhbXBsZS5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc0NzgxNjY1MCwiZXhwIjoxNzQ3ODIzODUwfQ.BkwlxtiO8Lj70sElInwtXgsnMdjlKT8ZSQQ3Yu8r_xbqXx3vm1pVZxEIMkGGGTDsLt27gvRr-jWCoJfOY0Jevw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cartId\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{base_url}}/users?sort=user_id",
+							"raw": "{{base_url}}/checkout",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"users"
-							],
-							"query": [
-								{
-									"key": "sort",
-									"value": "user_id"
-								}
+								"checkout"
 							]
-						},
-						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+						}
 					},
 					"response": []
 				}
@@ -2058,9 +2173,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.test(\"Successful POST checkout request\", function () {",
-									"    console.log(\"access_token: \" + pm.environment.get(\"access_token\"));",
-									"});"
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2085,7 +2198,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"cartId\": {{cart_id}}\n}",
+							"raw": "{\n    \"cartId\": \"{{cart_id}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2111,9 +2224,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.test(\"Successful POST checkout request\", function () {",
-									"    console.log(\"access_token: \" + pm.environment.get(\"access_token\"));",
-									"});"
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}

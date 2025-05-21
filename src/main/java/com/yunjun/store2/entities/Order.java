@@ -1,14 +1,18 @@
 package com.yunjun.store2.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 @Entity
@@ -44,4 +48,19 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Set<OrderItem> items = new LinkedHashSet<>();
+
+    public static Order fromCart(Cart cart, User customer) {
+        var order = Order.builder()
+                .status(OrderStatus.PENDING)
+                .totalPrice(cart.getTotalPrice())
+                .customer(customer)
+                .build();
+
+
+        var orderItems = cart.getItems().stream().map(item ->
+                new OrderItem(order, item.getProduct(), item.getQuantity())).collect(Collectors.toSet());
+
+        order.setItems(orderItems);
+        return order;
+    }
 }

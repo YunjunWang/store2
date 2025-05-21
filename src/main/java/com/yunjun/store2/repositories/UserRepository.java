@@ -31,7 +31,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
     @Query("select u from User u where u.email = :email")
     Optional<User> findByEmail(String email);
 
-
     /**
      * @EntityGraph annotation can be used to fetch multiple entities at once
      * to avoid the N+1 problem
@@ -52,4 +51,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
     void deleteById(Long id);
 
     boolean existsUserByEmail(String email);
+
+    User findUserById(Long id);
 }

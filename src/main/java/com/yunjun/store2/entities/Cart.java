@@ -97,4 +97,8 @@ public class Cart {
                 .map(CartItem::getTotalPrice)// example of OOP Information Expert Principle
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
 }

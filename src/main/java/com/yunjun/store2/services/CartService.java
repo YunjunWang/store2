@@ -2,6 +2,7 @@ package com.yunjun.store2.services;
 
 import com.yunjun.store2.dtos.CartDto;
 import com.yunjun.store2.dtos.CartItemDto;
+import com.yunjun.store2.dtos.OrderDto;
 import com.yunjun.store2.exceptions.CartNotFoundException;
 import com.yunjun.store2.exceptions.ProductNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,4 +20,5 @@ public interface CartService {
     void removeCartItem(UUID productId, Long cartId);
     void clearCart(UUID cartId);
     void deleteCart(UUID cartId);
+    OrderDto checkout(UUID cartId, Long principle);
 }

@@ -1,8 +1,10 @@
 package com.yunjun.store2.services.impls;
 
 import com.yunjun.store2.repositories.UserRepository;
+import com.yunjun.store2.services.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,7 +16,7 @@ import java.util.Collections;
 
 @AllArgsConstructor
 @Service
-public class AuthServiceImpl implements UserDetailsService {
+public class AuthServiceImpl implements UserDetailsService, AuthService {
     private final UserRepository userRepository;
 
     /**
@@ -32,5 +34,10 @@ public class AuthServiceImpl implements UserDetailsService {
                 user.getPassword(),
                 Collections.emptyList() // authorities: roles, permissions, etc. leave it empty for now.
         );
+    }
+
+    public Long getUserId() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (Long) authentication.getPrincipal();
     }
 }

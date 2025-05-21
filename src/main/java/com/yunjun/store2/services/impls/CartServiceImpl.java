@@ -2,13 +2,15 @@ package com.yunjun.store2.services.impls;
 
 import com.yunjun.store2.dtos.CartDto;
 import com.yunjun.store2.dtos.CartItemDto;
-import com.yunjun.store2.entities.CartItem;
+import com.yunjun.store2.dtos.OrderDto;
+import com.yunjun.store2.entities.*;
 import com.yunjun.store2.exceptions.CartNotFoundException;
 import com.yunjun.store2.exceptions.ProductNotFoundException;
-import com.yunjun.store2.mappers.CartItemMapper;
-import com.yunjun.store2.mappers.CartMapper;
+import com.yunjun.store2.mappers.*;
 import com.yunjun.store2.repositories.CartRepository;
+import com.yunjun.store2.repositories.OrderRepository;
 import com.yunjun.store2.repositories.ProductRepository;
+import com.yunjun.store2.repositories.UserRepository;
 import com.yunjun.store2.services.CartService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,9 @@ public class CartServiceImpl implements CartService {
     private final CartMapper cartMapper;
     private final ProductRepository productRepository;
     private final CartItemMapper cartItemMapper;
+    private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
+    private final OrderMapper orderMapper;
 
     /**
      * @param cartDto
@@ -132,5 +137,28 @@ public class CartServiceImpl implements CartService {
     public void deleteCart(UUID cartId) throws CartNotFoundException {
         // silent deletion
         cartRepository.deleteById(cartId);
+    }
+
+
+    /**
+     * @param cartId
+     * @param userId
+     * @return
+     */
+    @Override
+    public OrderDto checkout(UUID cartId, Long userId) {
+        if (cartId == null) {
+            throw new IllegalArgumentException("Invalid card ID");
+        }
+        var cart = cartRepository.findCartByIdWithCartItems(cartId)
+                .orElseThrow(() -> new IllegalArgumentException("Cart not found"));
+        if (cart.isEmpty()) {
+            throw new IllegalArgumentException("Cart is empty");
+        }
+        var order = Order.fromCart(cart, userRepository.findUserById(userId));
+        orderRepository.save(order);
+        clearCart(cartId);
+
+        return orderMapper.toDto(order);
     }
 }

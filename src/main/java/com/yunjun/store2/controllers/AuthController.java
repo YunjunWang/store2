@@ -2,6 +2,7 @@ package com.yunjun.store2.controllers;
 
 import com.yunjun.store2.config.JwtConfig;
 import com.yunjun.store2.dtos.*;
+import com.yunjun.store2.services.AuthService;
 import com.yunjun.store2.services.JwtService;
 import com.yunjun.store2.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -29,6 +29,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtConfig jwtConfig;
     private final JwtService jwtService;
+    private final AuthService authService;
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
@@ -71,9 +72,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get the current user")
     public UserDto me() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var principle = authentication.getPrincipal();
-        return userService.getUserById((Long) principle);
+        return userService.getUserById(authService.getUserId());
     }
 
     @PostMapping("/refresh")
