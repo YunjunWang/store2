@@ -2,6 +2,7 @@ package com.yunjun.store2.dtos;
 
 import com.yunjun.store2.entities.OrderStatus;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@AllArgsConstructor
 @Builder
 @Data
 public class OrderDto {

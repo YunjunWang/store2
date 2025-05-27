@@ -1,5 +1,6 @@
 package com.yunjun.store2.exceptions;
 
+import com.stripe.exception.StripeException;
 import com.yunjun.store2.dtos.ErrorDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,5 +50,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<ErrorDto> handleException() {
         return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(StripeException.class)
+    public ResponseEntity<ErrorDto> handleStripeCheckoutException() {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                new ErrorDto("An error occurred while processing the payment."));
     }
 }

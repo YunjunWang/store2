@@ -14,6 +14,8 @@ import com.yunjun.store2.repositories.OrderRepository;
 import com.yunjun.store2.repositories.UserRepository;
 import com.yunjun.store2.services.CartService;
 import com.yunjun.store2.services.CheckoutService;
+import com.yunjun.store2.services.OrderService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +31,7 @@ public class CheckoutServiceImpl implements CheckoutService {
     private final UserRepository userRepository;
     private final OrderMapper orderMapper;
     private final CartService cartService;
+    private final OrderService orderService;
 
     @Value("${websiteUrl}")
     private String websiteUrl;
@@ -38,8 +41,9 @@ public class CheckoutServiceImpl implements CheckoutService {
      * @param userId
      * @return
      */
+    @Transactional
     @Override
-    public OrderDto checkout(UUID cartId, Long userId) throws StripeException {
+    public OrderDto checkout(UUID cartId, Long userId) throws StripeException, CartNotFoundException, CartIsEmptyException, UserNotFoundException{
         if (cartId == null) {
             throw new IllegalArgumentException("Invalid card ID");
         }
@@ -56,35 +60,43 @@ public class CheckoutServiceImpl implements CheckoutService {
         orderRepository.save(order);
 
         // Create a checkout session
-        var builder = SessionCreateParams.builder()
-            .setMode((SessionCreateParams.Mode.PAYMENT))
-            // .setMode((SessionCreateParams.Mode.SUBSCRIPTION))
-            .setSuccessUrl(websiteUrl + "/checkout-success?orderId=" + order.getId())
-            .setCancelUrl(websiteUrl + "/checkout-cancel");
+        try {
+            var builder = SessionCreateParams.builder()
+                    .setMode((SessionCreateParams.Mode.PAYMENT))
+                    // .setMode((SessionCreateParams.Mode.SUBSCRIPTION))
+                    .setSuccessUrl(websiteUrl + "/checkout-success?orderId=" + order.getId())
+                    .setCancelUrl(websiteUrl + "/checkout-cancel");
 
-        order.getItems().forEach(item -> {
-            var lineItem = SessionCreateParams.LineItem.builder()
-                    .setQuantity(Long.valueOf(item.getQuantity()))
-                    // dynamic price data, if setPrice(price: String), it is expecting an ID from Stripe that has been registered
-                    .setPriceData(
-                            SessionCreateParams.LineItem.PriceData.builder()
-                            .setCurrency("usd")
-                            .setUnitAmountDecimal(item.getUnitPrice())
-                            // dynamic product data, if setProduct(product: String), it is expecting an ID from Stripe that has been registered
-                            .setProductData(
-                                SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                .setName(item.getProduct().getName())
-                                // .setDescription(item.getProduct().getDescription())
-                                .build())
-                            .build())
-                    .build();
-            builder.addLineItem(lineItem);
-        });
+            order.getItems().forEach(item -> {
+                var lineItem = SessionCreateParams.LineItem.builder()
+                        .setQuantity(Long.valueOf(item.getQuantity()))
+                        // dynamic price data, if setPrice(price: String), it is expecting an ID from Stripe that has been registered
+                        .setPriceData(
+                                SessionCreateParams.LineItem.PriceData.builder()
+                                        .setCurrency("usd")
+                                        .setUnitAmountDecimal(item.getUnitPrice())
+                                        // dynamic product data, if setProduct(product: String), it is expecting an ID from Stripe that has been registered
+                                        .setProductData(
+                                                SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                                        .setName(item.getProduct().getName())
+                                                        // .setDescription(item.getProduct().getDescription())
+                                                        .build())
+                                        .build())
+                        .build();
+                builder.addLineItem(lineItem);
+            });
 
-        Session session = Session.create(builder.build());
+            Session session = Session.create(builder.build());
 
-        cartService.clearCart(cartId);
+            cartService.clearCart(cartId);
 
-        return new OrderDto(order.getId(), session.getUrl());
+            return new OrderDto(order.getId(), session.getUrl());
+        } catch (StripeException e) {
+            // need to register with tax id to have an activated account api key
+            System.out.println("StripeException: " + e.getMessage());
+            // remove this order if failed to avoid having bad order data in the db
+            orderRepository.delete(order);
+            throw e;
+        }
     }
 }
