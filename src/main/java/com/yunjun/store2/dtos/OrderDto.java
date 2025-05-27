@@ -15,6 +15,7 @@ import java.util.List;
 @Data
 public class OrderDto {
     private Long id;
+    private String checkoutUrl;
 
     @NotNull
     private UserDto customer;
@@ -28,4 +29,9 @@ public class OrderDto {
 
     @NotNull
     private BigDecimal totalPrice = BigDecimal.ZERO;
+
+    public OrderDto(Long id, String checkoutUrl) {
+        this.id = id;
+        this.checkoutUrl = checkoutUrl;
+    }
 }
