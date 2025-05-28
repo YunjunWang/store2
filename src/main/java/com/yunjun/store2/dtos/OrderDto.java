@@ -1,6 +1,6 @@
 package com.yunjun.store2.dtos;
 
-import com.yunjun.store2.entities.OrderStatus;
+import com.yunjun.store2.entities.PaymentStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +22,7 @@ public class OrderDto {
     private UserDto customer;
 
     @NotNull
-    private OrderStatus status;
+    private PaymentStatus status;
 
     private LocalDateTime createdAt;
 

@@ -2,11 +2,9 @@ package com.yunjun.store2.services.impls;
 
 import com.stripe.exception.StripeException;
 import com.yunjun.store2.dtos.OrderDto;
+import com.yunjun.store2.dtos.WebhookRequest;
 import com.yunjun.store2.entities.Order;
-import com.yunjun.store2.exceptions.CartIsEmptyException;
-import com.yunjun.store2.exceptions.CartNotFoundException;
-import com.yunjun.store2.exceptions.PaymentException;
-import com.yunjun.store2.exceptions.UserNotFoundException;
+import com.yunjun.store2.exceptions.*;
 import com.yunjun.store2.repositories.CartRepository;
 import com.yunjun.store2.repositories.OrderRepository;
 import com.yunjun.store2.repositories.UserRepository;
@@ -67,5 +65,28 @@ public class CheckoutServiceImpl implements CheckoutService {
             orderRepository.delete(order);
             throw new PaymentException(e.getMessage());
         }
+    }
+
+    /**
+     * It's always better to pass in fewer parameters in the method signature.
+     * Using a class for it is much more readable.
+     * By using classes, e.g., WebhookRequest and PaymentResult,
+     * we can avoid passing in any Stripe dependent objects to the service layer.
+     * These are now all payment gateway agnostics.
+     *
+     * The code here is self-explanatory.
+     *
+     * @param request
+     */
+    @Override
+    public void handleWebhookEvent(WebhookRequest request) {
+        paymentGateway
+                .parseWebhookRequest(request)
+                .ifPresent(paymentResult -> {
+                    // only look for the order without the items for performance optimization
+                    var order = orderRepository.findById(paymentResult.getOrderId()).orElseThrow(() -> new PaymentException("Cannot find order with id " + paymentResult.getOrderId()));
+                    order.setStatus(paymentResult.getPaymentStatus());
+                    orderRepository.save(order);
+                });
     }
 }

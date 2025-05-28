@@ -1,26 +1,44 @@
 package com.yunjun.store2.services.impls;
 
+import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Event;
+import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
+import com.stripe.net.Webhook;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.param.checkout.SessionCreateParams.Builder;
 import com.stripe.param.checkout.SessionCreateParams.LineItem;
 import com.stripe.param.checkout.SessionCreateParams.LineItem.PriceData;
 import com.stripe.param.checkout.SessionCreateParams.LineItem.PriceData.ProductData;
+import com.yunjun.store2.dtos.WebhookRequest;
+import com.yunjun.store2.dtos.PaymentResult;
 import com.yunjun.store2.entities.Order;
 import com.yunjun.store2.entities.OrderItem;
+import com.yunjun.store2.entities.PaymentStatus;
+import com.yunjun.store2.exceptions.OrderNotFoundException;
+import com.yunjun.store2.exceptions.PaymentException;
 import com.yunjun.store2.services.CheckoutSession;
 import com.yunjun.store2.services.PaymentGateway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
+/**
+ * Move all the Stripe Payment-related logic and details into this class.
+ *
+ */
 @Service
 public class StripePaymentGateway implements PaymentGateway {
 
     @Value("${websiteUrl}")
     private String websiteUrl;
+
+    @Value("${stripe.webhook.secret}")
+    private String webhookSecret;
+
     /**
      * @param order
      * @return
@@ -38,7 +56,53 @@ public class StripePaymentGateway implements PaymentGateway {
         return new CheckoutSession(session.getUrl());
     }
 
-    private static LineItem createLineItem(OrderItem item) {
+    /**
+     * @param request
+     * @return
+     */
+    @Override
+    public Optional<PaymentResult> parseWebhookRequest(WebhookRequest request) throws PaymentException, OrderNotFoundException {
+       try {
+           var event = Webhook.constructEvent(request.getPayload(), request.getHeaders().get("stripe-signature"), webhookSecret);
+
+           return switch (event.getType()) {
+                   case "payment_intent.succeeded" ->
+                       Optional.of(new PaymentResult(extractOrderId(event), PaymentStatus.PAID));
+
+                   case "payment_intent.payment_failed" ->
+                       Optional.of(new PaymentResult(extractOrderId(event), PaymentStatus.FAILED));
+
+                   default -> Optional.empty();
+           };
+       } catch (SignatureVerificationException e) {
+           throw new PaymentException("Invalid signature for webhook event");
+       }
+    }
+
+    /**
+     * event.getType()
+     * subscription renew
+     * charge -> (Charge) stripeObject
+     * payment_intent.* -> (PaymentIntent) stripeObject
+     *  ...
+     *
+     * System.out.println(event.getType());
+     * can get the event id and check it is new.
+     *
+     * If the version of Stripe API used is not compatible with the stripe-java library,
+     * event.getDataObjectDeserializer().getObject() can return null.
+     * To make sure it won't happen, make sure they are compatible by checking on the stripe-java GitHub repo,
+     * and the API is the latest in your Stripe account/Developers (Workbench) overview page.
+     * @param event
+     * @return
+     */
+    private Long extractOrderId(Event event) throws PaymentException {
+        var stripeObject = event.getDataObjectDeserializer().getObject().orElseThrow(() -> new PaymentException("Cannot deserialize Stripe object."));
+        var paymentIntent = (PaymentIntent) stripeObject;
+        return Long.valueOf(paymentIntent.getMetadata().get("order_id"));
+    }
+
+    private LineItem createLineItem(OrderItem item) {
         return LineItem.builder()
                 .setQuantity(Long.valueOf(item.getQuantity()))
                 // dynamic price data, if setPrice(price: String), it is expecting an ID from Stripe that has been registered
@@ -46,7 +110,7 @@ public class StripePaymentGateway implements PaymentGateway {
                 .build();
     }
 
-    private static PriceData createPriceData(OrderItem item) {
+    private PriceData createPriceData(OrderItem item) {
         return PriceData.builder()
                 .setCurrency("usd")
                 // Stripe requires the amount to be converted to cent of the currency
@@ -56,7 +120,7 @@ public class StripePaymentGateway implements PaymentGateway {
                 .build();
     }
 
-    private static ProductData createProductData(OrderItem item) {
+    private ProductData createProductData(OrderItem item) {
         return ProductData.builder()
                 .setName(item.getProduct().getName())
                 // .setDescription(item.getProduct().getDescription())

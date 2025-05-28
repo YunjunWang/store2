@@ -1,7 +1,11 @@
 package com.yunjun.store2.services;
 
 import com.stripe.exception.StripeException;
+import com.yunjun.store2.dtos.WebhookRequest;
+import com.yunjun.store2.dtos.PaymentResult;
 import com.yunjun.store2.entities.Order;
+
+import java.util.Optional;
 
 /**
  * name it with the suffix 'Gateway' as it is not a public service,
@@ -9,4 +13,6 @@ import com.yunjun.store2.entities.Order;
  */
 public interface PaymentGateway {
     CheckoutSession checkout(Order order) throws StripeException;
+
+    Optional<PaymentResult> parseWebhookRequest(WebhookRequest request);
 }

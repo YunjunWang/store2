@@ -1,7 +1,7 @@
 package com.yunjun.store2.services.impls;
 
 import com.yunjun.store2.dtos.OrderDto;
-import com.yunjun.store2.entities.OrderStatus;
+import com.yunjun.store2.entities.PaymentStatus;
 import com.yunjun.store2.exceptions.OrderNotFoundException;
 import com.yunjun.store2.exceptions.UserNotFoundException;
 import com.yunjun.store2.mappers.OrderMapper;
@@ -29,7 +29,7 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public OrderDto updateOrderStatus(Long orderId, OrderStatus status) {
+    public OrderDto updateOrderStatus(Long orderId, PaymentStatus status) {
        var order = orderRepository.findById(orderId).orElseThrow();
        order.setStatus(status);
        orderRepository.save(order);

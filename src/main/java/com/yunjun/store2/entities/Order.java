@@ -35,7 +35,7 @@ public class Order {
      */
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private PaymentStatus status;
 
     /**
      * Better use LocalDateTime than the Instant as suggested
@@ -51,7 +51,7 @@ public class Order {
 
     public static Order fromCart(Cart cart, User customer) {
         var order = Order.builder()
-                .status(OrderStatus.PENDING)
+                .status(PaymentStatus.PENDING)
                 .totalPrice(cart.getTotalPrice())
                 .customer(customer)
                 .build();
