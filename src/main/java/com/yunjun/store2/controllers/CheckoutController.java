@@ -3,6 +3,7 @@ package com.yunjun.store2.controllers;
 import com.stripe.exception.StripeException;
 import com.yunjun.store2.dtos.CheckoutRequest;
 import com.yunjun.store2.dtos.CheckoutResponse;
+import com.yunjun.store2.exceptions.PaymentException;
 import com.yunjun.store2.services.AuthService;
 import com.yunjun.store2.services.CheckoutService;
 import jakarta.validation.Valid;
@@ -19,7 +20,7 @@ public class CheckoutController {
 
     @PostMapping("/checkout")
     @ResponseStatus(HttpStatus.OK)
-    public CheckoutResponse checkoutOrder(@Valid @RequestBody CheckoutRequest request) throws IllegalArgumentException, StripeException {
+    public CheckoutResponse checkoutOrder(@Valid @RequestBody CheckoutRequest request) throws IllegalArgumentException, PaymentException {
         var orderDto = checkoutService.checkout(request.getCartId(), authService.getUserId());
         return new CheckoutResponse(orderDto.getId());
     }

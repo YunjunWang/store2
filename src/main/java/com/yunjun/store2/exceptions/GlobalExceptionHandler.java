@@ -52,8 +52,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.notFound().build();
     }
 
-    @ExceptionHandler(StripeException.class)
-    public ResponseEntity<ErrorDto> handleStripeCheckoutException() {
+    @ExceptionHandler(PaymentException.class)
+    public ResponseEntity<ErrorDto> handlePaymentException() {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                 new ErrorDto("An error occurred while processing the payment."));
     }
