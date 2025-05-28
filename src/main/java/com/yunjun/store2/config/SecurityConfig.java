@@ -137,6 +137,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
+                        // Stripe webhook isn't a human, therefore needs to allow it here
+                        .requestMatchers(HttpMethod.POST, "/api/checkout/webhook").permitAll()
                         .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
                         // .requestMatchers(HttpMethod.POST, "/api/auth/validate").permitAll()
                         .anyRequest().authenticated())

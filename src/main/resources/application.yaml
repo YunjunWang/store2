@@ -16,5 +16,8 @@ spring:
 #  swagger-ui:
 #    path: /swagger-ui.html
 stripe:
-  key: ${STRIPE_SECRET}
+  api:
+    secret: ${STRIPE_SECRET}
+  webhook:
+    secret: ${STRIPE_WEBHOOK_SECRET}
 websiteUrl: http://localhost:3000

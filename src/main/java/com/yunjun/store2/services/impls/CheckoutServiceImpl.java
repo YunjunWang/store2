@@ -1,8 +1,6 @@
 package com.yunjun.store2.services.impls;
 
 import com.stripe.exception.StripeException;
-import com.stripe.model.checkout.Session;
-import com.stripe.param.checkout.SessionCreateParams;
 import com.yunjun.store2.dtos.OrderDto;
 import com.yunjun.store2.entities.Order;
 import com.yunjun.store2.exceptions.CartIsEmptyException;
@@ -17,7 +15,6 @@ import com.yunjun.store2.services.CheckoutService;
 import com.yunjun.store2.services.CheckoutSession;
 import com.yunjun.store2.services.PaymentGateway;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
