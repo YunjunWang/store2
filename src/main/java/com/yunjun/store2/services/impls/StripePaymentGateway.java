@@ -14,6 +14,8 @@ import com.yunjun.store2.services.PaymentGateway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class StripePaymentGateway implements PaymentGateway {
 
@@ -47,7 +49,8 @@ public class StripePaymentGateway implements PaymentGateway {
     private static PriceData createPriceData(OrderItem item) {
         return PriceData.builder()
                 .setCurrency("usd")
-                .setUnitAmountDecimal(item.getUnitPrice())
+                // Stripe requires the amount to be converted to cent of the currency
+                .setUnitAmountDecimal(item.getUnitPrice().multiply(BigDecimal.valueOf(100)))
                 // dynamic product data, if setProduct(product: String), it is expecting an ID from Stripe that has been registered
                 .setProductData(createProductData(item))
                 .build();
@@ -65,6 +68,7 @@ public class StripePaymentGateway implements PaymentGateway {
                 .setMode((SessionCreateParams.Mode.PAYMENT))
                 // .setMode((SessionCreateParams.Mode.SUBSCRIPTION))
                 .setSuccessUrl(websiteUrl + "/checkout-success?orderId=" + order.getId())
-                .setCancelUrl(websiteUrl + "/checkout-cancel");
+                .setCancelUrl(websiteUrl + "/checkout-cancel")
+                .putMetadata("order_id", order.getId().toString());
     }
 }

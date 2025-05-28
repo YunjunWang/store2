@@ -38,7 +38,10 @@
         <dependency>
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
-            <version>27.1.0</version>
+            <version>29.1.0</version> <!-- check the latest version from stripe-java GitHub repo
+                                            search 'develop' on your Stripe account dashboard and
+                                            go to the Developers overview page,
+                                            check you are using the latest Stripe API version already.-->
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
