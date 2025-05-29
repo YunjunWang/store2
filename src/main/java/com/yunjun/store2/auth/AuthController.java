@@ -1,6 +1,5 @@
 package com.yunjun.store2.auth;
 
-import com.yunjun.store2.users.UserService;
 import com.yunjun.store2.users.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.Cookie;
@@ -8,63 +7,46 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-
-    private final UserService userService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtConfig jwtConfig;
-    private final JwtService jwtService;
     private final AuthService authService;
+    private final JwtConfig jwtConfig;
 
     @PostMapping("/login")
     @Operation(summary = "Login a user with credentials")
     @ResponseStatus(HttpStatus.OK)
-    public LoginResponse loginUser(
+    public JwtResponse loginUser(
             @Valid @RequestBody LoginRequest request,
             HttpServletResponse response) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail() ,
-                        request.getPassword()
-                )
-        );
-        var userDto = userService.getUserByEmail(request.getEmail());
-        var refreshToken = jwtService.generateRefreshToken(userDto);
-        var cookie = new Cookie("refreshToken", refreshToken.toString());
+        var loginResult = authService.loginUser(request, response);
+        var cookie = new Cookie("refreshToken", loginResult.getRefreshToken().toString());
         cookie.setHttpOnly(true);
         cookie.setPath("/auth/refresh");
         cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration());
         cookie.setSecure(true);
         response.addCookie(cookie);
 
-        return new LoginResponse(jwtService.generateAccessToken(userDto).toString());
+        return new JwtResponse(loginResult.getAccessToken().toString());
     }
 
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get the current user")
     public UserDto me() {
-        return userService.getUserById(authService.getUserId());
+        return authService.getCurrentUser();
     }
 
     @PostMapping("/refresh")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Refresh the access token with refresh token")
-    public LoginResponse refreshToken(@CookieValue(value = "refreshToken") String refreshToken) throws BadCredentialsException {
-        var jwt = jwtService.parse(refreshToken);
-        if (jwt == null || jwt.isExpired()) {
-            throw new BadCredentialsException("Invalid refresh token");
-        }
-        var userDto = userService.getUserById(jwt.getUserId());
-        return new LoginResponse(jwtService.generateAccessToken(userDto).toString());
+    public JwtResponse refreshToken(@CookieValue(value = "refreshToken") String refreshToken) throws BadCredentialsException {
+        var accessToken = authService.refreshAccessToken(refreshToken);
+        return new JwtResponse(accessToken.toString());
     }
 
     /**
