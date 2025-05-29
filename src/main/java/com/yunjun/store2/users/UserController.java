@@ -19,6 +19,10 @@ import java.util.List;
  *
  * This class should be responsible for handling all requests related to users,
  * including registration, and user profile management, changing password.
+ *
+ * @author yunjunwang
+ * @since 29/05/2025
+ *
  */
 @AllArgsConstructor
 @RestController
@@ -28,6 +32,7 @@ public class UserController {
     private final UserService userService;
 
     /**
+     * @param sortBy
      * @return
      */
     @GetMapping
