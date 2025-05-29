@@ -1,4 +1,4 @@
-package com.yunjun.store2.entities;
+package com.yunjun.store2.carts;
 
 import com.yunjun.store2.products.Product;
 import jakarta.persistence.*;

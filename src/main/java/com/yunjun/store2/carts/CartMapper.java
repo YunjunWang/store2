@@ -1,7 +1,5 @@
-package com.yunjun.store2.mappers;
+package com.yunjun.store2.carts;
 
-import com.yunjun.store2.dtos.CartDto;
-import com.yunjun.store2.entities.Cart;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

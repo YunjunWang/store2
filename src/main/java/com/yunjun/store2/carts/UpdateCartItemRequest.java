@@ -1,4 +1,4 @@
-package com.yunjun.store2.dtos;
+package com.yunjun.store2.carts;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

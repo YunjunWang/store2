@@ -1,5 +1,6 @@
 package com.yunjun.store2.entities;
 
+import com.yunjun.store2.carts.Cart;
 import jakarta.persistence.*;
 import lombok.*;
 

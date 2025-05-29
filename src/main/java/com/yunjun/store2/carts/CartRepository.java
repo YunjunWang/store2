@@ -1,6 +1,5 @@
-package com.yunjun.store2.repositories;
+package com.yunjun.store2.carts;
 
-import com.yunjun.store2.entities.Cart;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

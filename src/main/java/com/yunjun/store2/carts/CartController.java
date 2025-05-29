@@ -1,12 +1,6 @@
-package com.yunjun.store2.controllers;
+package com.yunjun.store2.carts;
 
-import com.yunjun.store2.dtos.AddItemToCartRequest;
-import com.yunjun.store2.dtos.CartDto;
-import com.yunjun.store2.dtos.CartItemDto;
-import com.yunjun.store2.dtos.UpdateCartItemRequest;
-import com.yunjun.store2.exceptions.CartNotFoundException;
 import com.yunjun.store2.products.ProductNotFoundException;
-import com.yunjun.store2.services.CartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
