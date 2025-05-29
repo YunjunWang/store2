@@ -1,4 +1,4 @@
-package com.yunjun.store2.controllers;
+package com.yunjun.store2.admin;
 
 import com.yunjun.store2.users.UserDto;
 import com.yunjun.store2.users.UserService;

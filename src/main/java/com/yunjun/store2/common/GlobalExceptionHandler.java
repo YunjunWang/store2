@@ -1,4 +1,4 @@
-package com.yunjun.store2.exceptions;
+package com.yunjun.store2.common;
 
 import com.yunjun.store2.carts.CartIsEmptyException;
 import com.yunjun.store2.carts.CartNotFoundException;
@@ -6,7 +6,6 @@ import com.yunjun.store2.orders.OrderNotFoundException;
 import com.yunjun.store2.products.CategoryNotFoundException;
 import com.yunjun.store2.products.ProductNotFoundException;
 import com.yunjun.store2.users.UserAlreadyExistsException;
-import com.yunjun.store2.dtos.ErrorDto;
 import com.yunjun.store2.payments.PaymentException;
 import com.yunjun.store2.users.UserNotFoundException;
 import org.springframework.http.HttpStatus;
