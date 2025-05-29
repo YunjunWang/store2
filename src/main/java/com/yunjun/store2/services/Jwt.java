@@ -1,7 +1,6 @@
 package com.yunjun.store2.services;
 
-import com.yunjun.store2.dtos.UserDto;
-import com.yunjun.store2.entities.Role;
+import com.yunjun.store2.users.Role;
 import io.jsonwebtoken.*;
 import lombok.AllArgsConstructor;
 

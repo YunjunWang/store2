@@ -1,6 +1,6 @@
 package com.yunjun.store2.services;
 
-import com.yunjun.store2.dtos.UserDto;
+import com.yunjun.store2.users.UserDto;
 
 public interface JwtService {
     Jwt generateAccessToken(UserDto userDto);

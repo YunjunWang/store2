@@ -1,12 +1,7 @@
-package com.yunjun.store2.mappers;
+package com.yunjun.store2.users;
 
-import com.yunjun.store2.dtos.ChangePasswordRequest;
 import com.yunjun.store2.dtos.RegisterUserRequest;
-import com.yunjun.store2.dtos.UpdateUserRequest;
-import com.yunjun.store2.dtos.UserDto;
-import com.yunjun.store2.entities.User;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 /**

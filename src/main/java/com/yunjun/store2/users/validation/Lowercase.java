@@ -1,8 +1,7 @@
-package com.yunjun.store2.validation;
+package com.yunjun.store2.users.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import org.mapstruct.AnnotateWith;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,7 +1,7 @@
 package com.yunjun.store2.services.impls;
 
 import com.yunjun.store2.config.JwtConfig;
-import com.yunjun.store2.dtos.UserDto;
+import com.yunjun.store2.users.UserDto;
 import com.yunjun.store2.services.Jwt;
 import com.yunjun.store2.services.JwtService;
 import io.jsonwebtoken.*;

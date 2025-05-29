@@ -2,6 +2,7 @@ package com.yunjun.store2.exceptions;
 
 import com.yunjun.store2.dtos.ErrorDto;
 import com.yunjun.store2.payments.PaymentException;
+import com.yunjun.store2.users.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

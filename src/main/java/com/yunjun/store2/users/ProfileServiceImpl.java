@@ -1,7 +1,6 @@
-package com.yunjun.store2.services.impls;
+package com.yunjun.store2.users;
 
 import com.yunjun.store2.repositories.ProfileRepository;
-import com.yunjun.store2.services.ProfileService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

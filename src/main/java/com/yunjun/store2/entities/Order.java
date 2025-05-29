@@ -9,6 +9,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.yunjun.store2.users.User;
+
 
 @NoArgsConstructor
 @AllArgsConstructor

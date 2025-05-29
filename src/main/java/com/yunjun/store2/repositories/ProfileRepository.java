@@ -1,7 +1,7 @@
 package com.yunjun.store2.repositories;
 
 import com.yunjun.store2.dtos.ProfileSummaryDto;
-import com.yunjun.store2.entities.Profile;
+import com.yunjun.store2.users.Profile;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;

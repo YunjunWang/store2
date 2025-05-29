@@ -1,10 +1,8 @@
-package com.yunjun.store2.services;
+package com.yunjun.store2.users;
 
 import com.yunjun.store2.dtos.*;
-import com.yunjun.store2.entities.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
     List<UserDto> getAllUsers(String sortBy);

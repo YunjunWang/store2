@@ -1,6 +1,5 @@
-package com.yunjun.store2.dtos;
+package com.yunjun.store2.users;
 
-import com.yunjun.store2.entities.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -8,7 +8,7 @@ import com.yunjun.store2.exceptions.ProductNotFoundException;
 import com.yunjun.store2.mappers.ProductMapper;
 import com.yunjun.store2.repositories.CategoryRepository;
 import com.yunjun.store2.repositories.ProductRepository;
-import com.yunjun.store2.repositories.UserRepository;
+import com.yunjun.store2.users.UserRepository;
 import com.yunjun.store2.repositories.spec.ProductSpec;
 import com.yunjun.store2.services.ProductService;
 import jakarta.transaction.Transactional;

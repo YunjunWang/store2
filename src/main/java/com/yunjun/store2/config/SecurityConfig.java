@@ -1,6 +1,6 @@
 package com.yunjun.store2.config;
 
-import com.yunjun.store2.entities.Role;
+import com.yunjun.store2.users.Role;
 import com.yunjun.store2.filters.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;

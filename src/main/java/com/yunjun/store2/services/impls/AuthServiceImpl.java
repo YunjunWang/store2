@@ -1,6 +1,6 @@
 package com.yunjun.store2.services.impls;
 
-import com.yunjun.store2.repositories.UserRepository;
+import com.yunjun.store2.users.UserRepository;
 import com.yunjun.store2.services.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;

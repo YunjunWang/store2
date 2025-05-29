@@ -1,4 +1,4 @@
-package com.yunjun.store2.entities;
+package com.yunjun.store2.users;
 
 public enum Role {
     USER,

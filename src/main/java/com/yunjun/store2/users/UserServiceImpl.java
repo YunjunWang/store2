@@ -1,17 +1,9 @@
-package com.yunjun.store2.services.impls;
+package com.yunjun.store2.users;
 
 import com.yunjun.store2.dtos.*;
-import com.yunjun.store2.entities.Address;
-import com.yunjun.store2.entities.Profile;
-import com.yunjun.store2.entities.Role;
-import com.yunjun.store2.entities.User;
 import com.yunjun.store2.exceptions.UserAlreadyExistsException;
-import com.yunjun.store2.exceptions.UserNotFoundException;
-import com.yunjun.store2.mappers.UserMapper;
 import com.yunjun.store2.repositories.AddressRepository;
 import com.yunjun.store2.repositories.ProfileRepository;
-import com.yunjun.store2.repositories.UserRepository;
-import com.yunjun.store2.services.UserService;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;

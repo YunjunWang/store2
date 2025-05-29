@@ -1,7 +1,7 @@
 package com.yunjun.store2.controllers;
 
-import com.yunjun.store2.dtos.UserDto;
-import com.yunjun.store2.services.UserService;
+import com.yunjun.store2.users.UserDto;
+import com.yunjun.store2.users.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

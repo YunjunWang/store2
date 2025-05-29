@@ -1,6 +1,6 @@
 package com.yunjun.store2.dtos;
 
-import com.yunjun.store2.validation.Lowercase;
+import com.yunjun.store2.users.validation.Lowercase;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

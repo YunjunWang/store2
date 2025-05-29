@@ -6,8 +6,9 @@ import com.yunjun.store2.entities.Order;
 import com.yunjun.store2.exceptions.*;
 import com.yunjun.store2.repositories.CartRepository;
 import com.yunjun.store2.repositories.OrderRepository;
-import com.yunjun.store2.repositories.UserRepository;
+import com.yunjun.store2.users.UserRepository;
 import com.yunjun.store2.services.CartService;
+import com.yunjun.store2.users.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,7 @@ public class CheckoutServiceImpl implements CheckoutService {
      */
     @Transactional
     @Override
-    public OrderDto checkout(UUID cartId, Long userId) throws PaymentException, CartNotFoundException, CartIsEmptyException, UserNotFoundException{
+    public OrderDto checkout(UUID cartId, Long userId) throws PaymentException, CartNotFoundException, CartIsEmptyException, UserNotFoundException {
         if (cartId == null) {
             throw new IllegalArgumentException("Invalid card ID");
         }

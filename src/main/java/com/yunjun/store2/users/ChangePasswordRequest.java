@@ -1,4 +1,4 @@
-package com.yunjun.store2.dtos;
+package com.yunjun.store2.users;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

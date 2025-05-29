@@ -1,8 +1,7 @@
-package com.yunjun.store2.entities;
+package com.yunjun.store2.users;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.proxy.HibernateProxy;
 
 import java.util.*;
 

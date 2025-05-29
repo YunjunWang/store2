@@ -1,7 +1,4 @@
-package com.yunjun.store2.controllers;
-
-import com.yunjun.store2.dtos.*;
-import com.yunjun.store2.services.UserService;
+package com.yunjun.store2.users;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
