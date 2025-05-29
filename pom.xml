@@ -10,7 +10,8 @@
     </parent>
     <groupId>com.yunjun</groupId>
     <artifactId>store2</artifactId>
-    <version>1.0.1</version>
+    <!-- set stable version number for PROD deployment -->
+    <version>1.0.0</version>
     <name>store2</name>
     <description>store2</description>
     <url/>
@@ -27,6 +28,7 @@
         <url/>
     </scm>
     <properties>
+        <!-- use the java version supported by the chosen deployment platform -->
         <java.version>17</java.version>
     </properties>
     <dependencies>
@@ -134,14 +136,23 @@
 
     <build>
         <plugins>
+            <!-- the plugin and configs here are needed for deployment for DEV/TEST/PROD -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <!-- skip the version here to inherit it from the parent pom.xml file -->
                 <configuration>
+                    <!--
+                    The IntelliJ IDEA can handle it behind the scene.
+                    However, when building the application using Maven directly,
+                    we need to explicitly declare the processors;
+                    otherwise things like Lombok generated getters/setters ect.,
+                    will be missing -->
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <!-- defined by the parent pom.xml file, use it here -->
                             <version>${lombok.version}</version>
                         </path>
                         <path>
