@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
      * User @Transactional to make the transaction scope longer
      * in the persistent context
      */
-    @Transactional
+    /*@Transactional
     public void showRelatedState() {
         User user = User.builder()
                 .name("John")
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
         } else {
             System.out.println("transitional / detached");
         }
-    }
+    }*/
 
     /**
      * The @Transactional makes the transaction scope longer for this whole method.
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
      * as the user is not the owner of the relationship, the Eager loading fetching strategy
      * is applied by default.
      */
-    @Transactional
+    /*@Transactional
     public void showRelatedEntities() {
         var user = userRepository.findById(1L).orElseThrow();
         System.out.println(user.getEmail());
@@ -107,13 +107,13 @@ public class UserServiceImpl implements UserService {
         Address address = user.getAddresses().getFirst();
         user.removeAddress(address);
         userRepository.save(user);
-    }
+    }*/
 
     /**
      * needed @Transactional when we are using @ToString including the lazy loading attributes
      *
      */
-    public void fetchUser() {
+    /*public void fetchUser() {
         var user = userRepository.findByEmail("john1@example.com").orElseThrow();
 //        System.out.println(user.getEmail());
         System.out.println(user);
@@ -137,6 +137,7 @@ public class UserServiceImpl implements UserService {
             System.out.println(u.getId() + ": " + u.getEmail());
         });
     }
+*/
 
     /**
      * @return
