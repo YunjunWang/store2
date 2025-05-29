@@ -1,4 +1,4 @@
-package com.yunjun.store2.dtos;
+package com.yunjun.store2.payments;
 
 import com.yunjun.store2.entities.PaymentStatus;
 import lombok.AllArgsConstructor;

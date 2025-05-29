@@ -1,4 +1,4 @@
-package com.yunjun.store2.exceptions;
+package com.yunjun.store2.payments;
 
 import lombok.NoArgsConstructor;
 

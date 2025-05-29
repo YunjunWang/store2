@@ -1,4 +1,4 @@
-package com.yunjun.store2.services;
+package com.yunjun.store2.payments;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

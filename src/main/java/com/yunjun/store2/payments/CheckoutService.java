@@ -1,8 +1,6 @@
-package com.yunjun.store2.services;
+package com.yunjun.store2.payments;
 
 import com.yunjun.store2.dtos.OrderDto;
-import com.yunjun.store2.dtos.WebhookRequest;
-import com.yunjun.store2.exceptions.PaymentException;
 
 import java.util.UUID;
 

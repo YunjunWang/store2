@@ -1,4 +1,4 @@
-package com.yunjun.store2.services.impls;
+package com.yunjun.store2.payments;
 
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
@@ -11,15 +11,10 @@ import com.stripe.param.checkout.SessionCreateParams.Builder;
 import com.stripe.param.checkout.SessionCreateParams.LineItem;
 import com.stripe.param.checkout.SessionCreateParams.LineItem.PriceData;
 import com.stripe.param.checkout.SessionCreateParams.LineItem.PriceData.ProductData;
-import com.yunjun.store2.dtos.WebhookRequest;
-import com.yunjun.store2.dtos.PaymentResult;
 import com.yunjun.store2.entities.Order;
 import com.yunjun.store2.entities.OrderItem;
 import com.yunjun.store2.entities.PaymentStatus;
 import com.yunjun.store2.exceptions.OrderNotFoundException;
-import com.yunjun.store2.exceptions.PaymentException;
-import com.yunjun.store2.services.CheckoutSession;
-import com.yunjun.store2.services.PaymentGateway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

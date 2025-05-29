@@ -1,4 +1,4 @@
-package com.yunjun.store2.dtos;
+package com.yunjun.store2.payments;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

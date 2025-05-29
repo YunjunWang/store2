@@ -1,12 +1,6 @@
-package com.yunjun.store2.controllers;
+package com.yunjun.store2.payments;
 
-import com.yunjun.store2.dtos.CheckoutRequest;
-import com.yunjun.store2.dtos.CheckoutResponse;
-import com.yunjun.store2.dtos.WebhookRequest;
-import com.yunjun.store2.exceptions.PaymentException;
-import com.yunjun.store2.repositories.OrderRepository;
 import com.yunjun.store2.services.AuthService;
-import com.yunjun.store2.services.CheckoutService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +14,6 @@ import java.util.Map;
 public class CheckoutController {
     private final CheckoutService checkoutService;
     private final AuthService authService;
-    private final OrderRepository orderRepository;
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)

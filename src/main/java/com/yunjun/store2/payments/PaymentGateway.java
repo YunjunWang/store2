@@ -1,8 +1,6 @@
-package com.yunjun.store2.services;
+package com.yunjun.store2.payments;
 
 import com.stripe.exception.StripeException;
-import com.yunjun.store2.dtos.WebhookRequest;
-import com.yunjun.store2.dtos.PaymentResult;
 import com.yunjun.store2.entities.Order;
 
 import java.util.Optional;

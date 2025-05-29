@@ -1,4 +1,4 @@
-package com.yunjun.store2.config;
+package com.yunjun.store2.payments;
 
 import com.stripe.Stripe;
 import jakarta.annotation.PostConstruct;
