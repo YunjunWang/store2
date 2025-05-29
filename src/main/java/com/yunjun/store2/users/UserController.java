@@ -6,33 +6,42 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 /**
  * Use @RequestMapping to define the URL path in general purpose
  *
  * @Controller is used to return HTML views.
  * @RestController is a convenience annotation that returns JSON data directly.
+ *
+ * This class should be responsible for handling all requests related to users,
+ * including registration, and user profile management, changing password.
  */
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/users")
 @Tag(name = "users", description = "Operations about users")
 public class UserController {
-    private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
+    /**
+     * @return
+     */
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all users")
+    public List<UserDto> getUsers(@RequestParam(name="sort", required = false, defaultValue = "") String sortBy) {
+        return userService.getAllUsers(sortBy);
+    }
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
     public ResponseEntity<UserDto> registerUser(
             @Valid @RequestBody RegisterUserRequest request,
             UriComponentsBuilder uriBuilder) throws IllegalArgumentException{
-        // We can never decode it when the user login, we'll hash it again to compare with the database
-        // password should be encoded in the API layer to avoid inherited security vulnerabilities.
-        request.setPassword(passwordEncoder.encode(request.getPassword()));
         var userDto = userService.registerUser(request);
         var uri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
         return ResponseEntity.created(uri).body(userDto);

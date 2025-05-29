@@ -10,6 +10,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
+/**
+ * This class is used to load user details from the database and used by Spring Security to authenticate users.
+ * This is part of the infrastructure code, not the application code.
+ * Therefore, it should be in a separate from the application code layer.
+ */
 @AllArgsConstructor
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

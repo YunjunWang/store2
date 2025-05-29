@@ -1,13 +1,14 @@
 package com.yunjun.store2.users;
 
-import com.yunjun.store2.auth.LoginRequest;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -17,6 +18,7 @@ public class UserServiceImpl implements UserService {
     private final ProfileRepository profileRepository;
     private final AddressRepository addressRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * User @Transactional to make the transaction scope longer
@@ -141,6 +143,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<UserDto> getAllUsers(String sortBy) {
+        if (!Set.of("name", "email").contains(sortBy))
+            sortBy = "name";
         return userRepository
                 .findAll(Sort.by(sortBy))
                 .stream()
@@ -164,6 +168,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto registerUser(RegisterUserRequest request) throws UserAlreadyExistsException{
+        // We can never decode it when the user login, we'll hash it again to compare with the database
+        // password should be encoded in the API layer to avoid inherited security vulnerabilities.
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
+
         if (userRepository.existsUserByEmail(request.getEmail())) {
             throw new UserAlreadyExistsException();
         }
@@ -201,7 +209,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto changePassword(ChangePasswordRequest request, Long id) throws IllegalAccessException, IllegalArgumentException {
         var user = userRepository.findById(id).orElseThrow(() -> new IllegalAccessException("User not found"));
-        if (!user.getPassword().equals(request.getOldPassword()) || !user.getEmail().equals(request.getEmail())) {
+        var oldPwd = passwordEncoder.encode(request.getOldPassword());
+        if (!user.getPassword().equals(oldPwd) || !user.getEmail().equals(request.getEmail())) {
             throw new IllegalAccessException("Invalid password or username not found");
         }
         if (!request.getNewPassword().equals(request.getConfirmedPassword())) {
