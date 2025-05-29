@@ -1,6 +1,5 @@
-package com.yunjun.store2.dtos;
+package com.yunjun.store2.orders;
 
-import com.yunjun.store2.entities.PaymentStatus;
 import com.yunjun.store2.users.UserDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

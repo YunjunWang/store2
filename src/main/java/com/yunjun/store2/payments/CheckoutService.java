@@ -1,6 +1,6 @@
 package com.yunjun.store2.payments;
 
-import com.yunjun.store2.dtos.OrderDto;
+import com.yunjun.store2.orders.OrderDto;
 
 import java.util.UUID;
 

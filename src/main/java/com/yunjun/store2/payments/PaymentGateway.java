@@ -1,7 +1,7 @@
 package com.yunjun.store2.payments;
 
 import com.stripe.exception.StripeException;
-import com.yunjun.store2.entities.Order;
+import com.yunjun.store2.orders.Order;
 
 import java.util.Optional;
 

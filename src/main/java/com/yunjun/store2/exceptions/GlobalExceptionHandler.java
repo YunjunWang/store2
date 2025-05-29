@@ -2,6 +2,7 @@ package com.yunjun.store2.exceptions;
 
 import com.yunjun.store2.carts.CartIsEmptyException;
 import com.yunjun.store2.carts.CartNotFoundException;
+import com.yunjun.store2.orders.OrderNotFoundException;
 import com.yunjun.store2.products.CategoryNotFoundException;
 import com.yunjun.store2.products.ProductNotFoundException;
 import com.yunjun.store2.users.UserAlreadyExistsException;

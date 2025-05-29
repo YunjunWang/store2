@@ -1,7 +1,5 @@
-package com.yunjun.store2.controllers;
+package com.yunjun.store2.orders;
 
-import com.yunjun.store2.dtos.OrderDto;
-import com.yunjun.store2.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

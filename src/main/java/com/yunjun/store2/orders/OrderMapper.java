@@ -1,7 +1,5 @@
-package com.yunjun.store2.mappers;
+package com.yunjun.store2.orders;
 
-import com.yunjun.store2.dtos.OrderDto;
-import com.yunjun.store2.entities.Order;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
