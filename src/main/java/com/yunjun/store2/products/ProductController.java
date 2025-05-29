@@ -1,8 +1,5 @@
-package com.yunjun.store2.controllers;
+package com.yunjun.store2.products;
 
-import com.yunjun.store2.dtos.ProductDto;
-import com.yunjun.store2.mappers.ProductMapper;
-import com.yunjun.store2.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

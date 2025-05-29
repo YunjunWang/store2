@@ -2,9 +2,8 @@ package com.yunjun.store2.services;
 
 import com.yunjun.store2.dtos.CartDto;
 import com.yunjun.store2.dtos.CartItemDto;
-import com.yunjun.store2.dtos.OrderDto;
 import com.yunjun.store2.exceptions.CartNotFoundException;
-import com.yunjun.store2.exceptions.ProductNotFoundException;
+import com.yunjun.store2.products.ProductNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

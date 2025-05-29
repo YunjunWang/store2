@@ -1,8 +1,6 @@
-package com.yunjun.store2.mappers;
+package com.yunjun.store2.products;
 
 import com.yunjun.store2.dtos.CartProductDto;
-import com.yunjun.store2.dtos.ProductDto;
-import com.yunjun.store2.entities.Product;
 import jakarta.validation.constraints.NotNull;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

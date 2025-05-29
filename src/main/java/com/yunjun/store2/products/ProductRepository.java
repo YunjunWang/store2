@@ -1,9 +1,5 @@
-package com.yunjun.store2.repositories;
+package com.yunjun.store2.products;
 
-import com.yunjun.store2.dtos.ProductSummaryDto;
-import com.yunjun.store2.dtos.ProductSummaryProjection;
-import com.yunjun.store2.entities.Category;
-import com.yunjun.store2.entities.Product;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
@@ -111,7 +107,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
    * @param category
    * @return
    */
-  @Query("select new com.yunjun.store2.dtos.ProductSummaryDto(p.id, p.name) from Product p where p.category = :category")
+  @Query("select new com.yunjun.store2.products.ProductSummaryDto(p.id, p.name) from Product p where p.category = :category")
   List<ProductSummaryDto> getProductsD(@Param("category") Category category);
 
   @EntityGraph(attributePaths = {"category"}) // equivalent as "join fetch p.category", make multi sql queries to be single

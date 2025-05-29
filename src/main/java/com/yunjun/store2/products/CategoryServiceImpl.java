@@ -1,6 +1,5 @@
-package com.yunjun.store2.services.impls;
+package com.yunjun.store2.products;
 
-import com.yunjun.store2.services.CategoryService;
 import org.springframework.stereotype.Service;
 
 @Service

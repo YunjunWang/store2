@@ -1,5 +1,6 @@
 package com.yunjun.store2.entities;
 
+import com.yunjun.store2.products.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

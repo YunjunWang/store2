@@ -1,6 +1,6 @@
-package com.yunjun.store2.repositories.spec;
+package com.yunjun.store2.products.spec;
 
-import com.yunjun.store2.entities.Product;
+import com.yunjun.store2.products.Product;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;

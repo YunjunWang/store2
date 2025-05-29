@@ -1,4 +1,4 @@
-package com.yunjun.store2.entities;
+package com.yunjun.store2.products;
 
 import jakarta.persistence.*;
 import lombok.*;

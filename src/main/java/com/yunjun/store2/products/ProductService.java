@@ -1,6 +1,4 @@
-package com.yunjun.store2.services;
-
-import com.yunjun.store2.dtos.ProductDto;
+package com.yunjun.store2.products;
 
 import java.util.List;
 

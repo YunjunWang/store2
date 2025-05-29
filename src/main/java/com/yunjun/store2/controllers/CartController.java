@@ -5,7 +5,7 @@ import com.yunjun.store2.dtos.CartDto;
 import com.yunjun.store2.dtos.CartItemDto;
 import com.yunjun.store2.dtos.UpdateCartItemRequest;
 import com.yunjun.store2.exceptions.CartNotFoundException;
-import com.yunjun.store2.exceptions.ProductNotFoundException;
+import com.yunjun.store2.products.ProductNotFoundException;
 import com.yunjun.store2.services.CartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

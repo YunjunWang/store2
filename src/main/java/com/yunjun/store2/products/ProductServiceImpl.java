@@ -1,16 +1,7 @@
-package com.yunjun.store2.services.impls;
+package com.yunjun.store2.products;
 
-import com.yunjun.store2.dtos.ProductDto;
-import com.yunjun.store2.entities.Category;
-import com.yunjun.store2.entities.Product;
-import com.yunjun.store2.exceptions.CategoryNotFoundException;
-import com.yunjun.store2.exceptions.ProductNotFoundException;
-import com.yunjun.store2.mappers.ProductMapper;
-import com.yunjun.store2.repositories.CategoryRepository;
-import com.yunjun.store2.repositories.ProductRepository;
 import com.yunjun.store2.users.UserRepository;
-import com.yunjun.store2.repositories.spec.ProductSpec;
-import com.yunjun.store2.services.ProductService;
+import com.yunjun.store2.products.spec.ProductSpec;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Example;

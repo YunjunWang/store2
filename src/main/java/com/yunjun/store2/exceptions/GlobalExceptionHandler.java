@@ -1,5 +1,7 @@
 package com.yunjun.store2.exceptions;
 
+import com.yunjun.store2.products.CategoryNotFoundException;
+import com.yunjun.store2.products.ProductNotFoundException;
 import com.yunjun.store2.users.UserAlreadyExistsException;
 import com.yunjun.store2.dtos.ErrorDto;
 import com.yunjun.store2.payments.PaymentException;

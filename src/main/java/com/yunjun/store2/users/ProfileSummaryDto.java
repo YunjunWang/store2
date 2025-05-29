@@ -1,4 +1,4 @@
-package com.yunjun.store2.dtos;
+package com.yunjun.store2.users;
 
 public interface ProfileSummaryDto {
     Long getId();

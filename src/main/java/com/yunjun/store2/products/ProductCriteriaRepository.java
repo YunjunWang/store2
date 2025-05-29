@@ -1,7 +1,4 @@
-package com.yunjun.store2.repositories;
-
-import com.yunjun.store2.entities.Category;
-import com.yunjun.store2.entities.Product;
+package com.yunjun.store2.products;
 
 import java.math.BigDecimal;
 import java.util.List;
