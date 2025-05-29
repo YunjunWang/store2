@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/store?createDatabaseIfNotExist=true
+    username: root
+    password: password
+  jpa:
+    show-sql: true
+## swagger-ui custom path if needed
+#springdoc:
+#  swagger-ui:
+#    path: /swagger-ui.html
+websiteUrl: http://localhost:4242

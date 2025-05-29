@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL} # use environment variable for this url which will include credentials, also this file will be in the repo, no credentials should be in this file
+## swagger-ui custom path if needed
+#springdoc:
+#  swagger-ui:
+#    path: /swagger-ui.html
+websiteUrl: https://mystore.com

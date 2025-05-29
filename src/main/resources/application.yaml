@@ -1,23 +1,14 @@
 spring:
   application:
     name: store
-  datasource:
-    url: jdbc:mysql://localhost:3306/store?createDatabaseIfNotExist=true
-    username: root
-    password: password
-  jpa:
-    show-sql: true
   jwt:
-    secret: ${JWT_SECRET}
-    accessTokenExpiration: 7200 # 2h # 300 # 5m
+    secret: ${JWT_SECRET} # environment variables are common, keep in general application.yaml
+    accessTokenExpiration: 900 # 15 min ## 7200 # 2h ## 300 # 5m
     refreshTokenExpiration: 608400 # 7d
-## swagger-ui custom path if needed
-#springdoc:
-#  swagger-ui:
-#    path: /swagger-ui.html
+  profiles:
+    active: dev
 stripe:
   api:
     secret: ${STRIPE_SECRET}
   webhook:
     secret: ${STRIPE_WEBHOOK_SECRET}
-websiteUrl: http://localhost:3000
