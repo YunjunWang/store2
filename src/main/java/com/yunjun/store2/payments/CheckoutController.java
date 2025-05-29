@@ -1,6 +1,6 @@
 package com.yunjun.store2.payments;
 
-import com.yunjun.store2.services.AuthService;
+import com.yunjun.store2.auth.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

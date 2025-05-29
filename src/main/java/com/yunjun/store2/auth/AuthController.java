@@ -1,9 +1,5 @@
-package com.yunjun.store2.controllers;
+package com.yunjun.store2.auth;
 
-import com.yunjun.store2.config.JwtConfig;
-import com.yunjun.store2.dtos.*;
-import com.yunjun.store2.services.AuthService;
-import com.yunjun.store2.services.JwtService;
 import com.yunjun.store2.users.UserService;
 import com.yunjun.store2.users.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,13 +8,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @AllArgsConstructor
 @RestController
@@ -26,30 +19,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class AuthController {
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtConfig jwtConfig;
     private final JwtService jwtService;
     private final AuthService authService;
 
-    @PostMapping("/register")
-    @Operation(summary = "Register a new user")
-    public ResponseEntity<UserDto> registerUser(
-            @Valid @RequestBody RegisterUserRequest request,
-            UriComponentsBuilder uriBuilder) throws IllegalArgumentException{
-        // We can never decode it when the user login, we'll hash it again to compare with the database
-        // password should be encoded in the API layer to avoid inherited security vulnerabilities.
-        request.setPassword(passwordEncoder.encode(request.getPassword()));
-        var userDto = userService.registerUser(request);
-        var uri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
-        return ResponseEntity.created(uri).body(userDto);
-    }
-
     @PostMapping("/login")
     @Operation(summary = "Login a user with credentials")
     @ResponseStatus(HttpStatus.OK)
     public LoginResponse loginUser(
-            @Valid @RequestBody LoginUserRequest request,
+            @Valid @RequestBody LoginRequest request,
             HttpServletResponse response) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

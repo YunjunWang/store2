@@ -1,6 +1,5 @@
 package com.yunjun.store2.users;
 
-import com.yunjun.store2.dtos.RegisterUserRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 

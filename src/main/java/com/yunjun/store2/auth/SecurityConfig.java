@@ -1,7 +1,6 @@
-package com.yunjun.store2.config;
+package com.yunjun.store2.auth;
 
 import com.yunjun.store2.users.Role;
-import com.yunjun.store2.filters.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -134,10 +133,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(c -> c
                         .requestMatchers(HttpMethod.POST, "/api/carts").permitAll()
                         .requestMatchers( "/api/carts/{cartId}/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
-                        // Stripe webhook isn't a human, therefore needs to allow it here
+                        // Stripe webhook isn't a human, therefore, needs to allow it here
                         .requestMatchers(HttpMethod.POST, "/api/checkout/webhook").permitAll()
                         .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
                         // .requestMatchers(HttpMethod.POST, "/api/auth/validate").permitAll()

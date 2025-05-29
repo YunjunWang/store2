@@ -1,9 +1,6 @@
 package com.yunjun.store2.users;
 
-import com.yunjun.store2.dtos.*;
-import com.yunjun.store2.exceptions.UserAlreadyExistsException;
-import com.yunjun.store2.repositories.AddressRepository;
-import com.yunjun.store2.repositories.ProfileRepository;
+import com.yunjun.store2.auth.LoginRequest;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -214,18 +211,6 @@ public class UserServiceImpl implements UserService {
         user.setPassword(request.getNewPassword());
         userRepository.save(user);
         return userMapper.toDto(user);
-    }
-
-    /**
-     * @param request
-     * @return
-     */
-    @Override
-    public void loginUser(LoginUserRequest request) throws IllegalAccessException {
-        var user = userRepository.findByEmail(request.getEmail()).orElseThrow(IllegalAccessException::new);
-        if (!user.getPassword().equals(request.getPassword())) {
-            throw new IllegalAccessException();
-        }
     }
 
     /**

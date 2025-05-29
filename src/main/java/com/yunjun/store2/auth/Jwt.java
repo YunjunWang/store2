@@ -1,4 +1,4 @@
-package com.yunjun.store2.services;
+package com.yunjun.store2.auth;
 
 import com.yunjun.store2.users.Role;
 import io.jsonwebtoken.*;

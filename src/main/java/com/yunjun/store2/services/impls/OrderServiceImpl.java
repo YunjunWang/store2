@@ -7,7 +7,7 @@ import com.yunjun.store2.users.UserNotFoundException;
 import com.yunjun.store2.mappers.OrderMapper;
 import com.yunjun.store2.repositories.OrderRepository;
 import com.yunjun.store2.users.UserRepository;
-import com.yunjun.store2.services.AuthService;
+import com.yunjun.store2.auth.AuthService;
 import com.yunjun.store2.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;

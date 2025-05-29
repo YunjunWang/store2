@@ -1,8 +1,9 @@
-package com.yunjun.store2.services.impls;
+package com.yunjun.store2.auth;
 
+import com.yunjun.store2.users.UserNotFoundException;
 import com.yunjun.store2.users.UserRepository;
-import com.yunjun.store2.services.AuthService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -39,5 +40,17 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
     public Long getUserId() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         return (Long) authentication.getPrincipal();
+    }
+
+    /**
+     * @param request
+     * @return
+     */
+    @Override
+    public void loginUser(LoginRequest request) throws BadCredentialsException {
+        var user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new BadCredentialsException("Invalid credentials");
+        }
     }
 }

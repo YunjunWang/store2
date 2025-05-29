@@ -1,6 +1,5 @@
-package com.yunjun.store2.filters;
+package com.yunjun.store2.auth;
 
-import com.yunjun.store2.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

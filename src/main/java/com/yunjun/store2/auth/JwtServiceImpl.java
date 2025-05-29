@@ -1,9 +1,6 @@
-package com.yunjun.store2.services.impls;
+package com.yunjun.store2.auth;
 
-import com.yunjun.store2.config.JwtConfig;
 import com.yunjun.store2.users.UserDto;
-import com.yunjun.store2.services.Jwt;
-import com.yunjun.store2.services.JwtService;
 import io.jsonwebtoken.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

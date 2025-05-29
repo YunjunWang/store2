@@ -1,4 +1,4 @@
-package com.yunjun.store2.config;
+package com.yunjun.store2.auth;
 
 import io.jsonwebtoken.security.Keys;
 import lombok.Data;

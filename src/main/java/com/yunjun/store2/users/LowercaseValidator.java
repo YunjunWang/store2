@@ -1,4 +1,4 @@
-package com.yunjun.store2.users.validation;
+package com.yunjun.store2.users;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
