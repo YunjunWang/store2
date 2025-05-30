@@ -1,10 +1,9 @@
 package com.yunjun.store2.auth;
 
-import com.yunjun.store2.users.Role;
+import com.yunjun.store2.common.SecurityRules;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -20,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.List;
 
 
 /**
@@ -78,6 +79,9 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    // with @Component annotation on each SecurityRules classes, Spring will scan and register them automatically and add them in this list.
+    private List<SecurityRules> securityRules;
+
     /**
      * Configure Spring Security to use the AuthenticationProvider -> AuthenticationManager
      * for login operations.
@@ -130,26 +134,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
         http.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(c -> c
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/swagger-ui.html").permitAll()
-                        .requestMatchers("/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.POST, "/api/carts").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/carts").hasRole(Role.ADMIN.name())
-                        .requestMatchers( "/api/carts/{cartId}/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/users").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
-                        // Stripe webhook isn't a human, therefore, needs to allow it here
-                        .requestMatchers(HttpMethod.POST, "/api/checkout/webhook").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
-                        // .requestMatchers(HttpMethod.POST, "/api/auth/validate").permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(c -> {
+                    securityRules.forEach(securityRules -> securityRules.configure(c));
+                    c.anyRequest().authenticated();
+                })
                 // make sure this is the first filter once gets a request
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(c -> {
