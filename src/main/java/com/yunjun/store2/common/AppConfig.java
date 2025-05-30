@@ -1,4 +1,4 @@
-package com.yunjun.store2.auth;
+package com.yunjun.store2.common;
 
 import org.springframework.context.annotation.Configuration;
 
