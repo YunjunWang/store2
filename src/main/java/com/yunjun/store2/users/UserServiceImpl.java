@@ -1,7 +1,6 @@
 package com.yunjun.store2.users;
 
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -176,7 +175,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsUserByEmail(request.getEmail())) {
             throw new UserAlreadyExistsException();
         }
-        var user = userMapper.toEntity(request);
+        var user = userMapper.update(request);
         user.setRole(Role.USER);
         user = userRepository.save(user);
         return userMapper.toDto(user);
@@ -190,7 +189,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(Long id, UpdateUserRequest request) {
        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-       user = userRepository.save(userMapper.toEntity(user, request));
+       userMapper.update(user, request);
+       userRepository.save(user);
        return userMapper.toDto(user);
     }
 

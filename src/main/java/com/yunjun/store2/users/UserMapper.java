@@ -1,6 +1,7 @@
 package com.yunjun.store2.users;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 /**
@@ -13,8 +14,8 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring"/*, unmappedTargetPolicy = ReportingPolicy.WARN*/)
 public interface UserMapper {
 
-    User toEntity(RegisterUserRequest request);
-    User toEntity(@MappingTarget User user, UpdateUserRequest request);
+    User update(RegisterUserRequest request);
+    void update(@MappingTarget User user, UpdateUserRequest request);
 
     // @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     UserDto toDto(User user);

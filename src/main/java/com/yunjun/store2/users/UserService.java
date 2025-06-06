@@ -11,7 +11,7 @@ public interface UserService {
 
     UserDto registerUser(RegisterUserRequest request) throws IllegalArgumentException;
 
-    UserDto updateUser(Long id, UpdateUserRequest userDto);
+    UserDto updateUser(Long id, UpdateUserRequest request);
 
     void deleteUser(Long id);
 
