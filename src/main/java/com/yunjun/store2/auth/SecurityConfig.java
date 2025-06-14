@@ -126,6 +126,11 @@ public class SecurityConfig {
      *         so that the other paths are not accessible by anyone unless they are authenticated.
      *         This means a user can create a cart, view/add/update/delete cart/cartItems or log in to the system without being authenticated.
      * Step 4. Build the filter chain
+     *
+     * Filters are a way of inspecting Http Requests each time an Http Request reaches our API endpoints.
+     * It will run before controllers.
+     * The order of the filters matters for Http Security.
+     *
      * @param http
      * @return
      * @throws Exception
