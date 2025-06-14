@@ -128,6 +128,20 @@ public class StripePaymentGateway implements PaymentGateway {
                 // .setMode((SessionCreateParams.Mode.SUBSCRIPTION))
                 .setSuccessUrl(websiteUrl + "/checkout-success?orderId=" + order.getId())
                 .setCancelUrl(websiteUrl + "/checkout-cancel")
-                .putMetadata("order_id", order.getId().toString());
+                /* make sure the metadata type is set consistently as the same when retrieve it */
+                .setPaymentIntentData(createPaymentIntent(order));
+    }
+
+    /**
+     * make sure the metadata type is set consistently as the same when retrieve it
+     * @param order
+     * @return
+     */
+    private static SessionCreateParams.PaymentIntentData createPaymentIntent(Order order) {
+        return SessionCreateParams
+                .PaymentIntentData
+                .builder()
+                .putMetadata("order_id", order.getId().toString())
+                .build();
     }
 }
