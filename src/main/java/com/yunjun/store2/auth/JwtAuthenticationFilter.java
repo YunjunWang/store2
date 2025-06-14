@@ -29,9 +29,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // return to login end point
+        // extract the header authorization value
         var authHeader = request.getHeader("Authorization");
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            /* Pass to the next filter in the chain,
+             * It will eventually hit the API endpoint
+             * Spring Security will kick in,
+             * If the endpoint is protected, Spring will return 403
+             */
             filterChain.doFilter(request, response);
             return;
         }
@@ -39,20 +45,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         var token = authHeader.replace("Bearer ", "");
         var jwt = jwtService.parse(token);
         if (jwt == null || jwt.isExpired()) {
+            // Pass to the next filter in the chain
             filterChain.doFilter(request, response);
             return;
         }
 
-        /* new UsernamePasswordAuthenticationToken(Object principle) for unauthorized users
-         * new UsernamePasswordAuthenticationToken(Object principle, Object credentials, Collection<?> authorities) for authorized users
+        /* When the token is valid, we need to tell Spring to allow user to
+         * access the requested resource
+         * To do this, we need to first create an authentication object.
          *
-         * set authentication with user email from a token
-         * we don't get the user email from the db here to avoid performance issue as it'll be a db query / request
+         * UsernamePasswordAuthenticationToken(Object principle) constructor
+         * represents unauthenticated / anonymous users.
+         * It is used for registering users
+         * UsernamePasswordAuthenticationToken(Object principle, Object credentials, Collection<?> authorities) constructor
+         * represents authenticated users
+         *
+         * Set authentication with user email from a token.
+         * We don't get the user email from the db here to
+         * avoid performance issue as it'll be a db query / request,
+         * and we don't want to make this db query for each Http request.
+         * Instead, we get it from the token.
          */
         var authentication = new UsernamePasswordAuthenticationToken(
                 jwt.getUserId(),
                 //jwtTokenService.getEmailFromToken(token), // user object, either user, username, email etc.
-                null, // password, here we don't need
+                null, // password, here we don't need for authenticated users, so we set it as null
                 // null // roles and permissions, for authenticated users. No need here before implementing the role-based access
                 /*
                  * authorities:
@@ -61,13 +78,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                  */
                 List.of(new SimpleGrantedAuthority("ROLE_" + jwt.getRole().name()))
         );
-        // add request metadata into the authentication details
+        /* add request metadata into the authentication details,
+         * e.g., IP address
+         */
         authentication.setDetails(
                 new WebAuthenticationDetailsSource().buildDetails(request)
         );
-        // set it for further usage, e.g., to access the current user
+        /* set it for further usage, e.g., to access the current user
+         * SecurityContextHolder holds the authenticated user
+         */
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        /* JwtAuthenticationFilter finishes,
+         * Pass the control to the next filter in the filter chain
+         * It will eventually hit the API endpoint
+         * to allow user to access the resource that is requested
+         *
+         * Now this filter is ready.
+         * Next is to make sure
+         * this filter is the first filter to be hit
+         * inside the securityFilterChain of SecurityConfig class,
+         * because filter order matters for Http Security.
+         */
         filterChain.doFilter(request, response);
     }
 }

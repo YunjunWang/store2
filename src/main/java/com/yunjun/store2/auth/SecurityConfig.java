@@ -138,7 +138,7 @@ public class SecurityConfig {
                     securityRules.forEach(securityRules -> securityRules.configure(c));
                     c.anyRequest().authenticated();
                 })
-                // make sure this is the first filter once gets a request
+                /* Make sure UsernamePasswordAuthenticationFilter is the first filter in the filter chain once gets a request */
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(c -> {
                     // make sure all auth entry points get 401 - unauthorized, which means the user is not authenticated or credentials are invalid.
