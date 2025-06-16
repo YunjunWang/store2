@@ -133,6 +133,7 @@ public class StripePaymentGateway implements PaymentGateway {
     }
 
     /**
+     * The metadata is for payment_intent that we need,
      * make sure the metadata type is set consistently as the same when retrieve it
      * @param order
      * @return
