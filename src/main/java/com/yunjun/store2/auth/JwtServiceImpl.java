@@ -53,7 +53,17 @@ public class JwtServiceImpl implements JwtService {
 
     private Jwt generateToken(UserDto userDto, long tokenExpiration) {
         var token = Jwts.claims()
+                /* set userID as the subject
+                 * so we can look up user by userID
+                 * which is the PK in the DB that is more efficient
+                 * than email
+                 */
                 .subject(userDto.getId().toString())
+                /* we pass name, email and role in the claim,
+                 * so we don't have to look up for them through DB again
+                 * for each other requests after user's logged in
+                 *
+                 */
                 .add("name", userDto.getName())
                 .add("email", userDto.getEmail())
                 .add("role", userDto.getRole())
