@@ -1,5 +1,7 @@
 package com.yunjun.store2.orders;
 
+import com.yunjun.store2.users.User;
+import com.yunjun.store2.users.UserMapper;
 import com.yunjun.store2.users.UserNotFoundException;
 import com.yunjun.store2.users.UserRepository;
 import com.yunjun.store2.auth.AuthService;
@@ -16,6 +18,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final AuthService authService;
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     /**
      * @param orderId
@@ -31,12 +34,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * @param customerId
+     * @param customer
      * @return
      */
     @Override
-    public List<OrderDto> getAllOrders(Long customerId) {
-        var orders =  orderRepository.getOrdersByCustomerId(customerId);
+    public List<OrderDto> getAllOrders(User customer) {
+        var orders =  orderRepository.getOrdersByCustomer(customer);
         return orders.stream()
                 .map(orderMapper::toDto)
                 .toList();
@@ -47,7 +50,8 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public List<OrderDto> getAllOrders() {
-        var orders =  orderRepository.getAllOrdersWithItems();
+        var userDto = authService.getCurrentUser();
+        var orders =  orderRepository.getOrdersByCustomer(userMapper.toEntity(userDto));
         return orders.stream()
                 .map(orderMapper::toDto)
                 .toList();

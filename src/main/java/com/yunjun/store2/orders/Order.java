@@ -59,7 +59,13 @@ public class Order {
                 .customer(customer)
                 .build();
 
-
+        /**
+         * an OrderItem cannot live without
+         * an Order
+         * a Product
+         * and Quantity.
+         * Therefore, we need to pass them into the OrderItem constructor
+         */
         var orderItems = cart.getItems().stream().map(item ->
                 new OrderItem(order, item.getProduct(), item.getQuantity())).collect(Collectors.toSet());
 
