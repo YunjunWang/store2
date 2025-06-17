@@ -146,7 +146,11 @@ public class SecurityConfig {
                 /* Make sure UsernamePasswordAuthenticationFilter is the first filter in the filter chain once gets a request */
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(c -> {
-                    // make sure all auth entry points get 401 - unauthorized, which means the user is not authenticated or credentials are invalid.
+                    /* By default, Spring returns HTTP.403 status for all failed authenticationEntryPoint
+                     * make sure all auth entry points get 401 - unauthorized,
+                     * which means the user is not authenticated or credentials are invalid
+                     * by setting the return HttpStatus to 401 here
+                     */
                     c.authenticationEntryPoint(
                             new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
                     // when it is for role-based authenticated, but the user has no permission to access the resource.

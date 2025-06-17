@@ -7,5 +7,5 @@ public interface JwtService {
 
     Jwt generateRefreshToken(UserDto userDto);
 
-    Jwt parse(String token);
+    Jwt parseToken(String token);
 }

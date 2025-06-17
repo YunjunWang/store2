@@ -177,7 +177,7 @@ public class UserServiceImpl implements UserService {
         }
         var user = userMapper.update(request);
         user.setRole(Role.USER);
-        user = userRepository.save(user);
+        userRepository.save(user);
         return userMapper.toDto(user);
     }
 

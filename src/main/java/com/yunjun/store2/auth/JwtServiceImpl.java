@@ -26,7 +26,7 @@ public class JwtServiceImpl implements JwtService {
      * @return
      */
     @Override
-    public Jwt parse(String token) {
+    public Jwt parseToken(String token) {
         try {
             var claims = getClaims(token);
             return new Jwt(claims, jwtConfig.getSecretKey());
@@ -52,7 +52,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private Jwt generateToken(UserDto userDto, long tokenExpiration) {
-        var token = Jwts.claims()
+        var claims = Jwts.claims() // the claims() is a ClaimsBuilder method
                 /* set userID as the subject
                  * so we can look up user by userID
                  * which is the PK in the DB that is more efficient
@@ -70,14 +70,14 @@ public class JwtServiceImpl implements JwtService {
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + 1000 * tokenExpiration))
                 .build();
-        return new Jwt(token, jwtConfig.getSecretKey());
+        return new Jwt(claims, jwtConfig.getSecretKey());
     }
 
     private Claims getClaims(String token) {
         return Jwts.parser()
                 .verifyWith(jwtConfig.getSecretKey())
                 .build()
-                .parseClaimsJws(token)
+                .parseSignedClaims(token)
                 .getPayload();
     }
 
